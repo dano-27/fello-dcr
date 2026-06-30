@@ -1,0 +1,2183 @@
+/* ==========================================================================
+   Fello CMI — Device Configuration Request Design System
+   A premium dark-mode, multi-step wizard form.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   0. IMPORTS & CUSTOM PROPERTIES
+   -------------------------------------------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* ---- Brand / Accent ---- */
+  --cmi-accent:            #ef9600;
+  --cmi-accent-hover:      #ffa726;
+  --cmi-accent-glow:       rgba(239, 150, 0, 0.35);
+  --cmi-accent-subtle:     rgba(239, 150, 0, 0.08);
+
+  /* ---- Backgrounds ---- */
+  --cmi-bg:                #0a0e17;
+  --cmi-surface:           #111827;
+  --cmi-surface-elevated:  #1a2332;
+
+  /* ---- Borders ---- */
+  --cmi-border:            #1e293b;
+  --cmi-border-focus:      #ef9600;
+
+  /* ---- Typography ---- */
+  --cmi-text:              #f1f5f9;
+  --cmi-text-secondary:    #94a3b8;
+  --cmi-text-muted:        #64748b;
+
+  /* ---- Semantic ---- */
+  --cmi-success:           #10b981;
+  --cmi-error:             #ef4444;
+  --cmi-warning:           #f59e0b;
+  --cmi-info:              #3b82f6;
+
+  /* ---- Spacing scale (4px base) ---- */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-7: 28px;
+  --sp-8: 32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+  --sp-16: 64px;
+
+  /* ---- Modular type scale (1.25 ratio) ---- */
+  --fs-xs:   0.75rem;   /* 12px */
+  --fs-sm:   0.8125rem; /* 13px */
+  --fs-base: 0.9375rem; /* 15px */
+  --fs-md:   1rem;      /* 16px */
+  --fs-lg:   1.25rem;   /* 20px */
+  --fs-xl:   1.5625rem; /* 25px */
+  --fs-2xl:  1.953rem;  /* ~31px */
+  --fs-3xl:  2.441rem;  /* ~39px */
+
+  /* ---- Radii ---- */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-pill: 9999px;
+
+  /* ---- Shadows ---- */
+  --shadow-sm:  0 1px 2px rgba(0,0,0,.3);
+  --shadow-md:  0 4px 12px rgba(0,0,0,.4);
+  --shadow-lg:  0 8px 30px rgba(0,0,0,.5);
+  --shadow-glow: 0 0 18px var(--cmi-accent-glow);
+
+  /* ---- Motion ---- */
+  --ease-default: cubic-bezier(.4,0,.2,1);
+  --duration-fast: .15s;
+  --duration:      .25s;
+  --duration-slow: .4s;
+
+  /* ---- Layout ---- */
+  --header-height: 64px;
+  --container-max: 720px;
+}
+
+/* --------------------------------------------------------------------------
+   1. RESET & BASE
+   -------------------------------------------------------------------------- */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: var(--fs-base);
+  line-height: 1.6;
+  color: var(--cmi-text);
+  background: var(--cmi-bg);
+  min-height: 100vh;
+}
+
+/* Subtle radial gradient overlay for depth */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(239,150,0,.04) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 100%, rgba(59,130,246,.03) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* --------------------------------------------------------------------------
+   2. LAYOUT
+   -------------------------------------------------------------------------- */
+.cmi-app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+/* ---- Header ---- */
+.cmi-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: 0 var(--sp-6);
+  background: rgba(17, 24, 39, .72);
+  backdrop-filter: blur(18px) saturate(1.6);
+  -webkit-backdrop-filter: blur(18px) saturate(1.6);
+  border-bottom: 1px solid rgba(30, 41, 59, .6);
+  box-shadow: 0 1px 3px rgba(0,0,0,.3), 0 0 40px rgba(0,0,0,.15);
+}
+
+.cmi-header-logo {
+  height: 36px;
+  width: auto;
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 6px rgba(239,150,0,.25));
+  transition: filter var(--duration) var(--ease-default);
+}
+
+.cmi-header-logo:hover {
+  filter: drop-shadow(0 0 12px rgba(239,150,0,.45));
+}
+
+.cmi-header-title {
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  letter-spacing: -.02em;
+  color: var(--cmi-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---- Main & Container ---- */
+.cmi-main {
+  flex: 1 1 auto;
+  padding-top: calc(var(--header-height) + var(--sp-8));
+  padding-bottom: var(--sp-16);
+  overflow-y: auto;
+}
+
+.cmi-container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--sp-6);
+}
+
+/* --------------------------------------------------------------------------
+   3. PROGRESS BAR
+   -------------------------------------------------------------------------- */
+.cmi-progress {
+  position: relative;
+  margin-bottom: var(--sp-10);
+  padding: var(--sp-6) 0;
+}
+
+.cmi-progress-track {
+  position: absolute;
+  top: calc(var(--sp-6) + 18px);   /* vertically center on circles */
+  left: 36px;
+  right: 36px;
+  height: 3px;
+  background: var(--cmi-border);
+  border-radius: var(--radius-pill);
+  z-index: 0;
+  overflow: hidden;
+}
+
+.cmi-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--cmi-accent), var(--cmi-accent-hover));
+  border-radius: var(--radius-pill);
+  transition: width var(--duration-slow) var(--ease-default);
+  position: relative;
+}
+
+.cmi-progress-fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.25) 50%, transparent 100%);
+  animation: shimmer 2s infinite;
+}
+
+.cmi-progress-steps {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  z-index: 1;
+}
+
+.cmi-progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+  cursor: default;
+  flex: 0 0 auto;
+}
+
+.cmi-progress-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--cmi-text-muted);
+  background: var(--cmi-surface);
+  border: 2px solid var(--cmi-border);
+  transition: all var(--duration) var(--ease-default);
+  position: relative;
+}
+
+.cmi-progress-label {
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  color: var(--cmi-text-muted);
+  text-align: center;
+  max-width: 80px;
+  line-height: 1.3;
+  transition: color var(--duration) var(--ease-default);
+}
+
+/* Active step */
+.cmi-progress-step.active .cmi-progress-circle {
+  border-color: var(--cmi-accent);
+  color: var(--cmi-accent);
+  background: var(--cmi-accent-subtle);
+  box-shadow: 0 0 0 4px rgba(239,150,0,.12), var(--shadow-glow);
+  animation: pulse 2.2s ease-in-out infinite;
+}
+
+.cmi-progress-step.active .cmi-progress-label {
+  color: var(--cmi-accent);
+}
+
+/* Completed step */
+.cmi-progress-step.completed .cmi-progress-circle {
+  background: var(--cmi-accent);
+  border-color: var(--cmi-accent);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(239,150,0,.3);
+}
+
+.cmi-progress-step.completed .cmi-progress-label {
+  color: var(--cmi-text-secondary);
+}
+
+/* --------------------------------------------------------------------------
+   4. WIZARD STEPS
+   -------------------------------------------------------------------------- */
+.cmi-step {
+  display: none;
+}
+
+.cmi-step.active {
+  display: block;
+  animation: fadeIn var(--duration-slow) var(--ease-default);
+}
+
+.cmi-step-title {
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  letter-spacing: -.025em;
+  color: var(--cmi-text);
+  margin-bottom: var(--sp-2);
+}
+
+.cmi-step-subtitle {
+  font-size: var(--fs-base);
+  color: var(--cmi-text-secondary);
+  margin-bottom: var(--sp-8);
+  line-height: 1.6;
+}
+
+/* --------------------------------------------------------------------------
+   5. SECTIONS
+   -------------------------------------------------------------------------- */
+.cmi-section {
+  background: var(--cmi-surface);
+  border: 1px solid var(--cmi-border);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-6);
+  margin-bottom: var(--sp-6);
+  transition: border-color var(--duration) var(--ease-default),
+              box-shadow var(--duration) var(--ease-default);
+}
+
+.cmi-section:hover {
+  border-color: rgba(30, 41, 59, .9);
+  box-shadow: var(--shadow-sm);
+}
+
+.cmi-section-header {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-5);
+}
+
+.cmi-section-title {
+  font-size: var(--fs-md);
+  font-weight: 600;
+  color: var(--cmi-text);
+  letter-spacing: -.01em;
+}
+
+.cmi-section-divider {
+  border: none;
+  height: 1px;
+  background: var(--cmi-border);
+  margin: var(--sp-6) 0;
+}
+
+/* --------------------------------------------------------------------------
+   6. FORM FIELDS
+   -------------------------------------------------------------------------- */
+.cmi-field {
+  margin-bottom: var(--sp-5);
+  position: relative;
+}
+
+.cmi-field.has-error .cmi-input,
+.cmi-field.has-error .cmi-select,
+.cmi-field.has-error .cmi-textarea {
+  border-color: var(--cmi-error);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, .12);
+}
+
+.cmi-field-row {
+  display: flex;
+  gap: var(--sp-4);
+}
+
+.cmi-field-half {
+  flex: 1 1 0%;
+  min-width: 0;
+}
+
+.cmi-label {
+  display: block;
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--cmi-text-secondary);
+  margin-bottom: var(--sp-2);
+  letter-spacing: .01em;
+}
+
+.cmi-required {
+  color: var(--cmi-accent);
+  margin-left: 2px;
+  font-weight: 600;
+}
+
+/* Shared input base */
+.cmi-input,
+.cmi-select,
+.cmi-textarea {
+  display: block;
+  width: 100%;
+  padding: var(--sp-3) var(--sp-4);
+  font-family: 'Inter', sans-serif;
+  font-size: var(--fs-base);
+  color: var(--cmi-text);
+  background: var(--cmi-bg);
+  border: 1px solid var(--cmi-border);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition: border-color var(--duration) var(--ease-default),
+              box-shadow var(--duration) var(--ease-default),
+              background var(--duration) var(--ease-default);
+  box-shadow: inset 0 1px 3px rgba(0,0,0,.25);
+}
+
+.cmi-input::placeholder,
+.cmi-textarea::placeholder {
+  color: var(--cmi-text-muted);
+}
+
+.cmi-input:hover,
+.cmi-select:hover,
+.cmi-textarea:hover {
+  border-color: rgba(94, 113, 140, .5);
+}
+
+.cmi-input:focus,
+.cmi-select:focus,
+.cmi-textarea:focus {
+  border-color: var(--cmi-border-focus);
+  box-shadow: 0 0 0 3px var(--cmi-accent-glow), inset 0 1px 3px rgba(0,0,0,.25);
+  background: rgba(10, 14, 23, .85);
+}
+
+.cmi-input.error {
+  border-color: var(--cmi-error);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, .15);
+}
+
+.cmi-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%2394a3b8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--sp-4) center;
+  padding-right: var(--sp-10);
+  cursor: pointer;
+}
+
+.cmi-textarea {
+  min-height: 100px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.cmi-error-msg {
+  display: block;
+  font-size: var(--fs-xs);
+  color: var(--cmi-error);
+  margin-top: var(--sp-1);
+  padding-left: var(--sp-1);
+  animation: fadeIn var(--duration-fast) var(--ease-default);
+}
+
+.cmi-help-text {
+  display: block;
+  font-size: var(--fs-xs);
+  color: var(--cmi-text-muted);
+  margin-top: var(--sp-1);
+  padding-left: var(--sp-1);
+  line-height: 1.5;
+}
+
+/* --------------------------------------------------------------------------
+   7. TOGGLE (YES / NO SWITCHES)
+   -------------------------------------------------------------------------- */
+.cmi-toggle-group {
+  margin-bottom: var(--sp-5);
+}
+
+.cmi-toggle-question {
+  display: block;
+  font-size: var(--fs-base);
+  font-weight: 500;
+  color: var(--cmi-text);
+  margin-bottom: var(--sp-3);
+}
+
+.cmi-toggle-options {
+  display: inline-flex;
+  gap: 0;
+  background: var(--cmi-bg);
+  border: 1px solid var(--cmi-border);
+  border-radius: var(--radius-pill);
+  padding: 3px;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,.2);
+}
+
+.cmi-toggle-btn {
+  padding: var(--sp-2) var(--sp-5);
+  font-family: 'Inter', sans-serif;
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--cmi-text-muted);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: all var(--duration) var(--ease-default);
+  user-select: none;
+  min-width: 60px;
+  text-align: center;
+}
+
+.cmi-toggle-btn:hover {
+  color: var(--cmi-text-secondary);
+}
+
+.cmi-toggle-btn.active {
+  background: var(--cmi-accent);
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(239,150,0,.3);
+}
+
+.cmi-toggle-content {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height var(--duration-slow) var(--ease-default),
+              opacity var(--duration) var(--ease-default),
+              margin var(--duration) var(--ease-default);
+  margin-top: 0;
+}
+
+.cmi-toggle-content.open {
+  max-height: 2000px;
+  opacity: 1;
+  margin-top: var(--sp-4);
+}
+
+/* --------------------------------------------------------------------------
+   8. REPEATER
+   -------------------------------------------------------------------------- */
+.cmi-repeater {
+  margin-bottom: var(--sp-5);
+}
+
+.cmi-repeater-header {
+  display: flex;
+  gap: var(--sp-3);
+  padding: 0 0 var(--sp-2) 0;
+  border-bottom: 1px solid var(--cmi-border);
+  margin-bottom: var(--sp-3);
+}
+
+.cmi-repeater-header span {
+  flex: 1;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--cmi-text-muted);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+.cmi-repeater-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-3);
+  animation: fadeIn var(--duration) var(--ease-default);
+}
+
+.cmi-repeater-row .cmi-input {
+  flex: 1;
+}
+
+.cmi-btn-remove-row {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(239, 68, 68, .1);
+  color: var(--cmi-error);
+  border: 1px solid rgba(239, 68, 68, .2);
+  border-radius: 50%;
+  font-size: var(--fs-md);
+  cursor: pointer;
+  transition: all var(--duration) var(--ease-default);
+  font-family: 'Inter', sans-serif;
+  line-height: 1;
+}
+
+.cmi-btn-remove-row:hover {
+  background: rgba(239, 68, 68, .2);
+  border-color: var(--cmi-error);
+  box-shadow: 0 0 10px rgba(239, 68, 68, .15);
+  transform: scale(1.08);
+}
+
+.cmi-btn-add-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  width: 100%;
+  padding: var(--sp-3) var(--sp-4);
+  background: transparent;
+  color: var(--cmi-accent);
+  border: 1.5px dashed rgba(239,150,0,.35);
+  border-radius: var(--radius-md);
+  font-family: 'Inter', sans-serif;
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--duration) var(--ease-default);
+}
+
+.cmi-btn-add-row:hover {
+  background: var(--cmi-accent-subtle);
+  border-color: var(--cmi-accent);
+  box-shadow: 0 0 16px rgba(239,150,0,.08);
+}
+
+/* --------------------------------------------------------------------------
+   9. FILE UPLOAD
+   -------------------------------------------------------------------------- */
+.cmi-file-drop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+  padding: var(--sp-6);
+  border: 2px dashed var(--cmi-border);
+  border-radius: var(--radius-lg);
+  background: rgba(10, 14, 23, .5);
+  cursor: pointer;
+  transition: all var(--duration) var(--ease-default);
+  text-align: center;
+  gap: var(--sp-2);
+}
+
+.cmi-file-drop:hover {
+  border-color: rgba(94, 113, 140, .5);
+  background: rgba(26, 35, 50, .4);
+}
+
+.cmi-file-drop.dragover {
+  border-color: var(--cmi-accent);
+  background: rgba(239,150,0,.04);
+  box-shadow: inset 0 0 30px rgba(239,150,0,.05), var(--shadow-glow);
+}
+
+.cmi-file-drop-icon {
+  font-size: 2rem;
+  color: var(--cmi-text-muted);
+  margin-bottom: var(--sp-1);
+  transition: color var(--duration) var(--ease-default);
+}
+
+.cmi-file-drop.dragover .cmi-file-drop-icon {
+  color: var(--cmi-accent);
+}
+
+.cmi-file-drop-text {
+  font-size: var(--fs-sm);
+  color: var(--cmi-text-secondary);
+}
+
+.cmi-file-drop-browse {
+  color: var(--cmi-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: color var(--duration) var(--ease-default);
+}
+
+.cmi-file-drop-browse:hover {
+  color: var(--cmi-accent-hover);
+}
+
+.cmi-file-drop-rules {
+  font-size: var(--fs-xs);
+  color: var(--cmi-text-muted);
+  margin-top: var(--sp-1);
+}
+
+/* File preview */
+.cmi-file-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  margin-top: var(--sp-4);
+}
+
+.cmi-file-preview-item {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
+  background: var(--cmi-surface-elevated);
+  border: 1px solid var(--cmi-border);
+  border-radius: var(--radius-md);
+  transition: border-color var(--duration) var(--ease-default);
+  animation: fadeIn var(--duration) var(--ease-default);
+}
+
+.cmi-file-preview-item:hover {
+  border-color: rgba(94, 113, 140, .5);
+}
+
+.cmi-file-preview-thumb {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  background: var(--cmi-bg);
+  flex-shrink: 0;
+}
+
+.cmi-file-preview-name {
+  font-size: var(--fs-sm);
+  color: var(--cmi-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+}
+
+.cmi-file-preview-remove {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fs-xs);
+  color: var(--cmi-text-muted);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all var(--duration) var(--ease-default);
+}
+
+.cmi-file-preview-remove:hover {
+  color: var(--cmi-error);
+  background: rgba(239, 68, 68, .1);
+  border-color: rgba(239, 68, 68, .2);
+}
+
+/* --------------------------------------------------------------------------
+   10. BUTTONS
+   -------------------------------------------------------------------------- */
+.cmi-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-6);
+  font-family: 'Inter', sans-serif;
+  font-size: var(--fs-base);
+  font-weight: 600;
+  line-height: 1;
+  border-radius: var(--radius-md);
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  transition: all var(--duration) var(--ease-default);
+  user-select: none;
+  text-decoration: none;
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+}
+
+.cmi-btn[hidden] {
+  display: none !important;
+}
+
+.cmi-btn:active {
+  transform: scale(.97);
+}
+
+.cmi-btn:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Primary */
+.cmi-btn-primary {
+  background: linear-gradient(135deg, var(--cmi-accent), var(--cmi-accent-hover));
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 2px 8px rgba(239,150,0,.25);
+}
+
+.cmi-btn-primary:hover:not(:disabled) {
+  filter: brightness(1.1);
+  box-shadow: 0 4px 18px rgba(239,150,0,.35);
+  transform: translateY(-1px);
+}
+
+.cmi-btn-primary:active:not(:disabled) {
+  filter: brightness(.95);
+  transform: translateY(0) scale(.97);
+}
+
+/* Secondary */
+.cmi-btn-secondary {
+  background: transparent;
+  color: var(--cmi-accent);
+  border-color: var(--cmi-accent);
+}
+
+.cmi-btn-secondary:hover:not(:disabled) {
+  background: var(--cmi-accent-subtle);
+  box-shadow: 0 0 14px rgba(239,150,0,.1);
+  transform: translateY(-1px);
+}
+
+/* Submit */
+.cmi-btn-submit {
+  background: linear-gradient(135deg, var(--cmi-accent), #e88d00);
+  color: #fff;
+  border-color: transparent;
+  padding: var(--sp-4) var(--sp-8);
+  font-size: var(--fs-md);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 20px rgba(239,150,0,.3);
+  min-width: 180px;
+}
+
+.cmi-submit-wrapper {
+  margin-top: var(--sp-8);
+  text-align: center;
+}
+
+.cmi-submit-wrapper .cmi-btn-submit {
+  width: 100%;
+  max-width: 400px;
+  padding: var(--sp-5) var(--sp-8);
+  font-size: var(--fs-lg);
+}
+
+.cmi-btn-submit:hover:not(:disabled) {
+  filter: brightness(1.12);
+  box-shadow: 0 6px 28px rgba(239,150,0,.4);
+  transform: translateY(-2px);
+}
+
+.cmi-btn-submit.success {
+  background: linear-gradient(135deg, var(--cmi-success), #059669);
+  box-shadow: 0 4px 20px rgba(16,185,129,.3);
+}
+
+/* --------------------------------------------------------------------------
+   11. NAVIGATION
+   -------------------------------------------------------------------------- */
+.cmi-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--sp-6) 0;
+  margin-top: var(--sp-6);
+  border-top: 1px solid var(--cmi-border);
+  position: sticky;
+  bottom: 0;
+  background: linear-gradient(to top, var(--cmi-bg) 60%, transparent);
+  padding-bottom: var(--sp-4);
+  z-index: 10;
+}
+
+.cmi-nav-back {
+  /* Inherits .cmi-btn .cmi-btn-secondary */
+}
+
+.cmi-nav-next {
+  /* Inherits .cmi-btn .cmi-btn-primary */
+  margin-left: auto;
+}
+
+/* --------------------------------------------------------------------------
+   12. REVIEW (STEP 5)
+   -------------------------------------------------------------------------- */
+.cmi-review {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.cmi-review-section {
+  background: var(--cmi-surface);
+  border: 1px solid var(--cmi-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: border-color var(--duration) var(--ease-default);
+}
+
+.cmi-review-section:hover {
+  border-color: rgba(30, 41, 59, .9);
+}
+
+.cmi-review-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--sp-4) var(--sp-5);
+  cursor: pointer;
+  transition: background var(--duration) var(--ease-default);
+}
+
+.cmi-review-section-header:hover {
+  background: var(--cmi-surface-elevated);
+}
+
+.cmi-review-section-title {
+  font-size: var(--fs-base);
+  font-weight: 600;
+  color: var(--cmi-text);
+}
+
+.cmi-review-section-toggle {
+  font-size: var(--fs-sm);
+  color: var(--cmi-text-muted);
+  transition: transform var(--duration) var(--ease-default);
+}
+
+.cmi-review-section.open .cmi-review-section-toggle {
+  transform: rotate(180deg);
+}
+
+.cmi-review-section-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height var(--duration-slow) var(--ease-default);
+}
+
+.cmi-review-section.open .cmi-review-section-body {
+  max-height: 2000px;
+}
+
+.cmi-review-item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  padding: var(--sp-3) var(--sp-5);
+  border-top: 1px solid rgba(30,41,59,.5);
+}
+
+.cmi-review-item:last-child {
+  padding-bottom: var(--sp-4);
+}
+
+.cmi-review-label {
+  font-size: var(--fs-sm);
+  color: var(--cmi-text-muted);
+  flex-shrink: 0;
+  min-width: 120px;
+}
+
+.cmi-review-value {
+  font-size: var(--fs-base);
+  color: var(--cmi-text);
+  font-weight: 500;
+  text-align: right;
+  word-break: break-word;
+}
+
+.cmi-review-edit {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-family: 'Inter', sans-serif;
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  color: var(--cmi-accent);
+  background: transparent;
+  border: 1px solid rgba(239,150,0,.25);
+  border-radius: var(--radius-sm);
+  padding: var(--sp-1) var(--sp-2);
+  cursor: pointer;
+  transition: all var(--duration) var(--ease-default);
+}
+
+.cmi-review-edit:hover {
+  background: var(--cmi-accent-subtle);
+  border-color: var(--cmi-accent);
+}
+
+/* --------------------------------------------------------------------------
+   13. TERMS & CHECKBOXES
+   -------------------------------------------------------------------------- */
+.cmi-terms {
+  background: var(--cmi-surface);
+  border: 1px solid var(--cmi-border);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-5);
+  margin-top: var(--sp-5);
+}
+
+.cmi-checkbox-group {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  cursor: pointer;
+  padding: var(--sp-2) 0;
+}
+
+.cmi-checkbox-group + .cmi-checkbox-group {
+  margin-top: var(--sp-3);
+}
+
+.cmi-checkbox {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.cmi-checkbox-custom {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--cmi-border);
+  border-radius: var(--radius-sm);
+  background: var(--cmi-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--duration) var(--ease-default);
+  margin-top: 1px;
+  position: relative;
+}
+
+.cmi-checkbox:checked + .cmi-checkbox-custom {
+  background: var(--cmi-accent);
+  border-color: var(--cmi-accent);
+  box-shadow: 0 0 8px rgba(239,150,0,.25);
+}
+
+.cmi-checkbox:checked + .cmi-checkbox-custom::after {
+  content: '';
+  display: block;
+  width: 5px;
+  height: 9px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  margin-top: -1px;
+}
+
+.cmi-checkbox:focus-visible + .cmi-checkbox-custom {
+  box-shadow: 0 0 0 3px var(--cmi-accent-glow);
+}
+
+.cmi-checkbox-label {
+  font-size: var(--fs-sm);
+  color: var(--cmi-text-secondary);
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.cmi-checkbox-label a {
+  color: var(--cmi-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.cmi-checkbox-label a:hover {
+  color: var(--cmi-accent-hover);
+}
+
+/* --------------------------------------------------------------------------
+   14. TOAST NOTIFICATIONS
+   -------------------------------------------------------------------------- */
+.cmi-toast {
+  position: fixed;
+  bottom: var(--sp-6);
+  right: var(--sp-6);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-4) var(--sp-5);
+  background: var(--cmi-surface-elevated);
+  border: 1px solid var(--cmi-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--cmi-text);
+  z-index: 9999;
+  animation: toastIn var(--duration-slow) var(--ease-default);
+  backdrop-filter: blur(12px);
+  max-width: 380px;
+}
+
+.cmi-toast.hide {
+  animation: toastOut var(--duration) var(--ease-default) forwards;
+}
+
+.cmi-toast.success {
+  border-left: 3px solid var(--cmi-success);
+}
+
+.cmi-toast.error {
+  border-left: 3px solid var(--cmi-error);
+}
+
+.cmi-toast.info {
+  border-left: 3px solid var(--cmi-info);
+}
+
+/* --------------------------------------------------------------------------
+   15. PRICING NOTE
+   -------------------------------------------------------------------------- */
+.cmi-pricing-note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  padding: var(--sp-4) var(--sp-5);
+  background: rgba(245,158,11,.06);
+  border: 1px solid rgba(245,158,11,.2);
+  border-left: 3px solid var(--cmi-warning);
+  border-radius: var(--radius-md);
+  font-size: var(--fs-sm);
+  color: var(--cmi-text-secondary);
+  line-height: 1.6;
+  margin-bottom: var(--sp-5);
+}
+
+.cmi-pricing-note::before {
+  content: '⚠';
+  font-size: var(--fs-lg);
+  flex-shrink: 0;
+  line-height: 1;
+  margin-top: 1px;
+}
+
+/* --------------------------------------------------------------------------
+   16. UTILITIES
+   -------------------------------------------------------------------------- */
+.cmi-hidden {
+  display: none !important;
+}
+
+.cmi-fade-in {
+  animation: fadeIn var(--duration-slow) var(--ease-default);
+}
+
+.cmi-slide-down {
+  animation: slideDown var(--duration-slow) var(--ease-default);
+}
+
+/* --------------------------------------------------------------------------
+   17. KEYFRAME ANIMATIONS
+   -------------------------------------------------------------------------- */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideDown {
+  from {
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    max-height: 1000px;
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    max-height: 1000px;
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(239,150,0,.12), 0 0 18px rgba(239,150,0,.15); }
+  50%      { box-shadow: 0 0 0 7px rgba(239,150,0,.06), 0 0 24px rgba(239,150,0,.2); }
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(100%) scale(.95); }
+  to   { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+@keyframes toastOut {
+  from { opacity: 1; transform: translateX(0) scale(1); }
+  to   { opacity: 0; transform: translateX(100%) scale(.95); }
+}
+
+@keyframes shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+/* --------------------------------------------------------------------------
+   18. SCROLLBAR
+   -------------------------------------------------------------------------- */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, .2);
+  border-radius: var(--radius-pill);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, .35);
+}
+
+/* --------------------------------------------------------------------------
+   19. RESPONSIVE — MOBILE  (< 640px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 639px) {
+  :root {
+    --header-height: 56px;
+  }
+
+  .cmi-header {
+    padding: 0 var(--sp-4);
+  }
+
+  .cmi-header-title {
+    font-size: var(--fs-base);
+  }
+
+  .cmi-container {
+    padding: 0 var(--sp-4);
+  }
+
+  .cmi-step-title {
+    font-size: var(--fs-lg);
+  }
+
+  .cmi-field-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .cmi-field-half {
+    width: 100%;
+  }
+
+  .cmi-progress-label {
+    font-size: 10px;
+    max-width: 46px; /* Adjusted to fit 6 steps better */
+    line-height: 1.2;
+  }
+
+  .cmi-progress-circle {
+    width: 30px;
+    height: 30px;
+    font-size: var(--fs-xs);
+  }
+
+  .cmi-progress-track {
+    top: calc(var(--sp-6) + 15px);
+    left: 28px;
+    right: 28px;
+  }
+
+  .cmi-nav {
+    flex-wrap: wrap;
+    gap: var(--sp-3);
+  }
+
+  .cmi-toast {
+    left: var(--sp-4);
+    right: var(--sp-4);
+    bottom: var(--sp-4);
+    max-width: none;
+  }
+
+  .cmi-review-item {
+    flex-direction: column;
+    gap: var(--sp-1);
+  }
+
+  .cmi-review-value {
+    text-align: left;
+  }
+
+  .cmi-section {
+    padding: var(--sp-4);
+  }
+
+  .cmi-repeater-row {
+    flex-wrap: wrap;
+  }
+
+  .cmi-btn-submit {
+    width: 100%;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   20. RESPONSIVE — TABLET  (640px – 1024px)
+   -------------------------------------------------------------------------- */
+@media (min-width: 640px) and (max-width: 1024px) {
+  .cmi-container {
+    max-width: 640px;
+  }
+
+  .cmi-progress-label {
+    font-size: var(--fs-xs);
+    max-width: 70px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   21. RESPONSIVE — DESKTOP  (> 1024px)
+   -------------------------------------------------------------------------- */
+@media (min-width: 1025px) {
+  .cmi-container {
+    max-width: var(--container-max);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   22. ACCESSIBILITY — REDUCED MOTION
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   23. BRIDGE — classes used by HTML/JS but built independently
+   -------------------------------------------------------------------------- */
+
+/* Header inner wrapper (HTML uses .cmi-header-inner) */
+.cmi-header-inner {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+}
+
+/* Logo text beside SVG icon */
+.cmi-logo-text {
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  letter-spacing: .12em;
+  color: var(--cmi-accent);
+  margin-left: var(--sp-2);
+}
+
+/* Header logo is a flex container when it wraps SVG + text */
+.cmi-header-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  height: 36px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 6px rgba(239,150,0,.25));
+  transition: filter var(--duration) var(--ease-default);
+  cursor: default;
+}
+
+/* Progress dot (HTML uses .cmi-progress-dot, CSS has .cmi-progress-circle) */
+.cmi-progress-dot {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--cmi-surface);
+  border: 2px solid var(--cmi-border);
+  color: var(--cmi-text-muted);
+  font-weight: 600;
+  font-size: var(--fs-sm);
+  transition: all var(--duration) var(--ease-default);
+  position: relative;
+  z-index: 1;
+}
+
+.cmi-progress-step.active .cmi-progress-dot {
+  border-color: var(--cmi-accent);
+  color: var(--cmi-accent);
+  box-shadow: 0 0 0 4px var(--cmi-accent-glow);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.cmi-progress-step.completed .cmi-progress-dot {
+  background: linear-gradient(135deg, var(--cmi-accent), var(--cmi-accent-hover));
+  border-color: var(--cmi-accent);
+  color: #fff;
+  box-shadow: 0 0 12px var(--cmi-accent-glow);
+}
+
+/* Enterprise app card */
+.cmi-enterprise-card {
+  background: var(--cmi-surface-elevated);
+  border: 1px solid var(--cmi-border);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-5);
+  margin-bottom: var(--sp-4);
+  position: relative;
+  transition: border-color var(--duration) var(--ease-default);
+}
+
+.cmi-enterprise-card:hover {
+  border-color: var(--cmi-text-muted);
+}
+
+.cmi-enterprise-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--sp-4);
+}
+
+.cmi-enterprise-card-title {
+  font-weight: 600;
+  color: var(--cmi-text);
+  font-size: var(--fs-sm);
+}
+
+.cmi-enterprise-card .cmi-field {
+  margin-bottom: var(--sp-3);
+}
+
+.cmi-enterprise-card .cmi-field:last-child {
+  margin-bottom: 0;
+}
+
+/* Icon button (password toggle, etc.) */
+.cmi-btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--cmi-border);
+  background: var(--cmi-surface);
+  color: var(--cmi-text-muted);
+  cursor: pointer;
+  transition: all var(--duration) var(--ease-default);
+  flex-shrink: 0;
+}
+
+.cmi-btn-icon:hover {
+  border-color: var(--cmi-accent);
+  color: var(--cmi-accent);
+}
+
+/* Input group (input + appended button, e.g., password toggle) */
+.cmi-input-group {
+  display: flex;
+  gap: var(--sp-2);
+  align-items: stretch;
+}
+
+.cmi-input-group .cmi-input {
+  flex: 1;
+}
+
+/* Success screen after form submission */
+.cmi-success-screen {
+  text-align: center;
+  padding: var(--sp-12) var(--sp-6);
+  animation: fadeIn .5s ease;
+}
+
+.cmi-success-icon {
+  font-size: 4rem;
+  color: var(--cmi-success);
+  margin-bottom: var(--sp-6);
+  animation: pulse 1.5s ease-in-out 1;
+}
+
+.cmi-success-screen h2 {
+  font-size: var(--fs-2xl);
+  color: var(--cmi-text);
+  margin-bottom: var(--sp-3);
+}
+
+.cmi-success-screen p {
+  color: var(--cmi-text-secondary);
+  font-size: var(--fs-base);
+  margin-bottom: var(--sp-2);
+}
+
+.cmi-success-details {
+  background: var(--cmi-surface-elevated);
+  border: 1px solid var(--cmi-border);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-5);
+  margin: var(--sp-6) auto;
+  max-width: 400px;
+  text-align: left;
+}
+
+.cmi-success-details p {
+  margin-bottom: var(--sp-2);
+}
+
+.cmi-success-note {
+  margin-top: var(--sp-4);
+  color: var(--cmi-text-muted);
+  font-size: var(--fs-sm);
+}
+
+/* ─── Mobile fix for header inner ─── */
+@media (max-width: 639px) {
+  .cmi-header-inner {
+    gap: var(--sp-3);
+  }
+  .cmi-logo-text {
+    font-size: var(--fs-sm);
+  }
+  .cmi-progress-dot {
+    width: 32px;
+    height: 32px;
+    font-size: var(--fs-xs);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   24. REFACTOR ADDITIONS
+   -------------------------------------------------------------------------- */
+
+/* Radio Cards */
+.cmi-radio-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--sp-4);
+  margin-bottom: var(--sp-5);
+}
+
+.cmi-radio-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--cmi-surface);
+  border: 1.5px solid var(--cmi-border);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-5);
+  cursor: pointer;
+  transition: all var(--duration) var(--ease-default);
+  box-shadow: 0 2px 4px rgba(0,0,0,.1);
+}
+
+.cmi-radio-card:hover {
+  border-color: rgba(94, 113, 140, .5);
+  background: var(--cmi-surface-elevated);
+}
+
+.cmi-radio-card input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.cmi-radio-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.cmi-radio-card-title {
+  font-size: var(--fs-md);
+  font-weight: 600;
+  color: var(--cmi-text);
+}
+
+.cmi-radio-card-desc {
+  font-size: var(--fs-sm);
+  color: var(--cmi-text-secondary);
+  line-height: 1.5;
+}
+
+.cmi-radio-card:has(input:checked) {
+  border-color: var(--cmi-accent);
+  background: var(--cmi-accent-subtle);
+  box-shadow: 0 0 0 1px var(--cmi-accent), var(--shadow-glow);
+}
+
+/* Checkbox Grid */
+.cmi-checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-5);
+}
+
+.cmi-checkbox-grid .cmi-checkbox-group {
+  margin-top: 0;
+  background: var(--cmi-surface);
+  border: 1px solid var(--cmi-border);
+  border-radius: var(--radius-md);
+  padding: var(--sp-3);
+  transition: all var(--duration) var(--ease-default);
+}
+
+.cmi-checkbox-grid .cmi-checkbox-group:hover {
+  border-color: rgba(94, 113, 140, .5);
+}
+
+.cmi-checkbox-grid .cmi-checkbox-group:has(.cmi-checkbox:checked) {
+  border-color: var(--cmi-accent);
+  background: var(--cmi-accent-subtle);
+}
+
+/* Lookup Button */
+.cmi-btn-lookup {
+  background: linear-gradient(135deg, var(--cmi-info), #2563eb);
+  color: #fff;
+  border: none;
+  font-family: 'Inter', sans-serif;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  padding: 0 var(--sp-5);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--duration) var(--ease-default);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.25);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.cmi-btn-lookup:hover:not(:disabled) {
+  filter: brightness(1.1);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
+}
+
+.cmi-btn-lookup:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.cmi-btn-lookup:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* --------------------------------------------------------------------------
+   25. FEE BADGE
+   -------------------------------------------------------------------------- */
+
+.cmi-fee-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--cmi-warning);
+  background: rgba(245, 158, 11, .12);
+  border: 1px solid rgba(245, 158, 11, .3);
+  border-radius: 999px;
+  padding: 2px 10px;
+  margin-left: 8px;
+  vertical-align: middle;
+  letter-spacing: .02em;
+  white-space: nowrap;
+}
+
+.cmi-fee-badge i {
+  font-size: 0.7rem;
+}
+
+/* --------------------------------------------------------------------------
+   26. APP STORE SEARCH AUTOCOMPLETE
+   -------------------------------------------------------------------------- */
+
+/* Search wrapper — positions the dropdown relative to the input */
+.cmi-app-search-wrapper {
+  position: relative;
+}
+
+/* Input icon (magnifying glass) */
+.cmi-input-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--cmi-text-muted);
+  font-size: var(--fs-sm);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.cmi-input-with-icon {
+  padding-left: 40px !important;
+}
+
+/* Loading spinner inside the input */
+.cmi-search-spinner {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--cmi-accent);
+  font-size: var(--fs-sm);
+  z-index: 2;
+}
+
+/* Results dropdown */
+.cmi-app-search-results {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--cmi-surface-elevated);
+  border: 1px solid var(--cmi-border);
+  border-radius: var(--radius-lg);
+  max-height: 320px;
+  overflow-y: auto;
+  z-index: 50;
+  box-shadow: 0 12px 40px rgba(0,0,0,.45), 0 0 0 1px rgba(30,41,59,.5);
+  animation: fadeIn .15s ease;
+}
+
+.cmi-app-search-results::-webkit-scrollbar {
+  width: 6px;
+}
+.cmi-app-search-results::-webkit-scrollbar-thumb {
+  background: var(--cmi-text-muted);
+  border-radius: 3px;
+}
+
+/* Individual search result item */
+.cmi-app-result {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  cursor: pointer;
+  transition: background var(--duration) var(--ease-default);
+  border-bottom: 1px solid rgba(30,41,59,.4);
+}
+
+.cmi-app-result:last-child {
+  border-bottom: none;
+}
+
+.cmi-app-result:hover {
+  background: rgba(239, 150, 0, .08);
+}
+
+.cmi-app-result-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,.3);
+}
+
+.cmi-app-result-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.cmi-app-result-name {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--cmi-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cmi-app-result-developer {
+  font-size: var(--fs-xs);
+  color: var(--cmi-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cmi-app-result-price {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--cmi-text-secondary);
+  flex-shrink: 0;
+  padding: 2px 8px;
+  background: rgba(255,255,255,.06);
+  border-radius: var(--radius-sm);
+}
+
+/* "No results found" state */
+.cmi-app-search-empty {
+  padding: var(--sp-5);
+  text-align: center;
+  color: var(--cmi-text-muted);
+  font-size: var(--fs-sm);
+}
+
+.cmi-app-search-empty i {
+  font-size: var(--fs-xl);
+  display: block;
+  margin-bottom: var(--sp-2);
+  opacity: .5;
+}
+
+/* ─── Selected Apps List ─── */
+.cmi-selected-apps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  margin-top: var(--sp-3);
+}
+
+.cmi-selected-app {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--cmi-surface);
+  border: 1px solid var(--cmi-border);
+  border-radius: var(--radius-lg);
+  animation: fadeIn .2s ease;
+  transition: all var(--duration) var(--ease-default);
+}
+
+.cmi-selected-app:hover {
+  border-color: var(--cmi-text-muted);
+}
+
+.cmi-selected-app-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+  flex-shrink: 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,.25);
+}
+
+.cmi-selected-app-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.cmi-selected-app-name {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--cmi-text);
+}
+
+.cmi-selected-app-developer {
+  font-size: var(--fs-xs);
+  color: var(--cmi-text-muted);
+}
+
+.cmi-selected-app-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--cmi-text-muted);
+  cursor: pointer;
+  font-size: var(--fs-sm);
+  transition: all var(--duration) var(--ease-default);
+  flex-shrink: 0;
+}
+
+.cmi-selected-app-remove:hover {
+  background: rgba(239, 68, 68, .15);
+  color: var(--cmi-error);
+  border-color: rgba(239, 68, 68, .3);
+}
+
+.cmi-selected-apps-count {
+  margin-top: var(--sp-2);
+  font-weight: 500;
+}
+
+/* Paid / Free tags */
+.cmi-app-price-tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  color: var(--cmi-warning);
+  background: rgba(245, 158, 11, .12);
+  border: 1px solid rgba(245, 158, 11, .3);
+  border-radius: 999px;
+  padding: 1px 8px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+.cmi-app-free-tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--cmi-success);
+  background: rgba(16, 185, 129, .1);
+  border: 1px solid rgba(16, 185, 129, .25);
+  border-radius: 999px;
+  padding: 1px 8px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+/* Paid app card highlight */
+.cmi-selected-app-paid {
+  border-color: rgba(245, 158, 11, .35);
+}
+
+/* License fee notice */
+.cmi-app-license-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: var(--fs-xs);
+  color: var(--cmi-warning);
+  background: rgba(245, 158, 11, .08);
+  border: 1px solid rgba(245, 158, 11, .2);
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  margin-top: 6px;
+  line-height: 1.4;
+}
+
+.cmi-app-license-notice i {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* CMI Cost Summary */
+.cmi-cost-summary {
+  background: var(--cmi-surface);
+  border: 1px solid var(--cmi-border);
+  border-radius: var(--radius-lg);
+  margin-top: var(--sp-6);
+  overflow: hidden;
+  transition: border-color var(--duration) var(--ease-default);
+}
+
+.cmi-cost-summary-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--sp-4) var(--sp-5);
+  cursor: pointer;
+  user-select: none;
+  transition: background var(--duration) var(--ease-default);
+}
+
+.cmi-cost-summary-header:hover {
+  background: var(--cmi-surface-elevated);
+}
+
+.cmi-cost-summary-title {
+  font-size: var(--fs-base);
+  font-weight: 600;
+  color: var(--cmi-text);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.cmi-cost-summary-title i {
+  color: var(--cmi-accent);
+}
+
+.cmi-cost-summary-total {
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  color: var(--cmi-accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.cmi-cost-summary-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+}
+
+.cmi-cost-summary-body.open {
+  max-height: 400px;
+}
+
+.cmi-cost-line {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: var(--sp-3);
+  align-items: center;
+  padding: var(--sp-2) var(--sp-5);
+  font-size: var(--fs-sm);
+  color: var(--cmi-text-secondary);
+}
+
+.cmi-cost-line:first-child {
+  padding-top: var(--sp-3);
+}
+
+.cmi-cost-line-total {
+  font-weight: 600;
+  color: var(--cmi-text);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  min-width: 70px;
+}
+
+.cmi-cost-line-addon {
+  color: var(--cmi-warning);
+}
+
+.cmi-cost-line-addon .cmi-cost-line-total {
+  color: var(--cmi-warning);
+}
+
+.cmi-cost-divider {
+  height: 1px;
+  background: var(--cmi-border);
+  margin: var(--sp-2) var(--sp-5);
+}
+
+.cmi-cost-line-grand {
+  padding-bottom: var(--sp-4);
+}
+
+.cmi-cost-line-grand span:first-child {
+  font-weight: 700;
+  font-size: var(--fs-base);
+  color: var(--cmi-text);
+}
+
+.cmi-cost-line-grand .cmi-cost-line-total {
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  color: var(--cmi-accent);
+}
+
+@media (max-width: 640px) {
+  .cmi-cost-line {
+    grid-template-columns: 1fr auto;
+    font-size: var(--fs-xs);
+  }
+  .cmi-cost-line > span:nth-child(2) {
+    display: none;
+  }
+}
+
+/* Device Assignment Cards */
+.cmi-device-assign-card {
+  background: var(--cmi-surface);
+  border: 1px solid var(--cmi-border);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--sp-3);
+  overflow: hidden;
+  transition: border-color var(--duration) var(--ease-default);
+}
+
+.cmi-device-assign-card:hover {
+  border-color: rgba(239, 150, 0, .25);
+}
+
+.cmi-device-assign-header {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--cmi-surface-elevated);
+  border-bottom: 1px solid var(--cmi-border);
+}
+
+.cmi-device-assign-body {
+  padding: var(--sp-3) var(--sp-4);
+}
+
+.cmi-device-assign-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: var(--sp-2) 0;
+  border-bottom: 1px solid rgba(30, 41, 59, .3);
+}
+
+.cmi-device-assign-row:last-child {
+  border-bottom: none;
+}
+
+@media (max-width: 640px) {
+  .cmi-device-assign-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sp-2);
+  }
+}
+
+/* App Cost Indicator */
+.cmi-app-cost-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--cmi-surface);
+  border: 1px solid var(--cmi-border);
+  border-radius: var(--radius-md);
+  padding: 6px 14px;
+  transition: all var(--duration) var(--ease-default);
+}
+
+.cmi-app-cost-indicator.has-cost {
+  border-color: rgba(245, 158, 11, .4);
+  background: rgba(245, 158, 11, .08);
+}
+
+.cmi-app-cost-label {
+  font-size: var(--fs-xs);
+  color: var(--cmi-text-muted);
+  white-space: nowrap;
+}
+
+.cmi-app-cost-value {
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  color: var(--cmi-success);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.cmi-app-cost-indicator.has-cost .cmi-app-cost-value {
+  color: var(--cmi-warning);
+}
+
+@media (max-width: 640px) {
+  .cmi-app-cost-indicator {
+    padding: 4px 10px;
+    gap: 6px;
+  }
+  .cmi-app-cost-label {
+    display: none;
+  }
+  .cmi-app-cost-value {
+    font-size: var(--fs-base);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   26. SELECTION
+   -------------------------------------------------------------------------- */
+::selection {
+  background: rgba(239,150,0,.3);
+  color: var(--cmi-text);
+}

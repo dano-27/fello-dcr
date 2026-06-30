@@ -1,0 +1,1729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Configure iPads, iPhones, hotspots, and mobile routers for your Device Configuration Request with Fello.">
+  <title>Device Configuration Request | Fello</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- App Styles -->
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+<div class="cmi-app">
+
+  <!-- ═══════════════════════════════════════════ HEADER ═══════════════════════════════════════════ -->
+  <header class="cmi-header">
+    <div class="cmi-header-inner">
+      <div class="cmi-header-logo">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="36" height="36" rx="8" fill="url(#logoGrad)"/>
+          <path d="M10 12h16v2H12v4h12v2H12v6h-2V12z" fill="#fff"/>
+          <defs><linearGradient id="logoGrad" x1="0" y1="0" x2="36" y2="36"><stop stop-color="#6366f1"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient></defs>
+        </svg>
+        <span class="cmi-logo-text">FELLO</span>
+      </div>
+      <h1 class="cmi-header-title">Device Configuration Request</h1>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════ MAIN ═══════════════════════════════════════════ -->
+  <main class="cmi-main">
+    <div class="cmi-container">
+
+      <!-- ─── Progress Bar ─── -->
+      <div class="cmi-progress">
+        <div class="cmi-progress-track">
+          <div class="cmi-progress-fill" style="width: 0%"></div>
+        </div>
+        <div class="cmi-progress-steps">
+          <div class="cmi-progress-step active" data-step="1">
+            <div class="cmi-progress-dot"><span>1</span></div>
+            <div class="cmi-progress-label">Order Info</div>
+          </div>
+          <div class="cmi-progress-step" data-step="2">
+            <div class="cmi-progress-dot"><span>2</span></div>
+            <div class="cmi-progress-label">Apps</div>
+          </div>
+          <div class="cmi-progress-step" data-step="3">
+            <div class="cmi-progress-dot"><span>3</span></div>
+            <div class="cmi-progress-label">Branding</div>
+          </div>
+          <div class="cmi-progress-step" data-step="4">
+            <div class="cmi-progress-dot"><span>4</span></div>
+            <div class="cmi-progress-label">Security</div>
+          </div>
+          <div class="cmi-progress-step" data-step="5">
+            <div class="cmi-progress-dot"><span>5</span></div>
+            <div class="cmi-progress-label">Media</div>
+          </div>
+          <div class="cmi-progress-step" data-step="6">
+            <div class="cmi-progress-dot"><span>6</span></div>
+            <div class="cmi-progress-label">Review</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════ STEP 1: Order & Event Information ═══════════════════════════ -->
+      <section id="step-1" class="cmi-step active">
+        <div class="cmi-step-header">
+          <h2 class="cmi-step-title"><i class="fa-solid fa-address-card"></i> Order &amp; Event Information</h2>
+          <p class="cmi-step-subtitle">Let's start by finding your order and gathering basic event details.</p>
+        </div>
+
+        <!-- Order Lookup -->
+        <h3 class="cmi-section-title">Order Lookup</h3>
+        <div class="cmi-field">
+          <label class="cmi-label" for="orderNumber">Order Number <span class="cmi-required">*</span></label>
+          <div class="cmi-input-group">
+            <input type="text" id="orderNumber" class="cmi-input" required placeholder="e.g. 1234567">
+            <button type="button" class="cmi-btn cmi-btn-secondary" id="btnLookup">
+              <i class="fa-solid fa-search"></i> Lookup Order
+            </button>
+          </div>
+        </div>
+
+        <!-- Event Information -->
+        <div class="cmi-divider"></div>
+        <h3 class="cmi-section-title">Event Information</h3>
+        <div class="cmi-form-grid">
+          <div class="cmi-field cmi-col-full">
+            <label class="cmi-label" for="eventName">Event Name <span class="cmi-required">*</span></label>
+            <input type="text" id="eventName" class="cmi-input" required placeholder="Name of your event">
+          </div>
+          <div class="cmi-field cmi-col-half">
+            <label class="cmi-label" for="eventDates">Event Dates <span class="cmi-required">*</span></label>
+            <input type="text" id="eventDates" class="cmi-input" required placeholder="e.g. Oct 12 - Oct 15, 2026">
+          </div>
+          <div class="cmi-field cmi-col-half">
+            <label class="cmi-label" for="venueName">Venue Name <span class="cmi-required">*</span></label>
+            <input type="text" id="venueName" class="cmi-input" required placeholder="Name of the venue">
+          </div>
+        </div>
+
+        <!-- Contact Information -->
+        <div class="cmi-divider"></div>
+        <h3 class="cmi-section-title">Contact Information</h3>
+        <div class="cmi-form-grid">
+          <div class="cmi-field cmi-col-half">
+            <label class="cmi-label" for="companyName">Company Name <span class="cmi-required">*</span></label>
+            <input type="text" id="companyName" class="cmi-input" required placeholder="Your company name">
+          </div>
+          <div class="cmi-field cmi-col-half">
+            <label class="cmi-label" for="primaryContactName">Primary Contact Name <span class="cmi-required">*</span></label>
+            <input type="text" id="primaryContactName" class="cmi-input" required placeholder="Full name">
+          </div>
+          <div class="cmi-field cmi-col-half">
+            <label class="cmi-label" for="contactEmail">Email <span class="cmi-required">*</span></label>
+            <input type="email" id="contactEmail" class="cmi-input" required placeholder="email@example.com">
+          </div>
+          <div class="cmi-field cmi-col-half">
+            <label class="cmi-label" for="contactPhone">Mobile Phone <span class="cmi-required">*</span></label>
+            <input type="tel" id="contactPhone" class="cmi-input" required placeholder="(555) 555-5555">
+          </div>
+        </div>
+
+
+        <!-- Device Information -->
+        <div class="cmi-section" style="margin-top: var(--sp-8);">
+          <div class="cmi-divider"></div>
+          <h3 class="cmi-section-title" style="margin-top: var(--sp-5);"><i class="fa-solid fa-tablet-screen-button"></i> Device Information</h3>
+          <p class="cmi-help-text">These are the devices included in your order.</p>
+          <div class="cmi-device-list" id="deviceListDisplay">
+            <p class="cmi-text-muted">Please lookup your order to see devices.</p>
+          </div>
+        </div>
+
+        <!-- Configuration Package Selection -->
+        <div class="cmi-section" style="margin-top: var(--sp-8);">
+          <div class="cmi-divider"></div>
+          <h3 class="cmi-section-title" style="margin-top: var(--sp-5);">Configuration Package Selection</h3>
+        <div class="cmi-radio-card-grid">
+          <label class="cmi-radio-card">
+            <input type="radio" name="configPackage" value="Registration Package" required>
+            <div class="cmi-radio-card-content">
+              <i class="fa-solid fa-address-book"></i>
+              <span>Registration Package</span>
+              <span class="cmi-radio-card-desc">Recommended for Eventbrite, Cvent, Swoogo, Splash, RSVPify, etc.</span>
+            </div>
+          </label>
+          <label class="cmi-radio-card">
+            <input type="radio" name="configPackage" value="Lead Capture Package">
+            <div class="cmi-radio-card-content">
+              <i class="fa-solid fa-magnet"></i>
+              <span>Lead Capture Package</span>
+              <span class="cmi-radio-card-desc">Recommended for trade shows and exhibitor events.</span>
+            </div>
+          </label>
+          <label class="cmi-radio-card">
+            <input type="radio" name="configPackage" value="POS Package">
+            <div class="cmi-radio-card-content">
+              <i class="fa-solid fa-cash-register"></i>
+              <span>POS Package</span>
+              <span class="cmi-radio-card-desc">Recommended for Square, Toast, Shopify, Lightspeed, Stripe, etc.</span>
+            </div>
+          </label>
+          <label class="cmi-radio-card">
+            <input type="radio" name="configPackage" value="Kiosk Package">
+            <div class="cmi-radio-card-content">
+              <i class="fa-solid fa-desktop"></i>
+              <span>Kiosk Package</span>
+              <span class="cmi-radio-card-desc">Recommended for surveys, check-in, digital signage, and self-service stations.</span>
+            </div>
+          </label>
+          <label class="cmi-radio-card">
+            <input type="radio" name="configPackage" value="Custom Configuration">
+            <div class="cmi-radio-card-content">
+              <i class="fa-solid fa-sliders"></i>
+              <span>Custom Configuration (Build My Own)</span>
+            </div>
+          </label>
+        </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════ PACKAGE: Registration ═══════════════════════════ -->
+      <section id="pkg-registration" class="cmi-step">
+        <div class="cmi-step-header">
+          <h2 class="cmi-step-title"><i class="fa-solid fa-address-book"></i> Registration Package</h2>
+          <p class="cmi-step-subtitle">Configure apps, connectivity, and display for your registration setup.</p>
+        </div>
+
+        <!-- A) App Installation -->
+        <div class="cmi-section">
+          <div class="cmi-section-header" style="display:flex;align-items:center;justify-content:space-between;">
+            <h3 class="cmi-section-title"><i class="fa-brands fa-app-store-ios"></i> Apps to Install</h3>
+            <div class="cmi-app-cost-indicator pkg-cost-indicator">
+              <span class="cmi-app-cost-label">Est. App Licensing</span>
+              <span class="cmi-app-cost-value pkg-app-cost-value">$0.00</span>
+            </div>
+          </div>
+          <p class="cmi-help-text">Search the App Store to find the exact apps you need.</p>
+          <div class="cmi-field">
+            <label class="cmi-label">Search Apps</label>
+            <div class="cmi-app-search-wrapper">
+              <div class="cmi-input-group">
+                <span class="cmi-input-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+                <input type="text" class="cmi-input cmi-input-with-icon" id="pkg-reg-appSearchInput" placeholder="Start typing an app name (e.g. Square, Toast, Shopify)..." autocomplete="off">
+                <div class="cmi-search-spinner" id="pkg-reg-appSearchSpinner" hidden>
+                  <i class="fa-solid fa-spinner fa-spin"></i>
+                </div>
+              </div>
+              <div class="cmi-app-search-results" id="pkg-reg-appSearchResults" hidden></div>
+            </div>
+          </div>
+          <div id="pkg-reg-selectedAppsList" class="cmi-selected-apps"></div>
+          <p class="cmi-help-text cmi-selected-apps-count" id="pkg-reg-selectedAppsCount" hidden>
+            <i class="fa-solid fa-check-circle" style="color: var(--cmi-success);"></i>
+            <span>0</span> app(s) selected
+          </p>
+        </div>
+
+        <!-- Install all apps on all devices -->
+        <div class="cmi-toggle-group" data-toggle="pkgRegAllAppsToggle">
+          <label class="cmi-label">Install all apps on all devices?</label>
+          <p class="cmi-help-text">By default, every selected app will be installed on all devices in your order.</p>
+          <div class="cmi-toggle-buttons">
+            <button type="button" class="cmi-toggle-btn active" data-value="yes">Yes</button>
+            <button type="button" class="cmi-toggle-btn" data-value="no">No</button>
+          </div>
+        </div>
+        <div class="cmi-toggle-content" data-toggle-content="pkgRegAllAppsToggle" data-toggle-invert="true">
+          <p class="cmi-help-text" style="margin-bottom: 12px;"><i class="fa-solid fa-circle-info" style="color: var(--cmi-accent);"></i> For each app, select which device types and how many should receive it.</p>
+          <div id="pkgRegPerDeviceAssignmentList">
+            <p class="cmi-text-muted"><i class="fa-solid fa-arrow-up"></i> Select apps above — they will appear here for device assignment.</p>
+          </div>
+        </div>
+
+        <div class="cmi-divider"></div>
+
+        <!-- B) Wi-Fi Configuration -->
+        <div class="cmi-toggle-group" data-toggle="pkgRegWifiToggle">
+          <label class="cmi-label">Pre-configure Wi-Fi?</label>
+          <div class="cmi-toggle-buttons">
+            <button type="button" class="cmi-toggle-btn" data-value="yes">Yes</button>
+            <button type="button" class="cmi-toggle-btn active" data-value="no">No</button>
+          </div>
+        </div>
+        <div class="cmi-toggle-content" data-toggle-content="pkgRegWifiToggle">
+          <div class="cmi-form-grid">
+            <div class="cmi-field cmi-col-half">
+              <label class="cmi-label" for="pkgRegWifiSsid">Network Name (SSID) <span class="cmi-required">*</span></label>
+              <input type="text" id="pkgRegWifiSsid" class="cmi-input" placeholder="Your Wi-Fi network name" data-conditional-required>
+            </div>
+            <div class="cmi-field cmi-col-half">
+              <label class="cmi-label" for="pkgRegWifiPassword">Password <span class="cmi-required">*</span></label>
+              <div class="cmi-input-group">
+                <input type="password" id="pkgRegWifiPassword" class="cmi-input" placeholder="Wi-Fi password" data-conditional-required>
+                <button type="button" class="cmi-btn-icon cmi-password-toggle" data-target="pkgRegWifiPassword" title="Show password">
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+              </div>
+            </div>
+            <div class="cmi-field cmi-col-half">
+              <label class="cmi-label" for="pkgRegWifiSecurity">Security Type <span class="cmi-required">*</span></label>
+              <select id="pkgRegWifiSecurity" class="cmi-select" data-conditional-required>
+                <option value="">Select security type...</option>
+                <option value="WPA2">WPA2</option>
+                <option value="WPA3">WPA3</option>
+                <option value="WPA2/WPA3 Transitional">WPA2 / WPA3 Transitional</option>
+                <option value="Open Network">Open Network</option>
+              </select>
+            </div>
+            <div class="cmi-field cmi-col-half">
+              <label class="cmi-label">Hidden Network?</label>
+              <div class="cmi-radio-card-grid" style="grid-template-columns: 1fr 1fr;">
+                <label class="cmi-radio-card">
+                  <input type="radio" name="pkgRegWifiHidden" value="Yes">
+                  <div class="cmi-radio-card-content"><span>Yes</span></div>
+                </label>
+                <label class="cmi-radio-card">
+                  <input type="radio" name="pkgRegWifiHidden" value="No" checked>
+                  <div class="cmi-radio-card-content"><span>No</span></div>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cmi-divider"></div>
+
+        <!-- C) Location Services -->
+        <div class="cmi-field">
+          <label class="cmi-label">Location Services</label>
+          <div class="cmi-radio-card-grid" style="grid-template-columns: 1fr 1fr;">
+            <label class="cmi-radio-card">
+              <input type="radio" name="pkgRegLocationServices" value="Enable Location Services" checked>
+              <div class="cmi-radio-card-content">
+                <span>Enable Location Services</span>
+              </div>
+            </label>
+            <label class="cmi-radio-card">
+              <input type="radio" name="pkgRegLocationServices" value="Disable Location Services">
+              <div class="cmi-radio-card-content">
+                <span>Disable Location Services</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="cmi-divider"></div>
+
+        <!-- D) Custom Wallpaper -->
+        <div class="cmi-toggle-group" data-toggle="pkgRegWallpaperToggle">
+          <label class="cmi-label">Custom Wallpaper?</label>
+          <div class="cmi-toggle-buttons">
+            <button type="button" class="cmi-toggle-btn" data-value="yes">Yes</button>
+            <button type="button" class="cmi-toggle-btn active" data-value="no">No</button>
+          </div>
+        </div>
+        <div class="cmi-toggle-content" data-toggle-content="pkgRegWallpaperToggle">
+          <div class="cmi-field">
+            <label class="cmi-label">Upload logo or wallpaper artwork</label>
+            <div class="cmi-file-drop" data-file-id="pkgRegWallpaper">
+              <input type="file" class="cmi-file-input" accept=".jpg,.jpeg,.png" hidden>
+              <div class="cmi-file-drop-content">
+                <i class="fa-solid fa-image"></i>
+                <p>Drag &amp; drop or <span class="cmi-file-browse">browse</span></p>
+                <small>JPG, JPEG, PNG (max 2MB)</small>
+              </div>
+              <div class="cmi-file-preview" hidden></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cmi-divider"></div>
+
+        <!-- E) Home Screen Layout -->
+        <div class="cmi-field">
+          <label class="cmi-label">Home Screen Layout</label>
+          <p class="cmi-help-text" style="margin-bottom: 12px;">Choose how apps are arranged on the device home screen.</p>
+          <div class="cmi-radio-card-grid">
+            <label class="cmi-radio-card">
+              <input type="radio" name="pkgRegHomeScreenLayout" value="Standard" checked>
+              <div class="cmi-radio-card-content">
+                <span class="cmi-radio-card-title">Standard</span>
+                <span class="cmi-radio-card-desc">All non-essential apps are removed. Your installed apps will be on the dock.</span>
+              </div>
+            </label>
+            <label class="cmi-radio-card">
+              <input type="radio" name="pkgRegHomeScreenLayout" value="Single App">
+              <div class="cmi-radio-card-content">
+                <span class="cmi-radio-card-title">Single App</span>
+                <span class="cmi-radio-card-desc">Device launches directly into one app. Ideal for kiosks and POS.</span>
+              </div>
+            </label>
+            <label class="cmi-radio-card">
+              <input type="radio" name="pkgRegHomeScreenLayout" value="Custom">
+              <div class="cmi-radio-card-content">
+                <span class="cmi-radio-card-title">Custom</span>
+                <span class="cmi-radio-card-desc">Upload a mockup of your desired layout.</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="cmi-divider"></div>
+
+        <!-- App Login -->
+        <div class="cmi-toggle-group" data-toggle="pkgRegAppLoginToggle">
+          <label class="cmi-label">Do you want Fello to log into your application? <span class="cmi-fee-badge"><i class="fa-solid fa-circle-dollar-to-slot"></i> Additional Fee</span></label>
+          <p class="cmi-help-text">If you need Fello to pre-authenticate your apps before the event, enable this option and provide the login details.</p>
+          <div class="cmi-toggle-buttons">
+            <button type="button" class="cmi-toggle-btn" data-value="yes">Yes</button>
+            <button type="button" class="cmi-toggle-btn active" data-value="no">No</button>
+          </div>
+        </div>
+        <div class="cmi-toggle-content" data-toggle-content="pkgRegAppLoginToggle">
+          <div class="cmi-field">
+            <label class="cmi-label">Which apps should Fello log into?</label>
+            <p class="cmi-help-text">Select all apps that require pre-authentication.</p>
+            <div class="cmi-checkbox-grid pkg-app-login-checkboxes">
+              <p class="cmi-text-muted pkg-app-login-placeholder"><i class="fa-solid fa-circle-info"></i> Please add apps above first — they will appear here for selection.</p>
+            </div>
+          </div>
+          <div class="cmi-divider"></div>
+          <div class="cmi-field">
+            <label class="cmi-label">Upload Login Credentials / Instructions</label>
+            <p class="cmi-help-text">Provide a file containing all usernames, passwords, and any special instructions. <strong>Do not type credentials directly into this form.</strong></p>
+            <div class="cmi-file-drop" data-file-id="pkgRegLoginCredentials">
+              <input type="file" class="cmi-file-input" accept=".csv,.xlsx,.xls,.numbers,.doc,.docx,.pdf" hidden>
+              <div class="cmi-file-drop-content">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <p>Drag &amp; drop your credentials file here or <span class="cmi-file-browse">browse</span></p>
+                <small>Accepted: CSV, Excel, Numbers, Word, PDF</small>
+              </div>
+              <div class="cmi-file-preview" hidden></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════ PACKAGE: Lead Capture ═══════════════════════════ -->
+      <section id="pkg-leadcapture" class="cmi-step">
+        <div class="cmi-step-header">
+          <h2 class="cmi-step-title"><i class="fa-solid fa-magnet"></i> Lead Capture Package</h2>
+          <p class="cmi-step-subtitle">Configure apps, connectivity, and layout for lead capture.</p>
+        </div>
+
+        <!-- A) App Installation -->
+        <div class="cmi-section">
+          <div class="cmi-section-header" style="display:flex;align-items:center;justify-content:space-between;">
+            <h3 class="cmi-section-title"><i class="fa-brands fa-app-store-ios"></i> Apps to Install</h3>
+            <div class="cmi-app-cost-indicator pkg-cost-indicator">
+              <span class="cmi-app-cost-label">Est. App Licensing</span>
+              <span class="cmi-app-cost-value pkg-app-cost-value">$0.00</span>
+            </div>
+          </div>
+          <p class="cmi-help-text">Search the App Store to find the exact apps you need.</p>
+          <div class="cmi-field">
+            <label class="cmi-label">Search Apps</label>
+            <div class="cmi-app-search-wrapper">
+              <div class="cmi-input-group">
+                <span class="cmi-input-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+                <input type="text" class="cmi-input cmi-input-with-icon" id="pkg-lc-appSearchInput" placeholder="Start typing an app name (e.g. Square, Toast, Shopify)..." autocomplete="off">
+                <div class="cmi-search-spinner" id="pkg-lc-appSearchSpinner" hidden>
+                  <i class="fa-solid fa-spinner fa-spin"></i>
+                </div>
+              </div>
+              <div class="cmi-app-search-results" id="pkg-lc-appSearchResults" hidden></div>
+            </div>
+          </div>
+          <div id="pkg-lc-selectedAppsList" class="cmi-selected-apps"></div>
+          <p class="cmi-help-text cmi-selected-apps-count" id="pkg-lc-selectedAppsCount" hidden>
+            <i class="fa-solid fa-check-circle" style="color: var(--cmi-success);"></i>
+            <span>0</span> app(s) selected
+          </p>
+        </div>
+
+        <!-- Install all apps on all devices -->
+        <div class="cmi-toggle-group" data-toggle="pkgLcAllAppsToggle">
+          <label class="cmi-label">Install all apps on all devices?</label>
+          <p class="cmi-help-text">By default, every selected app will be installed on all devices in your order.</p>
+          <div class="cmi-toggle-buttons">
+            <button type="button" class="cmi-toggle-btn active" data-value="yes">Yes</button>
+            <button type="button" class="cmi-toggle-btn" data-value="no">No</button>
+          </div>
+        </div>
+        <div class="cmi-toggle-content" data-toggle-content="pkgLcAllAppsToggle" data-toggle-invert="true">
+          <p class="cmi-help-text" style="margin-bottom: 12px;"><i class="fa-solid fa-circle-info" style="color: var(--cmi-accent);"></i> For each app, select which device types and how many should receive it.</p>
+          <div id="pkgLcPerDeviceAssignmentList">
+            <p class="cmi-text-muted"><i class="fa-solid fa-arrow-up"></i> Select apps above — they will appear here for device assignment.</p>
+          </div>
+        </div>
+
+        <div class="cmi-divider"></div>
+
+        <!-- B) Wi-Fi Configuration -->
+        <div class="cmi-toggle-group" data-toggle="pkgLcWifiToggle">
+          <label class="cmi-label">Pre-configure Wi-Fi?</label>
+          <div class="cmi-toggle-buttons">
+            <button type="button" class="cmi-toggle-btn" data-value="yes">Yes</button>
+            <button type="button" class="cmi-toggle-btn active" data-value="no">No</button>
+          </div>
+        </div>
+        <div class="cmi-toggle-content" data-toggle-content="pkgLcWifiToggle">
+          <div class="cmi-form-grid">
+            <div class="cmi-field cmi-col-half">
+              <label class="cmi-label" for="pkgLcWifiSsid">Network Name (SSID) <span class="cmi-required">*</span></label>
+              <input type="text" id="pkgLcWifiSsid" class="cmi-input" placeholder="Your Wi-Fi network name" data-conditional-required>
+            </div>
+            <div class="cmi-field cmi-col-half">
+              <label class="cmi-label" for="pkgLcWifiPassword">Password <span class="cmi-required">*</span></label>
+              <div class="cmi-input-group">
+                <input type="password" id="pkgLcWifiPassword" class="cmi-input" placeholder="Wi-Fi password" data-conditional-required>
+                <button type="button" class="cmi-btn-icon cmi-password-toggle" data-target="pkgLcWifiPassword" title="Show password">
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+              </div>
+            </div>
+            <div class="cmi-field cmi-col-half">
+              <label class="cmi-label" for="pkgLcWifiSecurity">Security Type <span class="cmi-required">*</span></label>
+              <select id="pkgLcWifiSecurity" class="cmi-select" data-conditional-required>
+                <option value="">Select security type...</option>
+                <option value="WPA2">WPA2</option>
+                <option value="WPA3">WPA3</option>
+                <option value="WPA2/WPA3 Transitional">WPA2 / WPA3 Transitional</option>
+                <option value="Open Network">Open Network</option>
+              </select>
+            </div>
+            <div class="cmi-field cmi-col-half">
+              <label class="cmi-label">Hidden Network?</label>
+              <div class="cmi-radio-card-grid" style="grid-template-columns: 1fr 1fr;">
+                <label class="cmi-radio-card">
+                  <input type="radio" name="pkgLcWifiHidden" value="Yes">
+                  <div class="cmi-radio-card-content"><span>Yes</span></div>
+                </label>
+                <label class="cmi-radio-card">
+                  <input type="radio" name="pkgLcWifiHidden" value="No" checked>
+                  <div class="cmi-radio-card-content"><span>No</span></div>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cmi-divider"></div>
+
+        <!-- C) Location Services -->
+        <div class="cmi-field">
+          <label class="cmi-label">Location Services</label>
+          <div class="cmi-radio-card-grid" style="grid-template-columns: 1fr 1fr;">
+            <label class="cmi-radio-card">
+              <input type="radio" name="pkgLcLocationServices" value="Enable Location Services" checked>
+              <div class="cmi-radio-card-content">
+                <span>Enable Location Services</span>
+              </div>
+            </label>
+            <label class="cmi-radio-card">
+              <input type="radio" name="pkgLcLocationServices" value="Disable Location Services">
+              <div class="cmi-radio-card-content">
+                <span>Disable Location Services</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="cmi-divider"></div>
+
+        <!-- D) Home Screen Layout -->
+        <div class="cmi-field">
+          <label class="cmi-label">Home Screen Layout</label>
+          <p class="cmi-help-text" style="margin-bottom: 12px;">Choose how apps are arranged on the device home screen.</p>
+          <div class="cmi-radio-card-grid">
+            <label class="cmi-radio-card">
+              <input type="radio" name="pkgLcHomeScreenLayout" value="Standard" checked>
+              <div class="cmi-radio-card-content">
+                <span class="cmi-radio-card-title">Standard</span>
+                <span class="cmi-radio-card-desc">All non-essential apps are removed. Your installed apps will be on the dock.</span>
+              </div>
+            </label>
+            <label class="cmi-radio-card">
+              <input type="radio" name="pkgLcHomeScreenLayout" value="Single App">
+              <div class="cmi-radio-card-content">
+                <span class="cmi-radio-card-title">Single App</span>
+                <span class="cmi-radio-card-desc">Device launches directly into one app. Ideal for kiosks and POS.</span>
+              </div>
+            </label>
+            <label class="cmi-radio-card">
+              <input type="radio" name="pkgLcHomeScreenLayout" value="Custom">
+              <div class="cmi-radio-card-content">
+                <span class="cmi-radio-card-title">Custom</span>
+                <span class="cmi-radio-card-desc">Upload a mockup of your desired layout.</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="cmi-divider"></div>
+
+        <!-- App Login -->
+        <div class="cmi-toggle-group" data-toggle="pkgLcAppLoginToggle">
+          <label class="cmi-label">Do you want Fello to log into your application? <span class="cmi-fee-badge"><i class="fa-solid fa-circle-dollar-to-slot"></i> Additional Fee</span></label>
+          <p class="cmi-help-text">If you need Fello to pre-authenticate your apps before the event, enable this option and provide the login details.</p>
+          <div class="cmi-toggle-buttons">
+            <button type="button" class="cmi-toggle-btn" data-value="yes">Yes</button>
+            <button type="button" class="cmi-toggle-btn active" data-value="no">No</button>
+          </div>
+        </div>
+        <div class="cmi-toggle-content" data-toggle-content="pkgLcAppLoginToggle">
+          <div class="cmi-field">
+            <label class="cmi-label">Which apps should Fello log into?</label>
+            <p class="cmi-help-text">Select all apps that require pre-authentication.</p>
+            <div class="cmi-checkbox-grid pkg-app-login-checkboxes">
+              <p class="cmi-text-muted pkg-app-login-placeholder"><i class="fa-solid fa-circle-info"></i> Please add apps above first — they will appear here for selection.</p>
+            </div>
+          </div>
+          <div class="cmi-divider"></div>
+          <div class="cmi-field">
+            <label class="cmi-label">Upload Login Credentials / Instructions</label>
+            <p class="cmi-help-text">Provide a file containing all usernames, passwords, and any special instructions. <strong>Do not type credentials directly into this form.</strong></p>
+            <div class="cmi-file-drop" data-file-id="pkgLcLoginCredentials">
+              <input type="file" class="cmi-file-input" accept=".csv,.xlsx,.xls,.numbers,.doc,.docx,.pdf" hidden>
+              <div class="cmi-file-drop-content">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <p>Drag &amp; drop your credentials file here or <span class="cmi-file-browse">browse</span></p>
+                <small>Accepted: CSV, Excel, Numbers, Word, PDF</small>
+              </div>
+              <div class="cmi-file-preview" hidden></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════ PACKAGE: POS ═══════════════════════════ -->
+      <section id="pkg-pos" class="cmi-step">
+        <div class="cmi-step-header">
+          <h2 class="cmi-step-title"><i class="fa-solid fa-cash-register"></i> POS Package</h2>
+          <p class="cmi-step-subtitle">Configure apps, connectivity, and access controls for your POS setup.</p>
+        </div>
+
+        <!-- A) App Installation -->
+        <div class="cmi-section">
+          <div class="cmi-section-header" style="display:flex;align-items:center;justify-content:space-between;">
+            <h3 class="cmi-section-title"><i class="fa-brands fa-app-store-ios"></i> Apps to Install</h3>
+            <div class="cmi-app-cost-indicator pkg-cost-indicator">
+              <span class="cmi-app-cost-label">Est. App Licensing</span>
+              <span class="cmi-app-cost-value pkg-app-cost-value">$0.00</span>
+            </div>
+          </div>
+          <p class="cmi-help-text">Search the App Store to find the exact apps you need.</p>
+          <div class="cmi-field">
+            <label class="cmi-label">Search Apps</label>
+            <div class="cmi-app-search-wrapper">
+              <div class="cmi-input-group">
+                <span class="cmi-input-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+                <input type="text" class="cmi-input cmi-input-with-icon" id="pkg-pos-appSearchInput" placeholder="Start typing an app name (e.g. Square, Toast, Shopify)..." autocomplete="off">
+                <div class="cmi-search-spinner" id="pkg-pos-appSearchSpinner" hidden>
+                  <i class="fa-solid fa-spinner fa-spin"></i>
+                </div>
+              </div>
+              <div class="cmi-app-search-results" id="pkg-pos-appSearchResults" hidden></div>
+            </div>
+          </div>
+          <div id="pkg-pos-selectedAppsList" class="cmi-selected-apps"></div>
+          <p class="cmi-help-text cmi-selected-apps-count" id="pkg-pos-selectedAppsCount" hidden>
+            <i class="fa-solid fa-check-circle" style="color: var(--cmi-success);"></i>
+            <span>0</span> app(s) selected
+          </p>
+        </div>
+
+        <!-- Install all apps on all devices -->
+        <div class="cmi-toggle-group" data-toggle="pkgPosAllAppsToggle">
+          <label class="cmi-label">Install all apps on all devices?</label>
+          <p class="cmi-help-text">By default, every selected app will be installed on all devices in your order.</p>
+          <div class="cmi-toggle-buttons">
+            <button type="button" class="cmi-toggle-btn active" data-value="yes">Yes</button>
+            <button type="button" class="cmi-toggle-btn" data-value="no">No</button>
+          </div>
+        </div>
+        <div class="cmi-toggle-content" data-toggle-content="pkgPosAllAppsToggle" data-toggle-invert="true">
+          <p class="cmi-help-text" style="margin-bottom: 12px;"><i class="fa-solid fa-circle-info" style="color: var(--cmi-accent);"></i> For each app, select which device types and how many should receive it.</p>
+          <div id="pkgPosPerDeviceAssignmentList">
+            <p class="cmi-text-muted"><i class="fa-solid fa-arrow-up"></i> Select apps above — they will appear here for device assignment.</p>
+          </div>
+        </div>
+
+        <div class="cmi-divider"></div>
+
+        <!-- B) Wi-Fi Configuration -->
+        <div class="cmi-toggle-group" data-toggle="pkgPosWifiToggle">
+          <label class="cmi-label">Pre-configure Wi-Fi?</label>
+          <div class="cmi-toggle-buttons">
+            <button type="button" class="cmi-toggle-btn" data-value="yes">Yes</button>
+            <button type="button" class="cmi-toggle-btn active" data-value="no">No</button>
+          </div>
+        </div>
+        <div class="cmi-toggle-content" data-toggle-content="pkgPosWifiToggle">
+          <div class="cmi-form-grid">
+            <div class="cmi-field cmi-col-half">
+              <label class="cmi-label" for="pkgPosWifiSsid">Network Name (SSID) <span class="cmi-required">*</span></label>
+              <input type="text" id="pkgPosWifiSsid" class="cmi-input" placeholder="Your Wi-Fi network name" data-conditional-required>
+            </div>
+            <div class="cmi-field cmi-col-half">
+              <label class="cmi-label" for="pkgPosWifiPassword">Password <span class="cmi-required">*</span></label>
+              <div class="cmi-input-group">
+                <input type="password" id="pkgPosWifiPassword" class="cmi-input" placeholder="Wi-Fi password" data-conditional-required>
+                <button type="button" class="cmi-btn-icon cmi-password-toggle" data-target="pkgPosWifiPassword" title="Show password">
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+              </div>
+            </div>
+            <div class="cmi-field cmi-col-half">
+              <label class="cmi-label" for="pkgPosWifiSecurity">Security Type <span class="cmi-required">*</span></label>
+              <select id="pkgPosWifiSecurity" class="cmi-select" data-conditional-required>
+                <option value="">Select security type...</option>
+                <option value="WPA2">WPA2</option>
+                <option value="WPA3">WPA3</option>
+                <option value="WPA2/WPA3 Transitional">WPA2 / WPA3 Transitional</option>
+                <option value="Open Network">Open Network</option>
+              </select>
+            </div>
+            <div class="cmi-field cmi-col-half">
+              <label class="cmi-label">Hidden Network?</label>
+              <div class="cmi-radio-card-grid" style="grid-template-columns: 1fr 1fr;">
+                <label class="cmi-radio-card">
+                  <input type="radio" name="pkgPosWifiHidden" value="Yes">
+                  <div class="cmi-radio-card-content"><span>Yes</span></div>
+                </label>
+                <label class="cmi-radio-card">
+                  <input type="radio" name="pkgPosWifiHidden" value="No" checked>
+                  <div class="cmi-radio-card-content"><span>No</span></div>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cmi-divider"></div>
+
+        <!-- C) Location Services -->
+        <div class="cmi-field">
+          <label class="cmi-label">Location Services</label>
+          <div class="cmi-radio-card-grid" style="grid-template-columns: 1fr 1fr;">
+            <label class="cmi-radio-card">
+              <input type="radio" name="pkgPosLocationServices" value="Enable Location Services" checked>
+              <div class="cmi-radio-card-content">
+                <span>Enable Location Services</span>
+              </div>
+            </label>
+            <label class="cmi-radio-card">
+              <input type="radio" name="pkgPosLocationServices" value="Disable Location Services">
+              <div class="cmi-radio-card-content">
+                <span>Disable Location Services</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="cmi-divider"></div>
+
+        <!-- D) Home Screen Layout -->
+        <div class="cmi-field">
+          <label class="cmi-label">Home Screen Layout</label>
+          <p class="cmi-help-text" style="margin-bottom: 12px;">Choose how apps are arranged on the device home screen.</p>
+          <div class="cmi-radio-card-grid">
+            <label class="cmi-radio-card">
+              <input type="radio" name="pkgPosHomeScreenLayout" value="Standard" checked>
+              <div class="cmi-radio-card-content">
+                <span class="cmi-radio-card-title">Standard</span>
+                <span class="cmi-radio-card-desc">All non-essential apps are removed. Your installed apps will be on the dock.</span>
+              </div>
+            </label>
+            <label class="cmi-radio-card">
+              <input type="radio" name="pkgPosHomeScreenLayout" value="Single App">
+              <div class="cmi-radio-card-content">
+                <span class="cmi-radio-card-title">Single App</span>
+                <span class="cmi-radio-card-desc">Device launches directly into one app. Ideal for kiosks and POS.</span>
+              </div>
+            </label>
+            <label class="cmi-radio-card">
+              <input type="radio" name="pkgPosHomeScreenLayout" value="Custom">
+              <div class="cmi-radio-card-content">
+                <span class="cmi-radio-card-title">Custom</span>
+                <span class="cmi-radio-card-desc">Upload a mockup of your desired layout.</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="cmi-divider"></div>
+
+        <!-- App Login -->
+        <div class="cmi-toggle-group" data-toggle="pkgPosAppLoginToggle">
+          <label class="cmi-label">Do you want Fello to log into your application? <span class="cmi-fee-badge"><i class="fa-solid fa-circle-dollar-to-slot"></i> Additional Fee</span></label>
+          <p class="cmi-help-text">If you need Fello to pre-authenticate your apps before the event, enable this option and provide the login details.</p>
+          <div class="cmi-toggle-buttons">
+            <button type="button" class="cmi-toggle-btn" data-value="yes">Yes</button>
+            <button type="button" class="cmi-toggle-btn active" data-value="no">No</button>
+          </div>
+        </div>
+        <div class="cmi-toggle-content" data-toggle-content="pkgPosAppLoginToggle">
+          <div class="cmi-field">
+            <label class="cmi-label">Which apps should Fello log into?</label>
+            <p class="cmi-help-text">Select all apps that require pre-authentication.</p>
+            <div class="cmi-checkbox-grid pkg-app-login-checkboxes">
+              <p class="cmi-text-muted pkg-app-login-placeholder"><i class="fa-solid fa-circle-info"></i> Please add apps above first — they will appear here for selection.</p>
+            </div>
+          </div>
+          <div class="cmi-divider"></div>
+          <div class="cmi-field">
+            <label class="cmi-label">Upload Login Credentials / Instructions</label>
+            <p class="cmi-help-text">Provide a file containing all usernames, passwords, and any special instructions. <strong>Do not type credentials directly into this form.</strong></p>
+            <div class="cmi-file-drop" data-file-id="pkgPosLoginCredentials">
+              <input type="file" class="cmi-file-input" accept=".csv,.xlsx,.xls,.numbers,.doc,.docx,.pdf" hidden>
+              <div class="cmi-file-drop-content">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <p>Drag &amp; drop your credentials file here or <span class="cmi-file-browse">browse</span></p>
+                <small>Accepted: CSV, Excel, Numbers, Word, PDF</small>
+              </div>
+              <div class="cmi-file-preview" hidden></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════ PACKAGE: Kiosk ═══════════════════════════ -->
+      <section id="pkg-kiosk" class="cmi-step">
+        <div class="cmi-step-header">
+          <h2 class="cmi-step-title"><i class="fa-solid fa-desktop"></i> Kiosk Package</h2>
+          <p class="cmi-step-subtitle">Configure guided access, display, and restrictions for your kiosk.</p>
+        </div>
+
+        <!-- A) App Installation -->
+        <div class="cmi-section">
+          <div class="cmi-section-header" style="display:flex;align-items:center;justify-content:space-between;">
+            <h3 class="cmi-section-title"><i class="fa-brands fa-app-store-ios"></i> Apps to Install</h3>
+            <div class="cmi-app-cost-indicator pkg-cost-indicator">
+              <span class="cmi-app-cost-label">Est. App Licensing</span>
+              <span class="cmi-app-cost-value pkg-app-cost-value">$0.00</span>
+            </div>
+          </div>
+          <p class="cmi-help-text">Search the App Store to find the exact apps you need.</p>
+          <div class="cmi-field">
+            <label class="cmi-label">Search Apps</label>
+            <div class="cmi-app-search-wrapper">
+              <div class="cmi-input-group">
+                <span class="cmi-input-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+                <input type="text" class="cmi-input cmi-input-with-icon" id="pkg-kiosk-appSearchInput" placeholder="Search for KioWare, SureFox, Kiosk Pro, SurveyMonkey..." autocomplete="off">
+                <div class="cmi-search-spinner" id="pkg-kiosk-appSearchSpinner" hidden>
+                  <i class="fa-solid fa-spinner fa-spin"></i>
+                </div>
+              </div>
+              <div class="cmi-app-search-results" id="pkg-kiosk-appSearchResults" hidden></div>
+            </div>
+          </div>
+          <div id="pkg-kiosk-selectedAppsList" class="cmi-selected-apps"></div>
+          <p class="cmi-help-text cmi-selected-apps-count" id="pkg-kiosk-selectedAppsCount" hidden>
+            <i class="fa-solid fa-check-circle" style="color: var(--cmi-success);"></i>
+            <span>0</span> app(s) selected
+          </p>
+        </div>
+
+        <!-- Web Clips -->
+        <div class="cmi-toggle-group" data-toggle="pkgKioskWebClipToggle">
+          <label class="cmi-label">Do you need Web Clips installed? <span class="cmi-fee-badge"><i class="fa-solid fa-circle-dollar-to-slot"></i> Additional Fee</span></label>
+          <p class="cmi-help-text">Web Clips are website shortcuts that appear as icons on the home screen.</p>
+          <div class="cmi-toggle-buttons">
+            <button type="button" class="cmi-toggle-btn" data-value="yes">Yes</button>
+            <button type="button" class="cmi-toggle-btn active" data-value="no">No</button>
+          </div>
+        </div>
+        <div class="cmi-toggle-content" data-toggle-content="pkgKioskWebClipToggle">
+          <div class="cmi-repeater" id="pkgKioskWebClipRepeater">
+            <div class="cmi-repeater-header">
+              <span class="cmi-repeater-col">URL</span>
+              <span class="cmi-repeater-col">Name</span>
+              <span class="cmi-repeater-col cmi-repeater-actions-col"></span>
+            </div>
+            <div class="cmi-repeater-body">
+              <div class="cmi-repeater-row">
+                <div class="cmi-repeater-cell">
+                  <input type="url" class="cmi-input" name="pkgKioskWebClipUrl[]" placeholder="https://">
+                </div>
+                <div class="cmi-repeater-cell">
+                  <input type="text" class="cmi-input" name="pkgKioskWebClipName[]" placeholder="Display name">
+                </div>
+                <div class="cmi-repeater-cell cmi-repeater-actions">
+                  <button type="button" class="cmi-btn-icon cmi-btn-remove-row" title="Remove row"><i class="fa-solid fa-trash-can"></i></button>
+                </div>
+              </div>
+            </div>
+            <button type="button" class="cmi-btn-add-row" data-repeater="pkgKioskWebClipRepeater"><i class="fa-solid fa-plus"></i> Add Web Clip</button>
+          </div>
+        </div>
+
+        <!-- Install all apps on all devices -->
+        <div class="cmi-toggle-group" data-toggle="pkgKioskAllAppsToggle">
+          <label class="cmi-label">Install all apps on all devices?</label>
+          <p class="cmi-help-text">By default, every selected app will be installed on all devices in your order.</p>
+          <div class="cmi-toggle-buttons">
+            <button type="button" class="cmi-toggle-btn active" data-value="yes">Yes</button>
+            <button type="button" class="cmi-toggle-btn" data-value="no">No</button>
+          </div>
+        </div>
+        <div class="cmi-toggle-content" data-toggle-content="pkgKioskAllAppsToggle" data-toggle-invert="true">
+          <p class="cmi-help-text" style="margin-bottom: 12px;"><i class="fa-solid fa-circle-info" style="color: var(--cmi-accent);"></i> For each app, select which device types and how many should receive it.</p>
+          <div id="pkgKioskPerDeviceAssignmentList">
+            <p class="cmi-text-muted"><i class="fa-solid fa-arrow-up"></i> Select apps above — they will appear here for device assignment.</p>
+          </div>
+        </div>
+
+        <div class="cmi-divider"></div>
+
+        <!-- Device Lockdown Mode -->
+        <div class="cmi-field">
+          <label class="cmi-label"><i class="fa-solid fa-lock"></i> Device Lockdown Mode</label>
+          <p class="cmi-help-text">Choose how to lock the device to your kiosk app. Both options restrict users from leaving the app.</p>
+          <div class="cmi-radio-card-grid" style="grid-template-columns: 1fr 1fr;">
+            <label class="cmi-radio-card">
+              <input type="radio" name="pkgKioskLockdownMode" value="Single App Mode" checked>
+              <div class="cmi-radio-card-content">
+                <span class="cmi-radio-card-title"><i class="fa-solid fa-mobile-screen" style="color: var(--cmi-accent);"></i> Single App Mode</span>
+                <span class="cmi-radio-card-desc" style="font-size: var(--fs-xs); line-height: 1.5;">
+                  The device boots directly into your chosen app.
+                  <br><strong style="color: var(--cmi-success);">✓</strong> No additional fee
+                  <br><strong style="color: var(--cmi-success);">✓</strong> Seamless boot-to-app experience
+                  <br><strong style="color: var(--cmi-text-muted);">–</strong> Exits if app crashes or restarts
+                </span>
+              </div>
+            </label>
+            <label class="cmi-radio-card">
+              <input type="radio" name="pkgKioskLockdownMode" value="Guided Access">
+              <div class="cmi-radio-card-content">
+                <span class="cmi-radio-card-title"><i class="fa-solid fa-shield-halved" style="color: var(--cmi-accent);"></i> Guided Access <span class="cmi-fee-badge" style="font-size:0.7em;"><i class="fa-solid fa-circle-dollar-to-slot"></i> Fee</span></span>
+                <span class="cmi-radio-card-desc" style="font-size: var(--fs-xs); line-height: 1.5;">
+                  Locks to one app with a passcode to exit.
+                  <br><strong style="color: var(--cmi-success);">✓</strong> Passcode-protected — more secure
+                  <br><strong style="color: var(--cmi-success);">✓</strong> Survives app crashes and restarts
+                  <br><strong style="color: var(--cmi-text-muted);">–</strong> Additional $5/device fee applies
+                </span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Guided Access → passcode (shown when Guided Access selected) -->
+        <div class="cmi-field" id="pkgKioskGuidedAccessField" hidden>
+          <label class="cmi-label">Guided Access Passcode <span class="cmi-required">*</span></label>
+          <p class="cmi-help-text">Enter a 6-digit numerical code that will be used to exit Guided Access mode.</p>
+          <input type="text" class="cmi-input" id="pkgKioskGuidedAccessPasscode" name="pkgKioskGuidedAccessPasscode" placeholder="e.g. 123456" maxlength="6" inputmode="numeric" pattern="[0-9]{6}">
+        </div>
+
+        <div class="cmi-divider"></div>
+
+        <!-- Location Services -->
+        <div class="cmi-field">
+          <label class="cmi-label">Location Services</label>
+          <div class="cmi-radio-card-grid" style="grid-template-columns: 1fr 1fr;">
+            <label class="cmi-radio-card">
+              <input type="radio" name="pkgKioskLocationServices" value="Enable Location Services" checked>
+              <div class="cmi-radio-card-content">
+                <span>Enable Location Services</span>
+              </div>
+            </label>
+            <label class="cmi-radio-card">
+              <input type="radio" name="pkgKioskLocationServices" value="Disable Location Services">
+              <div class="cmi-radio-card-content">
+                <span>Disable Location Services</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="cmi-divider"></div>
+
+        <!-- Wi-Fi Configuration -->
+        <div class="cmi-toggle-group" data-toggle="pkgKioskWifiToggle">
+          <label class="cmi-label">Pre-configure Wi-Fi?</label>
+          <div class="cmi-toggle-buttons">
+            <button type="button" class="cmi-toggle-btn" data-value="yes">Yes</button>
+            <button type="button" class="cmi-toggle-btn active" data-value="no">No</button>
+          </div>
+        </div>
+        <div class="cmi-toggle-content" data-toggle-content="pkgKioskWifiToggle">
+          <div class="cmi-form-grid">
+            <div class="cmi-field cmi-col-half">
+              <label class="cmi-label" for="pkgKioskWifiSsid">Network Name (SSID) <span class="cmi-required">*</span></label>
+              <input type="text" id="pkgKioskWifiSsid" class="cmi-input" placeholder="Your Wi-Fi network name" data-conditional-required>
+            </div>
+            <div class="cmi-field cmi-col-half">
+              <label class="cmi-label" for="pkgKioskWifiPassword">Password <span class="cmi-required">*</span></label>
+              <div class="cmi-input-group">
+                <input type="password" id="pkgKioskWifiPassword" class="cmi-input" placeholder="Wi-Fi password" data-conditional-required>
+                <button type="button" class="cmi-btn-icon cmi-password-toggle" data-target="pkgKioskWifiPassword" title="Show password">
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+              </div>
+            </div>
+            <div class="cmi-field cmi-col-half">
+              <label class="cmi-label" for="pkgKioskWifiSecurity">Security Type <span class="cmi-required">*</span></label>
+              <select id="pkgKioskWifiSecurity" class="cmi-select" data-conditional-required>
+                <option value="">Select security type...</option>
+                <option value="WPA2">WPA2</option>
+                <option value="WPA3">WPA3</option>
+                <option value="WPA2/WPA3 Transitional">WPA2 / WPA3 Transitional</option>
+                <option value="Open Network">Open Network</option>
+              </select>
+            </div>
+            <div class="cmi-field cmi-col-half">
+              <label class="cmi-label">Hidden Network?</label>
+              <div class="cmi-radio-card-grid" style="grid-template-columns: 1fr 1fr;">
+                <label class="cmi-radio-card">
+                  <input type="radio" name="pkgKioskWifiHidden" value="Yes">
+                  <div class="cmi-radio-card-content"><span>Yes</span></div>
+                </label>
+                <label class="cmi-radio-card">
+                  <input type="radio" name="pkgKioskWifiHidden" value="No" checked>
+                  <div class="cmi-radio-card-content"><span>No</span></div>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cmi-divider"></div>
+
+        <!-- B) Custom Wallpaper -->
+        <div class="cmi-toggle-group" data-toggle="pkgKioskWallpaperToggle">
+          <label class="cmi-label">Custom Wallpaper?</label>
+          <div class="cmi-toggle-buttons">
+            <button type="button" class="cmi-toggle-btn" data-value="yes">Yes</button>
+            <button type="button" class="cmi-toggle-btn active" data-value="no">No</button>
+          </div>
+        </div>
+        <div class="cmi-toggle-content" data-toggle-content="pkgKioskWallpaperToggle">
+          <div class="cmi-field">
+            <label class="cmi-label">Upload logo or wallpaper artwork</label>
+            <div class="cmi-file-drop" data-file-id="pkgKioskWallpaper">
+              <input type="file" class="cmi-file-input" accept=".jpg,.jpeg,.png" hidden>
+              <div class="cmi-file-drop-content">
+                <i class="fa-solid fa-image"></i>
+                <p>Drag &amp; drop or <span class="cmi-file-browse">browse</span></p>
+                <small>JPG, JPEG, PNG (max 2MB)</small>
+              </div>
+              <div class="cmi-file-preview" hidden></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cmi-divider"></div>
+
+        <!-- C) Blacklist/Whitelist -->
+        <div class="cmi-toggle-group" data-toggle="pkgKioskRestrictionsToggle">
+          <label class="cmi-label">Website Restrictions?</label>
+          <div class="cmi-toggle-buttons">
+            <button type="button" class="cmi-toggle-btn" data-value="yes">Yes</button>
+            <button type="button" class="cmi-toggle-btn active" data-value="no">No</button>
+          </div>
+        </div>
+        <div class="cmi-toggle-content" data-toggle-content="pkgKioskRestrictionsToggle">
+          <div class="cmi-field">
+            <label class="cmi-label">Restriction Type</label>
+            <div class="cmi-radio-card-grid" style="grid-template-columns: 1fr 1fr;">
+              <label class="cmi-radio-card">
+                <input type="radio" name="pkgKioskRestrictionType" value="Whitelist" checked>
+                <div class="cmi-radio-card-content">
+                  <span class="cmi-radio-card-title"><i class="fa-solid fa-check-circle" style="color: var(--cmi-success);"></i> Whitelist</span>
+                  <span class="cmi-radio-card-desc">Only allow listed websites</span>
+                </div>
+              </label>
+              <label class="cmi-radio-card">
+                <input type="radio" name="pkgKioskRestrictionType" value="Blacklist">
+                <div class="cmi-radio-card-content">
+                  <span class="cmi-radio-card-title"><i class="fa-solid fa-ban" style="color: var(--cmi-error);"></i> Blacklist</span>
+                  <span class="cmi-radio-card-desc">Block only listed websites</span>
+                </div>
+              </label>
+            </div>
+          </div>
+          <div class="cmi-field">
+            <label class="cmi-label">Enter Website URLs</label>
+            <p class="cmi-help-text">Add each URL that should be allowed or blocked based on your selection above.</p>
+            <div class="cmi-repeater" id="pkgKioskRestrictionUrlRepeater">
+              <div class="cmi-repeater-header">
+                <span class="cmi-repeater-col">Website URL</span>
+                <span class="cmi-repeater-col cmi-repeater-actions-col"></span>
+              </div>
+              <div class="cmi-repeater-body">
+                <div class="cmi-repeater-row">
+                  <div class="cmi-repeater-cell cmi-repeater-cell-full">
+                    <input type="url" class="cmi-input" name="pkgKioskRestrictionUrl[]" placeholder="https://example.com">
+                  </div>
+                  <div class="cmi-repeater-cell cmi-repeater-actions">
+                    <button type="button" class="cmi-btn-icon cmi-btn-remove-row" title="Remove row"><i class="fa-solid fa-trash-can"></i></button>
+                  </div>
+                </div>
+              </div>
+              <button type="button" class="cmi-btn-add-row" data-repeater="pkgKioskRestrictionUrlRepeater"><i class="fa-solid fa-plus"></i> Add URL</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="cmi-divider"></div>
+
+        <!-- App Login -->
+        <div class="cmi-toggle-group" data-toggle="pkgKioskAppLoginToggle">
+          <label class="cmi-label">Do you want Fello to log into your application? <span class="cmi-fee-badge"><i class="fa-solid fa-circle-dollar-to-slot"></i> Additional Fee</span></label>
+          <p class="cmi-help-text">If you need Fello to pre-authenticate your apps before the event, enable this option and provide the login details.</p>
+          <div class="cmi-toggle-buttons">
+            <button type="button" class="cmi-toggle-btn" data-value="yes">Yes</button>
+            <button type="button" class="cmi-toggle-btn active" data-value="no">No</button>
+          </div>
+        </div>
+        <div class="cmi-toggle-content" data-toggle-content="pkgKioskAppLoginToggle">
+          <div class="cmi-field">
+            <label class="cmi-label">Which apps should Fello log into?</label>
+            <p class="cmi-help-text">Select all apps that require pre-authentication.</p>
+            <div class="cmi-checkbox-grid pkg-app-login-checkboxes">
+              <p class="cmi-text-muted pkg-app-login-placeholder"><i class="fa-solid fa-circle-info"></i> Please add apps above first — they will appear here for selection.</p>
+            </div>
+          </div>
+          <div class="cmi-divider"></div>
+          <div class="cmi-field">
+            <label class="cmi-label">Upload Login Credentials / Instructions</label>
+            <p class="cmi-help-text">Provide a file containing all usernames, passwords, and any special instructions. <strong>Do not type credentials directly into this form.</strong></p>
+            <div class="cmi-file-drop" data-file-id="pkgKioskLoginCredentials">
+              <input type="file" class="cmi-file-input" accept=".csv,.xlsx,.xls,.numbers,.doc,.docx,.pdf" hidden>
+              <div class="cmi-file-drop-content">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <p>Drag &amp; drop your credentials file here or <span class="cmi-file-browse">browse</span></p>
+                <small>Accepted: CSV, Excel, Numbers, Word, PDF</small>
+              </div>
+              <div class="cmi-file-preview" hidden></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════ STEP 2: Applications ═══════════════════════════ -->
+      <section id="step-2" class="cmi-step">
+        <div class="cmi-step-header">
+          <h2 class="cmi-step-title"><i class="fa-solid fa-grid-2"></i> Applications</h2>
+          <p class="cmi-step-subtitle">Tell us which apps to install on your devices.</p>
+        </div>
+
+        <!-- App Search (always visible — apps are assumed) -->
+        <div class="cmi-section">
+          <div class="cmi-section-header" style="display:flex;align-items:center;justify-content:space-between;">
+            <h3 class="cmi-section-title"><i class="fa-brands fa-app-store-ios"></i> Apps to Install</h3>
+            <div class="cmi-app-cost-indicator" id="appCostIndicator">
+              <span class="cmi-app-cost-label">Est. App Licensing</span>
+              <span class="cmi-app-cost-value" id="appCostValue">$0.00</span>
+            </div>
+          </div>
+          <p class="cmi-help-text">Search the App Store to find the exact apps you need. Start typing and select from the results.</p>
+
+
+          <div class="cmi-field">
+            <label class="cmi-label">Search Apps</label>
+            <div class="cmi-app-search-wrapper">
+              <div class="cmi-input-group">
+                <span class="cmi-input-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+                <input type="text" class="cmi-input cmi-input-with-icon" id="appSearchInput" placeholder="Start typing an app name (e.g. Square, Toast, Shopify)..." autocomplete="off">
+                <div class="cmi-search-spinner" id="appSearchSpinner" hidden>
+                  <i class="fa-solid fa-spinner fa-spin"></i>
+                </div>
+              </div>
+              <div class="cmi-app-search-results" id="appSearchResults" hidden></div>
+            </div>
+          </div>
+
+          <!-- Selected Apps List -->
+          <div id="selectedAppsList" class="cmi-selected-apps">
+            <!-- Dynamically populated by JS -->
+          </div>
+          <p class="cmi-help-text cmi-selected-apps-count" id="selectedAppsCount" hidden>
+            <i class="fa-solid fa-check-circle" style="color: var(--cmi-success);"></i>
+            <span>0</span> app(s) selected
+          </p>
+        </div>
+
+        <!-- Divider -->
+        <div class="cmi-divider"></div>
+
+        <!-- Web Clips Toggle -->
+        <div class="cmi-toggle-group" data-toggle="webClipToggle">
+          <label class="cmi-label">Do you need Web Clips installed? <span class="cmi-fee-badge"><i class="fa-solid fa-circle-dollar-to-slot"></i> Additional Fee</span></label>
+          <p class="cmi-help-text">Web Clips are website shortcuts that appear as icons on the home screen.</p>
+          <div class="cmi-toggle-buttons">
+            <button type="button" class="cmi-toggle-btn" data-value="yes">Yes</button>
+            <button type="button" class="cmi-toggle-btn active" data-value="no">No</button>
+          </div>
+        </div>
+        <div class="cmi-toggle-content" id="webClipContent" data-toggle-content="webClipToggle">
+          <div class="cmi-repeater" id="webClipRepeater">
+            <div class="cmi-repeater-header">
+              <span class="cmi-repeater-col">URL</span>
+              <span class="cmi-repeater-col">Name</span>
+              <span class="cmi-repeater-col cmi-repeater-actions-col"></span>
+            </div>
+            <div class="cmi-repeater-body">
+              <div class="cmi-repeater-row">
+                <div class="cmi-repeater-cell">
+                  <input type="url" class="cmi-input" name="webClipUrl[]" placeholder="https://">
+                </div>
+                <div class="cmi-repeater-cell">
+                  <input type="text" class="cmi-input" name="webClipName[]" placeholder="Display name">
+                </div>
+                <div class="cmi-repeater-cell cmi-repeater-actions">
+                  <button type="button" class="cmi-btn-icon cmi-btn-remove-row" title="Remove row"><i class="fa-solid fa-trash-can"></i></button>
+                </div>
+              </div>
+            </div>
+            <button type="button" class="cmi-btn-add-row" data-repeater="webClipRepeater"><i class="fa-solid fa-plus"></i> Add Web Clip</button>
+          </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="cmi-divider"></div>
+
+        <!-- Per-Device App Assignment Toggle -->
+        <div class="cmi-toggle-group" data-toggle="allAppsAllDevicesToggle">
+          <label class="cmi-label">Install all apps on all devices?</label>
+          <p class="cmi-help-text">By default, every selected app and web clip will be installed on all devices in your order.</p>
+          <div class="cmi-toggle-buttons">
+            <button type="button" class="cmi-toggle-btn active" data-value="yes">Yes</button>
+            <button type="button" class="cmi-toggle-btn" data-value="no">No</button>
+          </div>
+        </div>
+        <div class="cmi-toggle-content" id="perDeviceAssignmentContent" data-toggle-content="allAppsAllDevicesToggle" data-toggle-invert="true">
+          <p class="cmi-help-text" style="margin-bottom: 12px;"><i class="fa-solid fa-circle-info" style="color: var(--cmi-accent);"></i> For each app or web clip, select which device types and how many should receive it.</p>
+          <div id="perDeviceAssignmentList">
+            <!-- Dynamically populated by JS -->
+            <p class="cmi-text-muted" id="perDeviceAssignmentPlaceholder"><i class="fa-solid fa-arrow-up"></i> Select apps and web clips above — they will appear here for device assignment.</p>
+          </div>
+        </div>
+
+        <!-- App Login Toggle -->
+        <div class="cmi-toggle-group" data-toggle="appLoginToggle">
+          <label class="cmi-label">Do you want Fello to log into your application? <span class="cmi-fee-badge"><i class="fa-solid fa-circle-dollar-to-slot"></i> Additional Fee</span></label>
+          <p class="cmi-help-text">If you need Fello to pre-authenticate your apps before the event, enable this option and provide the login details.</p>
+          <div class="cmi-toggle-buttons">
+            <button type="button" class="cmi-toggle-btn" data-value="yes">Yes</button>
+            <button type="button" class="cmi-toggle-btn active" data-value="no">No</button>
+          </div>
+        </div>
+        <div class="cmi-toggle-content" id="appLoginContent" data-toggle-content="appLoginToggle">
+          <div class="cmi-field">
+            <label class="cmi-label">Which apps should Fello log into?</label>
+            <p class="cmi-help-text">Select all apps that require pre-authentication. This list is populated from your selected App Store apps and Web Clips above.</p>
+            <div class="cmi-checkbox-grid" id="appLoginCheckboxes">
+              <!-- Dynamically populated by JS from selected apps + web clips -->
+              <p class="cmi-text-muted" id="appLoginPlaceholder"><i class="fa-solid fa-circle-info"></i> Please add apps or web clips above first — they will appear here for selection.</p>
+            </div>
+          </div>
+
+          <div class="cmi-divider"></div>
+
+          <div class="cmi-field">
+            <label class="cmi-label">Upload Login Credentials / Instructions</label>
+            <p class="cmi-help-text">Provide a file containing all usernames, passwords, and any special instructions the Fello team will need. <strong>Do not type credentials directly into this form.</strong></p>
+            <div class="cmi-file-drop" data-file-id="appLoginCredentials">
+              <input type="file" class="cmi-file-input" accept=".csv,.xlsx,.xls,.numbers,.doc,.docx,.pdf" hidden>
+              <div class="cmi-file-drop-content">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <p>Drag &amp; drop your credentials file here or <span class="cmi-file-browse">browse</span></p>
+                <small>Accepted: CSV, Excel, Numbers, Word, PDF</small>
+              </div>
+              <div class="cmi-file-preview" hidden></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════ STEP 3: Branding & Appearance ═══════════════════════════ -->
+      <section id="step-3" class="cmi-step">
+        <div class="cmi-step-header">
+          <h2 class="cmi-step-title"><i class="fa-solid fa-palette"></i> Branding &amp; Appearance</h2>
+          <p class="cmi-step-subtitle">Customize the look and feel of your devices.</p>
+        </div>
+
+        <!-- Wallpaper Toggle -->
+        <div class="cmi-toggle-group" data-toggle="wallpaperToggle">
+          <label class="cmi-label">Do you require a Custom Wallpaper?</label>
+          <div class="cmi-toggle-buttons">
+            <button type="button" class="cmi-toggle-btn" data-value="yes">Yes</button>
+            <button type="button" class="cmi-toggle-btn active" data-value="no">No</button>
+          </div>
+        </div>
+        <div class="cmi-toggle-content" id="wallpaperContent" data-toggle-content="wallpaperToggle">
+          <div class="cmi-form-grid">
+            <div class="cmi-field cmi-col-full">
+              <label class="cmi-label">Upload logo or wallpaper artwork</label>
+              <div class="cmi-file-drop" data-file-id="wallpaperArtwork" id="wallpaperArtworkUpload">
+                <input type="file" class="cmi-file-input" accept=".jpg,.jpeg,.png" hidden>
+                <div class="cmi-file-drop-content">
+                  <i class="fa-solid fa-image"></i>
+                  <p>Drag &amp; drop or <span class="cmi-file-browse">browse</span></p>
+                  <small>JPG, JPEG, PNG (max 2MB)</small>
+                </div>
+                <div class="cmi-file-preview" hidden></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="cmi-divider"></div>
+
+        <!-- Home Screen Layout -->
+        <div class="cmi-field">
+          <label class="cmi-label">Home Screen Layout</label>
+          <p class="cmi-help-text" style="margin-bottom: 12px;">Choose how apps are arranged on the device home screen.</p>
+          <div class="cmi-radio-card-grid">
+            <label class="cmi-radio-card">
+              <input type="radio" name="homeScreenLayout" value="Standard" required checked>
+              <div class="cmi-radio-card-content">
+                <span class="cmi-radio-card-title">Standard</span>
+                <span class="cmi-radio-card-desc">All non-essential apps are removed from the device. Your installed apps will be placed on the dock for easy access.</span>
+              </div>
+            </label>
+            <label class="cmi-radio-card">
+              <input type="radio" name="homeScreenLayout" value="Single App">
+              <div class="cmi-radio-card-content">
+                <span class="cmi-radio-card-title">Single App</span>
+                <span class="cmi-radio-card-desc">Device launches directly into one app. Ideal for kiosks and POS.</span>
+              </div>
+            </label>
+
+            <label class="cmi-radio-card">
+              <input type="radio" name="homeScreenLayout" value="Custom">
+              <div class="cmi-radio-card-content">
+                <span class="cmi-radio-card-title">Custom</span>
+                <span class="cmi-radio-card-desc">Upload a mockup of your desired layout.</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Custom Mockup (Conditional) -->
+        <div class="cmi-toggle-content" id="customLayoutContent">
+          <div class="cmi-field">
+            <label class="cmi-label">Upload Custom Layout Screenshot/Mockup</label>
+            <div class="cmi-file-drop" data-file-id="customLayoutMockup">
+              <input type="file" class="cmi-file-input" accept=".jpg,.jpeg,.png,.pdf" hidden>
+              <div class="cmi-file-drop-content">
+                <i class="fa-solid fa-image"></i>
+                <p>Drag &amp; drop or <span class="cmi-file-browse">browse</span></p>
+              </div>
+              <div class="cmi-file-preview" hidden></div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ═══════════════════════════ STEP 4: Network & Security ═══════════════════════════ -->
+      <section id="step-4" class="cmi-step">
+        <div class="cmi-step-header">
+          <h2 class="cmi-step-title"><i class="fa-solid fa-shield-halved"></i> Network &amp; Security</h2>
+          <p class="cmi-step-subtitle">Configure connectivity and access controls.</p>
+        </div>
+
+        <!-- Wi-Fi Toggle -->
+        <div class="cmi-toggle-group" data-toggle="wifiToggle">
+          <label class="cmi-label">Pre-configure Wi-Fi?</label>
+          <div class="cmi-toggle-buttons">
+            <button type="button" class="cmi-toggle-btn" data-value="yes">Yes</button>
+            <button type="button" class="cmi-toggle-btn active" data-value="no">No</button>
+          </div>
+        </div>
+        <div class="cmi-toggle-content" id="wifiContent" data-toggle-content="wifiToggle">
+          <div class="cmi-form-grid">
+            <div class="cmi-field cmi-col-half">
+              <label class="cmi-label" for="wifiSsid">Network Name (SSID) <span class="cmi-required">*</span></label>
+              <input type="text" id="wifiSsid" class="cmi-input" placeholder="Your Wi-Fi network name" data-conditional-required>
+            </div>
+            <div class="cmi-field cmi-col-half">
+              <label class="cmi-label" for="wifiPassword">Password <span class="cmi-required">*</span></label>
+              <div class="cmi-input-group">
+                <input type="password" id="wifiPassword" class="cmi-input" placeholder="Wi-Fi password" data-conditional-required>
+                <button type="button" class="cmi-btn-icon cmi-password-toggle" data-target="wifiPassword" title="Show password">
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+              </div>
+            </div>
+            <div class="cmi-field cmi-col-half">
+              <label class="cmi-label" for="wifiSecurity">Security Type <span class="cmi-required">*</span></label>
+              <select id="wifiSecurity" class="cmi-select" data-conditional-required>
+                <option value="">Select security type...</option>
+                <option value="WPA2">WPA2</option>
+                <option value="WPA3">WPA3</option>
+                <option value="WPA2/WPA3 Transitional">WPA2 / WPA3 Transitional</option>
+                <option value="Open Network">Open Network</option>
+              </select>
+            </div>
+            <div class="cmi-field cmi-col-half">
+              <label class="cmi-label">Hidden Network?</label>
+              <div class="cmi-radio-card-grid" style="grid-template-columns: 1fr 1fr;">
+                <label class="cmi-radio-card">
+                  <input type="radio" name="wifiHidden" value="Yes">
+                  <div class="cmi-radio-card-content"><span>Yes</span></div>
+                </label>
+                <label class="cmi-radio-card">
+                  <input type="radio" name="wifiHidden" value="No" checked>
+                  <div class="cmi-radio-card-content"><span>No</span></div>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cmi-divider"></div>
+
+        <!-- VPN Profile Toggle -->
+        <div class="cmi-toggle-group" data-toggle="vpnToggle">
+          <label class="cmi-label">Install VPN Profile?</label>
+          <div class="cmi-toggle-buttons">
+            <button type="button" class="cmi-toggle-btn" data-value="yes">Yes</button>
+            <button type="button" class="cmi-toggle-btn active" data-value="no">No</button>
+          </div>
+        </div>
+        <div class="cmi-toggle-content" id="vpnContent" data-toggle-content="vpnToggle">
+          <div class="cmi-field">
+            <label class="cmi-label">Upload Config File</label>
+            <div class="cmi-file-drop" data-file-id="vpnProfile">
+              <input type="file" class="cmi-file-input" accept=".ovpn,.conf,.mobileconfig" hidden>
+              <div class="cmi-file-drop-content">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <p>Drag &amp; drop your profile here or <span class="cmi-file-browse">browse</span></p>
+              </div>
+              <div class="cmi-file-preview" hidden></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cmi-divider"></div>
+
+        <!-- Apple Configuration Profile Toggle -->
+        <div class="cmi-toggle-group" data-toggle="configProfileToggle">
+          <label class="cmi-label">Install Apple Configuration Profile?</label>
+          <div class="cmi-toggle-buttons">
+            <button type="button" class="cmi-toggle-btn" data-value="yes">Yes</button>
+            <button type="button" class="cmi-toggle-btn active" data-value="no">No</button>
+          </div>
+        </div>
+        <div class="cmi-toggle-content" id="configProfileContent" data-toggle-content="configProfileToggle">
+          <div class="cmi-field">
+            <label class="cmi-label">Upload .mobileconfig</label>
+            <div class="cmi-file-drop" data-file-id="configProfile">
+              <input type="file" class="cmi-file-input" accept=".mobileconfig" hidden>
+              <div class="cmi-file-drop-content">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <p>Drag &amp; drop your .mobileconfig here or <span class="cmi-file-browse">browse</span></p>
+              </div>
+              <div class="cmi-file-preview" hidden></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cmi-divider"></div>
+
+        <!-- Website Restrictions -->
+        <div class="cmi-toggle-group" data-toggle="restrictionsToggle">
+          <label class="cmi-label">Do you need website restrictions on the devices?</label>
+          <p class="cmi-help-text">Restrict which websites can be accessed on the devices.</p>
+          <div class="cmi-toggle-buttons">
+            <button type="button" class="cmi-toggle-btn" data-value="yes">Yes</button>
+            <button type="button" class="cmi-toggle-btn active" data-value="no">No</button>
+          </div>
+        </div>
+        <div class="cmi-toggle-content" id="restrictionsContent" data-toggle-content="restrictionsToggle">
+          <div class="cmi-field">
+            <label class="cmi-label">Restriction Type</label>
+            <div class="cmi-radio-card-grid" style="grid-template-columns: 1fr 1fr;">
+              <label class="cmi-radio-card">
+                <input type="radio" name="restrictionType" value="Whitelist" checked>
+                <div class="cmi-radio-card-content">
+                  <span class="cmi-radio-card-title"><i class="fa-solid fa-check-circle" style="color: var(--cmi-success);"></i> Whitelist</span>
+                  <span class="cmi-radio-card-desc"><strong>Only allow</strong> the websites you list below. All other websites will be blocked.</span>
+                </div>
+              </label>
+              <label class="cmi-radio-card">
+                <input type="radio" name="restrictionType" value="Blacklist">
+                <div class="cmi-radio-card-content">
+                  <span class="cmi-radio-card-title"><i class="fa-solid fa-ban" style="color: var(--cmi-error);"></i> Blacklist</span>
+                  <span class="cmi-radio-card-desc"><strong>Block only</strong> the websites you list below. All other websites will remain accessible.</span>
+                </div>
+              </label>
+            </div>
+          </div>
+          <div class="cmi-field">
+            <label class="cmi-label">Enter Website URLs</label>
+            <p class="cmi-help-text">Add each URL that should be allowed or blocked based on your selection above.</p>
+            <div class="cmi-repeater" id="restrictionUrlRepeater">
+              <div class="cmi-repeater-header">
+                <span class="cmi-repeater-col">Website URL</span>
+                <span class="cmi-repeater-col cmi-repeater-actions-col"></span>
+              </div>
+              <div class="cmi-repeater-body">
+                <div class="cmi-repeater-row">
+                  <div class="cmi-repeater-cell cmi-repeater-cell-full">
+                    <input type="url" class="cmi-input" name="restrictionUrl[]" placeholder="https://example.com">
+                  </div>
+                  <div class="cmi-repeater-cell cmi-repeater-actions">
+                    <button type="button" class="cmi-btn-icon cmi-btn-remove-row" title="Remove row"><i class="fa-solid fa-trash-can"></i></button>
+                  </div>
+                </div>
+              </div>
+              <button type="button" class="cmi-btn-add-row" data-repeater="restrictionUrlRepeater"><i class="fa-solid fa-plus"></i> Add URL</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="cmi-divider"></div>
+
+        <!-- Guided Access Toggle -->
+        <div class="cmi-toggle-group" data-toggle="guidedAccessToggle">
+          <label class="cmi-label">Enable Guided Access? <span class="cmi-fee-badge"><i class="fa-solid fa-circle-dollar-to-slot"></i> Additional Fee</span></label>
+          <p class="cmi-help-text">Guided Access locks the device to a single app. A passcode is required to exit.</p>
+          <div class="cmi-toggle-buttons">
+            <button type="button" class="cmi-toggle-btn" data-value="yes">Yes</button>
+            <button type="button" class="cmi-toggle-btn active" data-value="no">No</button>
+          </div>
+        </div>
+        <div class="cmi-toggle-content" id="guidedAccessContent" data-toggle-content="guidedAccessToggle">
+          <div class="cmi-field">
+            <label class="cmi-label">Guided Access Passcode <span class="cmi-required">*</span></label>
+            <p class="cmi-help-text">Enter a 6-digit numerical code that will be used to exit Guided Access mode.</p>
+            <input type="text" class="cmi-input" id="guidedAccessPasscode" name="guidedAccessPasscode" placeholder="e.g. 123456" maxlength="6" inputmode="numeric" pattern="[0-9]{6}">
+          </div>
+        </div>
+
+        <div class="cmi-divider"></div>
+
+        <!-- Location Services -->
+        <div class="cmi-field">
+          <label class="cmi-label">Location Services</label>
+          <div class="cmi-radio-card-grid" style="grid-template-columns: 1fr 1fr;">
+            <label class="cmi-radio-card">
+              <input type="radio" name="locationServices" value="Enable Location Services" required checked>
+              <div class="cmi-radio-card-content">
+                <span>Enable Location Services</span>
+              </div>
+            </label>
+            <label class="cmi-radio-card">
+              <input type="radio" name="locationServices" value="Disable Location Services">
+              <div class="cmi-radio-card-content">
+                <span>Disable Location Services</span>
+              </div>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════ STEP 5: Media & Naming ═══════════════════════════ -->
+      <section id="step-5" class="cmi-step">
+        <div class="cmi-step-header">
+          <h2 class="cmi-step-title"><i class="fa-solid fa-photo-film"></i> Media &amp; Naming</h2>
+          <p class="cmi-step-subtitle">Upload files and determine how devices are named.</p>
+        </div>
+
+        <!-- Media Toggle -->
+        <div class="cmi-toggle-group" data-toggle="mediaToggle">
+          <label class="cmi-label">Install Media Files? <span class="cmi-fee-badge"><i class="fa-solid fa-circle-dollar-to-slot"></i> Additional Fee</span></label>
+          <div class="cmi-toggle-buttons">
+            <button type="button" class="cmi-toggle-btn" data-value="yes">Yes</button>
+            <button type="button" class="cmi-toggle-btn active" data-value="no">No</button>
+          </div>
+        </div>
+        <div class="cmi-toggle-content" id="mediaContent" data-toggle-content="mediaToggle">
+          <div class="cmi-field">
+            <label class="cmi-label">Upload Videos, Photos, PDFs, Presentations</label>
+            <div class="cmi-file-drop cmi-file-drop-multi" data-file-id="mediaUpload" id="mediaUpload">
+              <input type="file" class="cmi-file-input" multiple hidden>
+              <div class="cmi-file-drop-content">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <p>Drag &amp; drop files here or <span class="cmi-file-browse">browse</span></p>
+                <small>Max 10MB per file &middot; Multiple files accepted</small>
+              </div>
+              <div class="cmi-file-preview cmi-file-preview-multi" hidden></div>
+            </div>
+          </div>
+          <div class="cmi-field">
+            <label class="cmi-label">How Should Media Be Used?</label>
+            <div class="cmi-checkbox-grid">
+              <label class="cmi-checkbox-label">
+                <input type="checkbox" name="mediaUsage" value="Looping Video" class="cmi-checkbox">
+                <span class="cmi-checkbox-custom"></span> Looping Video
+              </label>
+              <label class="cmi-checkbox-label">
+                <input type="checkbox" name="mediaUsage" value="Photo Slideshow" class="cmi-checkbox">
+                <span class="cmi-checkbox-custom"></span> Photo Slideshow
+              </label>
+              <label class="cmi-checkbox-label">
+                <input type="checkbox" name="mediaUsage" value="Presentation Content" class="cmi-checkbox">
+                <span class="cmi-checkbox-custom"></span> Presentation Content
+              </label>
+              <label class="cmi-checkbox-label">
+                <input type="checkbox" name="mediaUsage" value="Reference Documents" class="cmi-checkbox">
+                <span class="cmi-checkbox-custom"></span> Reference Documents
+              </label>
+              <label class="cmi-checkbox-label">
+                <input type="checkbox" name="mediaUsage" value="Other" class="cmi-checkbox">
+                <span class="cmi-checkbox-custom"></span> Other
+              </label>
+            </div>
+          </div>
+          <div class="cmi-field">
+            <label class="cmi-label" for="mediaInstructions">Additional Instructions</label>
+            <textarea id="mediaInstructions" class="cmi-textarea" rows="3" placeholder="Any special instructions for media files..."></textarea>
+          </div>
+        </div>
+
+        <div class="cmi-divider"></div>
+
+        <!-- Naming Convention -->
+        <div class="cmi-field">
+          <label class="cmi-label">Naming Convention</label>
+          <p class="cmi-help-text">How should the devices be named?</p>
+          <div class="cmi-radio-card-grid" style="grid-template-columns: 1fr 1fr;">
+            <label class="cmi-radio-card">
+              <input type="radio" name="namingConvention" value="Use Default" required checked>
+              <div class="cmi-radio-card-content">
+                <span class="cmi-radio-card-title">Default</span>
+                <span class="cmi-radio-card-desc">Devices will be named using your company name followed by a number.<br><strong id="namingPreview">Company Name 01, Company Name 02, ...</strong></span>
+              </div>
+            </label>
+            <label class="cmi-radio-card">
+              <input type="radio" name="namingConvention" value="Custom Naming Convention">
+              <div class="cmi-radio-card-content">
+                <span class="cmi-radio-card-title">Custom</span>
+                <span class="cmi-radio-card-desc">Specify your own naming format for the devices.</span>
+              </div>
+            </label>
+          </div>
+        </div>
+        
+        <div class="cmi-toggle-content" id="customNamingContent">
+          <div class="cmi-field">
+            <label class="cmi-label" for="customNamingFormat">Custom Format</label>
+            <input type="text" id="customNamingFormat" class="cmi-input" placeholder="e.g. MyOrg-iPad-XXX">
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════ STEP 6: Review & Approval ═══════════════════════════ -->
+      <section id="step-6" class="cmi-step">
+        <div class="cmi-step-header">
+          <h2 class="cmi-step-title"><i class="fa-solid fa-clipboard-check"></i> Review &amp; Approval</h2>
+          <p class="cmi-step-subtitle">Review your specifications and submit.</p>
+        </div>
+
+        <div class="cmi-field">
+          <label class="cmi-label" for="anythingElse">Anything Else?</label>
+          <textarea id="anythingElse" class="cmi-textarea" rows="4" placeholder="Any final thoughts or instructions..."></textarea>
+        </div>
+
+        <!-- Divider -->
+        <div class="cmi-divider"></div>
+
+        <!-- Review Summary -->
+        <h3 class="cmi-section-title"><i class="fa-solid fa-list-check"></i> Configuration Summary</h3>
+        <div id="reviewSummary" class="cmi-review-summary">
+          <!-- Populated dynamically by JS -->
+        </div>
+
+        <!-- Divider -->
+        <div class="cmi-divider"></div>
+
+        <!-- Terms -->
+        <h3 class="cmi-section-title"><i class="fa-solid fa-file-signature"></i> Authorization</h3>
+
+        <div class="cmi-terms">
+          <div class="cmi-field">
+            <label class="cmi-checkbox-label">
+              <input type="checkbox" id="auth1" class="cmi-checkbox" required>
+              <span class="cmi-checkbox-custom"></span>
+              I authorize Fello to configure the devices according to the specifications provided above. <span class="cmi-required">*</span>
+            </label>
+          </div>
+          <div class="cmi-field">
+            <label class="cmi-checkbox-label">
+              <input type="checkbox" id="auth2" class="cmi-checkbox" required>
+              <span class="cmi-checkbox-custom"></span>
+              I understand that changes submitted after approval may incur additional fees. <span class="cmi-required">*</span>
+            </label>
+          </div>
+          <div class="cmi-field">
+            <label class="cmi-checkbox-label">
+              <input type="checkbox" id="auth3" class="cmi-checkbox" required>
+              <span class="cmi-checkbox-custom"></span>
+              I confirm all required files, credentials, and instructions have been provided. <span class="cmi-required">*</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Submit Button — only visible here at the end of the wizard -->
+        <div class="cmi-submit-wrapper" id="submitWrapper">
+          <button type="button" class="cmi-btn cmi-btn-submit" id="btnSubmit">
+            <i class="fa-solid fa-paper-plane"></i> Submit Configuration
+          </button>
+          <p class="cmi-help-text" style="text-align: center; margin-top: 8px;">By clicking Submit, your configuration will be sent to the Fello team for processing.</p>
+        </div>
+      </section>
+
+      <!-- ─── Cost Summary ─── -->
+      <div class="cmi-cost-summary" id="cmiCostSummary">
+        <div class="cmi-cost-summary-header" id="cmiCostSummaryToggle">
+          <span class="cmi-cost-summary-title"><i class="fa-solid fa-calculator"></i> Estimated Configuration Cost</span>
+          <span class="cmi-cost-summary-total" id="cmiTotalCost">$0.00</span>
+        </div>
+        <div class="cmi-cost-summary-body" id="cmiCostSummaryBody">
+          <div class="cmi-cost-line">
+            <span>Base Configuration</span>
+            <span><span id="cmiBaseRate">$5.00</span>/device × <span id="cmiDeviceCount">0</span> devices</span>
+            <span class="cmi-cost-line-total" id="cmiBaseCost">$0.00</span>
+          </div>
+          <div class="cmi-cost-line cmi-cost-line-addon" id="cmiAddonLine" hidden>
+            <span>Add-on Services</span>
+            <span>+$5.00/device (upgrade to $10.00/device)</span>
+            <span class="cmi-cost-line-total" id="cmiAddonCost">$0.00</span>
+          </div>
+          <div class="cmi-cost-line" id="cmiAppLicenseLine">
+            <span>App Licensing</span>
+            <span>Paid app fees</span>
+            <span class="cmi-cost-line-total" id="cmiAppLicenseCost">$0.00</span>
+          </div>
+          <div class="cmi-cost-divider"></div>
+          <div class="cmi-cost-line cmi-cost-line-grand">
+            <span>Estimated Total</span>
+            <span></span>
+            <span class="cmi-cost-line-total" id="cmiGrandTotal">$0.00</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── Navigation ─── -->
+      <div class="cmi-nav">
+        <button type="button" class="cmi-btn cmi-btn-secondary" id="btnBack" hidden>
+          <i class="fa-solid fa-arrow-left"></i> Back
+        </button>
+        <div class="cmi-nav-spacer"></div>
+        <button type="button" class="cmi-btn cmi-btn-primary" id="btnNext">
+          Next <i class="fa-solid fa-arrow-right"></i>
+        </button>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ─── Toast Container ─── -->
+  <div class="cmi-toast-container" id="toastContainer"></div>
+
+</div>
+
+<script src="app.js" defer></script>
+</body>
+</html>
