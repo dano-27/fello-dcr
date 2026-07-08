@@ -1020,26 +1020,113 @@
     });
   };
 
+  // ═══════════════════════════════════════════════════════════════════════════
+  // GOOGLE SHEETS INTEGRATION
+  // ═══════════════════════════════════════════════════════════════════════════
+  // PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL BELOW:
+  const GOOGLE_SCRIPT_URL = '';
+
+  /** Collect all form data into a flat object for submission */
+  const collectSubmissionData = () => {
+    const pkg = getActivePackage();
+    const isCustom = !PACKAGE_CHAINS[pkg];
+    const prefixMap = {
+      'Check-in Mode': 'Reg',
+      'Lead Capture Mode': 'Lc',
+      'POS Mode': 'Pos',
+      'Kiosk Mode': 'Kiosk',
+    };
+    const p = prefixMap[pkg] || '';
+
+    const data = {
+      orderNumber: $('#orderNumber')?.value || '',
+      eventName: $('#eventName')?.value || '',
+      eventDates: ($('#eventStartDate')?.value || '') + (($('#eventEndDate')?.value) ? ' - ' + $('#eventEndDate')?.value : ''),
+      venue: $('#venue')?.value || '',
+      contactName: ($('#contactFirstName')?.value || '') + ' ' + ($('#contactLastName')?.value || ''),
+      company: $('#companyName')?.value || '',
+      email: $('#contactEmail')?.value || '',
+      phone: $('#contactPhone')?.value || '',
+      configMode: pkg,
+      apps: selectedApps.map(a => a.name),
+    };
+
+    if (isCustom) {
+      // Custom flow fields
+      data.allAppsAllDevices = getToggleValue('allAppsAllDevicesToggle') !== 'no' ? 'Yes' : 'No';
+      data.homeScreenLayout = $('input[name="homeScreenLayout"]:checked')?.value || '';
+      data.customLayoutDescription = $('[name="customLayoutDesc"]')?.value || '';
+      data.locationServices = $('input[name="locationServices"]:checked')?.value || '';
+      data.wifiEnabled = getToggleValue('wifiToggle') === 'yes' ? 'Yes' : 'No';
+      data.wifiSsid = $('#wifiSsid')?.value || '';
+      data.wifiSecurity = $('#wifiSecurity')?.value || '';
+      data.customWallpaper = getToggleValue('wallpaperToggle') === 'yes' ? 'Yes' : 'No';
+      data.namingConvention = $('input[name="namingConvention"]:checked')?.value || '';
+      data.customNamingFormat = $('#customNamingFormat')?.value || '';
+      data.restrictionsEnabled = getToggleValue('restrictionsToggle') === 'yes' ? 'Yes' : 'No';
+      data.appLoginEnabled = getToggleValue('appLoginToggle') === 'yes' ? 'Yes' : 'No';
+      data.mediaInstructions = $('#mediaInstructions')?.value || '';
+      data.additionalComments = $('#anythingElse')?.value || '';
+    } else {
+      // Package/Mode flow fields
+      data.allAppsAllDevices = getToggleValue(`pkg${p}AllAppsToggle`) !== 'no' ? 'Yes' : 'No';
+      data.homeScreenLayout = $(`input[name="pkg${p}HomeScreenLayout"]:checked`)?.value || '';
+      data.customLayoutDescription = $(`[name="pkg${p}CustomLayoutDesc"]`)?.value || '';
+      data.locationServices = $(`input[name="pkg${p}LocationServices"]:checked`)?.value || '';
+      data.wifiEnabled = getToggleValue(`pkg${p}WifiToggle`) === 'yes' ? 'Yes' : 'No';
+      data.wifiSsid = $(`#pkg${p}WifiSsid`)?.value || '';
+      data.wifiSecurity = $(`#pkg${p}WifiSecurity`)?.value || '';
+      data.customWallpaper = getToggleValue(`pkg${p}WallpaperToggle`) === 'yes' ? 'Yes' : 'No';
+      data.restrictionsEnabled = getToggleValue(`pkg${p}RestrictionsToggle`) === 'yes' ? 'Yes' : 'No';
+      data.appLoginEnabled = getToggleValue(`pkg${p}AppLoginToggle`) === 'yes' ? 'Yes' : 'No';
+
+      if (p === 'Kiosk') {
+        data.lockdownMode = $('input[name="pkgKioskLockdownMode"]:checked')?.value || '';
+        data.guidedAccessPasscode = $(`#pkgKioskGuidedAccessPasscode`)?.value || '';
+        const clips = $$('input[name="pkgKioskWebClipName[]"]').map(i => i.value).filter(Boolean);
+        data.webClips = clips;
+      }
+
+      const loginApps = $$('.pkg-app-login-checkboxes input[name="pkgAppLogin"]:checked').map(cb => cb.value);
+      data.appLoginApps = loginApps;
+    }
+
+    return data;
+  };
+
   const submitForm = async () => {
     if (!validateStep('step-6')) return;
+
+    // Check if Google Script URL is configured
+    if (!GOOGLE_SCRIPT_URL) {
+      showToast('Submission endpoint not configured. See google-apps-script.js for setup instructions.', 'warning');
+      return;
+    }
 
     dom.btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting...';
     dom.btnSubmit.disabled = true;
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      showToast('CMI Configuration submitted successfully!', 'success');
+      const data = collectSubmissionData();
+
+      const response = await fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      showToast('Configuration submitted successfully!', 'success');
       localStorage.removeItem(STORAGE_KEY);
-      
+
       setTimeout(() => {
         window.location.reload();
-      }, 2000);
+      }, 2500);
 
     } catch (e) {
+      console.error('Submission error:', e);
       showToast('An error occurred during submission. Please try again.', 'error');
-      dom.btnSubmit.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit';
+      dom.btnSubmit.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit Configuration';
       dom.btnSubmit.disabled = false;
     }
   };
