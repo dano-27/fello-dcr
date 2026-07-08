@@ -1024,7 +1024,7 @@
   // GOOGLE SHEETS INTEGRATION
   // ═══════════════════════════════════════════════════════════════════════════
   // PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL BELOW:
-  const GOOGLE_SCRIPT_URL = '';
+  const GOOGLE_SCRIPT_URL = 'https://script.google.com/a/macros/fello.com/s/AKfycbwidaqayX2Zk3DwamqyT7t4IjIosWs1o5HeIKG8KlPRlQWyoHn4X24GG0PzPwMwK9beug/exec';
 
   /** Collect all form data into a flat object for submission */
   const collectSubmissionData = () => {
