@@ -1248,7 +1248,7 @@
     }
 
     container.innerHTML = filtered.map(app => `
-      <div class="cmi-app-result" data-track-id="${app.trackId}" data-name="${escapeAttr(app.name)}" data-developer="${escapeAttr(app.developer)}" data-icon="${escapeAttr(app.icon)}" data-price="${escapeAttr(app.price)}" data-bundle-id="${escapeAttr(app.bundleId || '')}">
+      <div class="cmi-app-result" data-track-id="${app.trackId}" data-name="${escapeAttr(app.name)}" data-developer="${escapeAttr(app.developer)}" data-icon="${escapeAttr(app.icon)}" data-price="${escapeAttr(app.price)}" data-bundle-id="${escapeAttr(app.bundleId || '')}" data-url="${escapeAttr(app.url || '')}">
         <img class="cmi-app-result-icon" src="${app.icon}" alt="${escapeAttr(app.name)}" loading="lazy">
         <div class="cmi-app-result-info">
           <div class="cmi-app-result-name">${escapeHtml(app.name)}</div>
@@ -1486,7 +1486,8 @@
         developer: item.dataset.developer,
         icon:      item.dataset.icon,
         price:     item.dataset.price,
-        bundleId:  item.dataset.bundleId
+        bundleId:  item.dataset.bundleId,
+        url:       item.dataset.url || ''
       });
 
       // Clear search
