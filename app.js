@@ -56,7 +56,7 @@
   const CUSTOM_LABELS = ['Order Info', 'Apps', 'Branding', 'Security', 'Media', 'Review'];
 
   const PACKAGE_CHAINS = {
-    'Registration Mode': { chain: ['step-1', 'pkg-registration', 'step-6'], labels: ['Order Info', 'Configure', 'Review'] },
+    'Check-in Mode': { chain: ['step-1', 'pkg-registration', 'step-6'], labels: ['Order Info', 'Configure', 'Review'] },
     'Lead Capture Mode': { chain: ['step-1', 'pkg-leadcapture', 'step-6'], labels: ['Order Info', 'Configure', 'Review'] },
     'POS Mode': { chain: ['step-1', 'pkg-pos', 'step-6'], labels: ['Order Info', 'Configure', 'Review'] },
     'Kiosk Mode': { chain: ['step-1', 'pkg-kiosk', 'step-6'], labels: ['Order Info', 'Configure', 'Review'] },
@@ -944,7 +944,7 @@
     } else {
       // ── PACKAGE FLOW: read from active package section ──
       const prefixMap = {
-        'Registration Mode': 'Reg',
+        'Check-in Mode': 'Reg',
         'Lead Capture Mode': 'Lc',
         'POS Mode': 'Pos',
         'Kiosk Mode': 'Kiosk',
@@ -1259,7 +1259,7 @@
     // Determine which "all apps" toggle is active based on the current package
     const pkg = getActivePackage();
     const prefixMap = {
-      'Registration Mode': 'Reg',
+      'Check-in Mode': 'Reg',
       'Lead Capture Mode': 'Lc',
       'POS Mode': 'Pos',
       'Kiosk Mode': 'Kiosk',
@@ -1370,7 +1370,7 @@
 
     // Dynamic placeholder based on selected config package
     const packagePlaceholders = {
-      'Registration Mode': 'Search for Eventbrite, Cvent, Swoogo, Splash, RSVPify...',
+      'Check-in Mode': 'Search for Eventbrite, Cvent, Swoogo, Splash, RSVPify...',
       'Lead Capture Mode': 'Search for iCapture, Leadature, CompuLead, Cvent LeadCapture...',
       'POS Mode': 'Search for Square, Toast, Shopify, Lightspeed, Stripe...',
       'Kiosk Mode': 'Search for KioWare, SureFox, Kiosk Pro, SurveyMonkey...',
