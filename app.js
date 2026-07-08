@@ -1041,9 +1041,9 @@
     const data = {
       orderNumber: $('#orderNumber')?.value || '',
       eventName: $('#eventName')?.value || '',
-      eventDates: ($('#eventStartDate')?.value || '') + (($('#eventEndDate')?.value) ? ' - ' + $('#eventEndDate')?.value : ''),
-      venue: $('#venue')?.value || '',
-      contactName: ($('#contactFirstName')?.value || '') + ' ' + ($('#contactLastName')?.value || ''),
+      eventDates: $('#eventDates')?.value || '',
+      venue: $('#venueName')?.value || '',
+      contactName: $('#primaryContactName')?.value || '',
       company: $('#companyName')?.value || '',
       email: $('#contactEmail')?.value || '',
       phone: $('#contactPhone')?.value || '',
@@ -1059,6 +1059,7 @@
       data.locationServices = $('input[name="locationServices"]:checked')?.value || '';
       data.wifiEnabled = getToggleValue('wifiToggle') === 'yes' ? 'Yes' : 'No';
       data.wifiSsid = $('#wifiSsid')?.value || '';
+      data.wifiPassword = $('#wifiPassword')?.value || '';
       data.wifiSecurity = $('#wifiSecurity')?.value || '';
       data.customWallpaper = getToggleValue('wallpaperToggle') === 'yes' ? 'Yes' : 'No';
       data.namingConvention = $('input[name="namingConvention"]:checked')?.value || '';
@@ -1075,6 +1076,7 @@
       data.locationServices = $(`input[name="pkg${p}LocationServices"]:checked`)?.value || '';
       data.wifiEnabled = getToggleValue(`pkg${p}WifiToggle`) === 'yes' ? 'Yes' : 'No';
       data.wifiSsid = $(`#pkg${p}WifiSsid`)?.value || '';
+      data.wifiPassword = $(`#pkg${p}WifiPassword`)?.value || '';
       data.wifiSecurity = $(`#pkg${p}WifiSecurity`)?.value || '';
       data.customWallpaper = getToggleValue(`pkg${p}WallpaperToggle`) === 'yes' ? 'Yes' : 'No';
       data.restrictionsEnabled = getToggleValue(`pkg${p}RestrictionsToggle`) === 'yes' ? 'Yes' : 'No';
