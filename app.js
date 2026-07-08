@@ -1889,6 +1889,24 @@
   };
 
   // ═══════════════════════════════════════════════════════════════════════════
+  // 12. CUSTOM LAYOUT TEXTAREA TOGGLE
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  const initCustomLayoutToggles = () => {
+    const layoutNames = ['pkgRegHomeScreenLayout', 'pkgLcHomeScreenLayout', 'pkgPosHomeScreenLayout', 'homeScreenLayout'];
+    layoutNames.forEach(name => {
+      const radios = document.querySelectorAll(`input[name="${name}"]`);
+      const customArea = document.querySelector(`[data-layout-custom="${name}"]`);
+      if (!radios.length || !customArea) return;
+      radios.forEach(radio => {
+        radio.addEventListener('change', () => {
+          customArea.style.display = radio.value === 'Custom' && radio.checked ? 'block' : 'none';
+        });
+      });
+    });
+  };
+
+  // ═══════════════════════════════════════════════════════════════════════════
   // INITIALISATION
   // ═══════════════════════════════════════════════════════════════════════════
 
@@ -1913,6 +1931,7 @@
     initLookupOrder();
     initAppSearch();
     initPackageAppSearches();
+    initCustomLayoutToggles();
     initNamingPreview();
     initAppLoginCheckboxes();
     initPerDeviceAssignment();
