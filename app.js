@@ -199,26 +199,6 @@
   };
 
   const initRadioConditionals = () => {
-    // Home Screen Layout Custom
-    const layoutRadios = $$('input[name="homeScreenLayout"]');
-    const customLayoutContent = $('#customLayoutContent');
-    layoutRadios.forEach(radio => {
-      radio.addEventListener('change', () => {
-        if (!customLayoutContent) return;
-        if (radio.value === 'Custom') {
-          customLayoutContent.classList.add('open');
-          customLayoutContent.style.maxHeight = customLayoutContent.scrollHeight + 'px';
-          setTimeout(() => customLayoutContent.style.maxHeight = 'none', 400);
-        } else {
-          customLayoutContent.style.maxHeight = customLayoutContent.scrollHeight + 'px';
-          customLayoutContent.offsetHeight;
-          customLayoutContent.style.maxHeight = '0';
-          customLayoutContent.classList.remove('open');
-        }
-        triggerAutoSave();
-      });
-    });
-
     // Naming Convention Custom
     const namingRadios = $$('input[name="namingConvention"]');
     const customNamingContent = $('#customNamingContent');
@@ -1901,7 +1881,16 @@
 
       const updateVisibility = () => {
         const selected = document.querySelector(`input[name="${name}"]:checked`);
-        customArea.style.display = selected && selected.value === 'Custom' ? 'block' : 'none';
+        if (selected && selected.value === 'Custom') {
+          customArea.classList.add('open');
+          customArea.style.maxHeight = customArea.scrollHeight + 'px';
+          setTimeout(() => customArea.style.maxHeight = 'none', 400);
+        } else {
+          customArea.style.maxHeight = customArea.scrollHeight + 'px';
+          customArea.offsetHeight;
+          customArea.style.maxHeight = '0';
+          customArea.classList.remove('open');
+        }
       };
 
       radios.forEach(radio => {
