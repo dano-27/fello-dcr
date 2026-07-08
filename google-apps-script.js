@@ -72,7 +72,7 @@ function writeToSheet(data) {
     data.email || "",
     data.phone || "",
     data.configMode || "",
-    (data.apps || []).join(", "),
+    "", // Apps to Install — will be set with rich text below
     data.allAppsAllDevices || "",
     data.homeScreenLayout || "",
     data.customLayoutDescription || "",
@@ -97,6 +97,20 @@ function writeToSheet(data) {
   ];
   
   sheet.appendRow(row);
+  
+  // Set the Apps column with HYPERLINK formulas
+  var appLinks = data.appLinks || [];
+  if (appLinks.length > 0) {
+    var lastRow = sheet.getLastRow();
+    var appsCell = sheet.getRange(lastRow, 11); // Column K = Apps to Install
+    var formulas = appLinks.map(function(app) {
+      if (app.url) {
+        return 'HYPERLINK("' + app.url + '","' + app.name.replace(/"/g, '""') + '")';
+      }
+      return '"' + app.name.replace(/"/g, '""') + '"';
+    });
+    appsCell.setFormula('=' + formulas.join(' & ", " & '));
+  }
 }
 
 /** Handle GET requests — primary submission method (avoids POST redirect 405) */

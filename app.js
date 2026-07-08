@@ -1049,6 +1049,7 @@
       phone: $('#contactPhone')?.value || '',
       configMode: pkg,
       apps: selectedApps.map(a => a.name),
+      appLinks: selectedApps.map(a => ({ name: a.name, url: a.url || '' })),
     };
 
     if (isCustom) {
@@ -1167,7 +1168,7 @@
   // APP STORE SEARCH (iTunes Search API)
   // ═══════════════════════════════════════════════════════════════════════════
 
-  const selectedApps = [];          // Array of { trackId, name, developer, icon, price }
+  const selectedApps = [];          // Array of { trackId, name, developer, icon, price, url }
   let appSearchTimer = null;
   const APP_SEARCH_DELAY = 350;     // ms debounce
 
@@ -1181,7 +1182,8 @@
       developer: app.artistName,
       icon:      app.artworkUrl100 || app.artworkUrl60,
       price:     app.formattedPrice || 'Free',
-      bundleId:  app.bundleId
+      bundleId:  app.bundleId,
+      url:       app.trackViewUrl || ''
     }));
 
     const url = `https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=software&limit=8&country=US`;
