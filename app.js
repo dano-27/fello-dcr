@@ -1024,7 +1024,7 @@
   // GOOGLE SHEETS INTEGRATION
   // ═══════════════════════════════════════════════════════════════════════════
   // PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL BELOW:
-  const GOOGLE_SCRIPT_URL = 'https://script.google.com/a/macros/fello.com/s/AKfycbwidaqayX2Zk3DwamqyT7t4IjIosWs1o5HeIKG8KlPRlQWyoHn4X24GG0PzPwMwK9beug/exec';
+  const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwidaqayX2Zk3DwamqyT7t4IjIosWs1o5HeIKG8KlPRlQWyoHn4X24GG0PzPwMwK9beug/exec';
 
   /** Collect all form data into a flat object for submission */
   const collectSubmissionData = () => {
@@ -1097,7 +1097,6 @@
   const submitForm = async () => {
     if (!validateStep('step-6')) return;
 
-    // Check if Google Script URL is configured
     if (!GOOGLE_SCRIPT_URL) {
       showToast('Submission endpoint not configured. See google-apps-script.js for setup instructions.', 'warning');
       return;
@@ -1108,34 +1107,11 @@
 
     try {
       const data = collectSubmissionData();
+      const payload = encodeURIComponent(JSON.stringify(data));
+      const url = `${GOOGLE_SCRIPT_URL}?payload=${payload}`;
 
-      // Use hidden iframe + form POST to bypass all CORS restrictions
-      const iframeName = 'dcr_submit_frame_' + Date.now();
-      const iframe = document.createElement('iframe');
-      iframe.name = iframeName;
-      iframe.style.display = 'none';
-      document.body.appendChild(iframe);
-
-      const form = document.createElement('form');
-      form.method = 'POST';
-      form.action = GOOGLE_SCRIPT_URL;
-      form.target = iframeName;
-      form.style.display = 'none';
-
-      const input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = 'payload';
-      input.value = JSON.stringify(data);
-      form.appendChild(input);
-
-      document.body.appendChild(form);
-      form.submit();
-
-      // Clean up after submission
-      setTimeout(() => {
-        iframe.remove();
-        form.remove();
-      }, 5000);
+      // Use fetch GET — Google Apps Script doGet handles it
+      await fetch(url, { mode: 'no-cors' });
 
       showToast('Configuration submitted successfully!', 'success');
       localStorage.removeItem(STORAGE_KEY);
