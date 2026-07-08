@@ -72,7 +72,7 @@ function writeToSheet(data) {
     data.email || "",
     data.phone || "",
     data.configMode || "",
-    "", // Apps to Install — will be set with rich text below
+    (data.apps || []).join(", "),
     data.allAppsAllDevices || "",
     data.homeScreenLayout || "",
     data.customLayoutDescription || "",
@@ -98,18 +98,22 @@ function writeToSheet(data) {
   
   sheet.appendRow(row);
   
-  // Set the Apps column with HYPERLINK formulas
+  // Make app names clickable with App Store links
   var appLinks = data.appLinks || [];
   if (appLinks.length > 0) {
     var lastRow = sheet.getLastRow();
     var appsCell = sheet.getRange(lastRow, 11); // Column K = Apps to Install
-    var formulas = appLinks.map(function(app) {
-      if (app.url) {
-        return 'HYPERLINK("' + app.url + '","' + app.name.replace(/"/g, '""') + '")';
+    var text = appLinks.map(function(a) { return a.name; }).join(", ");
+    var richText = SpreadsheetApp.newRichTextValue().setText(text);
+    var pos = 0;
+    appLinks.forEach(function(app) {
+      var start = text.indexOf(app.name, pos);
+      if (start >= 0 && app.url) {
+        richText.setLinkUrl(start, start + app.name.length, app.url);
       }
-      return '"' + app.name.replace(/"/g, '""') + '"';
+      pos = start + app.name.length;
     });
-    appsCell.setFormula('=' + formulas.join(' & ", " & '));
+    appsCell.setRichTextValue(richText.build());
   }
 }
 
