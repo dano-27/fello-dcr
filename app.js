@@ -56,10 +56,10 @@
   const CUSTOM_LABELS = ['Order Info', 'Apps', 'Branding', 'Security', 'Media', 'Review'];
 
   const PACKAGE_CHAINS = {
-    'Registration Package': { chain: ['step-1', 'pkg-registration', 'step-6'], labels: ['Order Info', 'Configure', 'Review'] },
-    'Lead Capture Package': { chain: ['step-1', 'pkg-leadcapture', 'step-6'], labels: ['Order Info', 'Configure', 'Review'] },
-    'POS Package': { chain: ['step-1', 'pkg-pos', 'step-6'], labels: ['Order Info', 'Configure', 'Review'] },
-    'Kiosk Package': { chain: ['step-1', 'pkg-kiosk', 'step-6'], labels: ['Order Info', 'Configure', 'Review'] },
+    'Registration Mode': { chain: ['step-1', 'pkg-registration', 'step-6'], labels: ['Order Info', 'Configure', 'Review'] },
+    'Lead Capture Mode': { chain: ['step-1', 'pkg-leadcapture', 'step-6'], labels: ['Order Info', 'Configure', 'Review'] },
+    'POS Mode': { chain: ['step-1', 'pkg-pos', 'step-6'], labels: ['Order Info', 'Configure', 'Review'] },
+    'Kiosk Mode': { chain: ['step-1', 'pkg-kiosk', 'step-6'], labels: ['Order Info', 'Configure', 'Review'] },
   };
 
   let navChain = CUSTOM_CHAIN;
@@ -867,7 +867,7 @@
     orderHtml += buildRow('Email', $('#contactEmail')?.value);
     orderHtml += buildRow('Phone', $('#contactPhone')?.value);
     const pkg = getActivePackage();
-    orderHtml += buildRow('Config Package', pkg);
+    orderHtml += buildRow('Configuration Mode', pkg);
     html += buildSection('Order & Event Info', orderHtml, 'fa-address-card');
 
     const isCustom = !PACKAGE_CHAINS[pkg];
@@ -944,10 +944,10 @@
     } else {
       // ── PACKAGE FLOW: read from active package section ──
       const prefixMap = {
-        'Registration Package': 'Reg',
-        'Lead Capture Package': 'Lc',
-        'POS Package': 'Pos',
-        'Kiosk Package': 'Kiosk',
+        'Registration Mode': 'Reg',
+        'Lead Capture Mode': 'Lc',
+        'POS Mode': 'Pos',
+        'Kiosk Mode': 'Kiosk',
       };
       const p = prefixMap[pkg] || '';
 
@@ -1025,7 +1025,7 @@
         configHtml += buildRow('Fello Login Required', loginApps.length ? loginApps.join(', ') : 'Yes (no apps selected)');
       }
 
-      html += buildSection('Package Configuration', configHtml || '<p class="cmi-text-muted">Standard settings.</p>', 'fa-sliders');
+      html += buildSection('Mode Configuration', configHtml || '<p class="cmi-text-muted">Standard settings.</p>', 'fa-sliders');
     }
 
     dom.reviewSummary.innerHTML = html;
@@ -1259,10 +1259,10 @@
     // Determine which "all apps" toggle is active based on the current package
     const pkg = getActivePackage();
     const prefixMap = {
-      'Registration Package': 'Reg',
-      'Lead Capture Package': 'Lc',
-      'POS Package': 'Pos',
-      'Kiosk Package': 'Kiosk',
+      'Registration Mode': 'Reg',
+      'Lead Capture Mode': 'Lc',
+      'POS Mode': 'Pos',
+      'Kiosk Mode': 'Kiosk',
     };
     const p = prefixMap[pkg];
     const toggleName = p ? `pkg${p}AllAppsToggle` : 'allAppsAllDevicesToggle';
@@ -1370,10 +1370,10 @@
 
     // Dynamic placeholder based on selected config package
     const packagePlaceholders = {
-      'Registration Package': 'Search for Eventbrite, Cvent, Swoogo, Splash, RSVPify...',
-      'Lead Capture Package': 'Search for iCapture, Leadature, CompuLead, Cvent LeadCapture...',
-      'POS Package': 'Search for Square, Toast, Shopify, Lightspeed, Stripe...',
-      'Kiosk Package': 'Search for KioWare, SureFox, Kiosk Pro, SurveyMonkey...',
+      'Registration Mode': 'Search for Eventbrite, Cvent, Swoogo, Splash, RSVPify...',
+      'Lead Capture Mode': 'Search for iCapture, Leadature, CompuLead, Cvent LeadCapture...',
+      'POS Mode': 'Search for Square, Toast, Shopify, Lightspeed, Stripe...',
+      'Kiosk Mode': 'Search for KioWare, SureFox, Kiosk Pro, SurveyMonkey...',
       'Custom Configuration': 'Start typing an app name...'
     };
     const defaultPlaceholder = 'Start typing an app name...';
