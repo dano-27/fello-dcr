@@ -16,7 +16,9 @@
 
 function doPost(e) {
   try {
-    var data = JSON.parse(e.postData.contents);
+    // Handle both form POST (payload param) and raw JSON body
+    var raw = (e.parameter && e.parameter.payload) ? e.parameter.payload : e.postData.contents;
+    var data = JSON.parse(raw);
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var sheet = ss.getSheetByName("Submissions") || ss.insertSheet("Submissions");
     
