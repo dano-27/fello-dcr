@@ -60,6 +60,15 @@ function writeToSheet(data) {
     sheet.setFrozenRows(1);
   }
   
+  // Format apps: each app on its own line with URL below it
+  var appsText = (data.apps || []).join(", ");
+  var appLinks = data.appLinks || [];
+  if (appLinks.length > 0) {
+    appsText = appLinks.map(function(app) {
+      return app.url ? app.name + " | " + app.url : app.name;
+    }).join("\n");
+  }
+
   // Build the row
   var row = [
     new Date().toLocaleString(),
@@ -72,7 +81,7 @@ function writeToSheet(data) {
     data.email || "",
     data.phone || "",
     data.configMode || "",
-    (data.apps || []).join(", "),
+    appsText,
     data.allAppsAllDevices || "",
     data.homeScreenLayout || "",
     data.customLayoutDescription || "",
@@ -97,24 +106,6 @@ function writeToSheet(data) {
   ];
   
   sheet.appendRow(row);
-  
-  // Make app names clickable with App Store links
-  var appLinks = data.appLinks || [];
-  if (appLinks.length > 0) {
-    var lastRow = sheet.getLastRow();
-    var appsCell = sheet.getRange(lastRow, 11); // Column K = Apps to Install
-    var text = appLinks.map(function(a) { return a.name; }).join(", ");
-    var richText = SpreadsheetApp.newRichTextValue().setText(text);
-    var pos = 0;
-    appLinks.forEach(function(app) {
-      var start = text.indexOf(app.name, pos);
-      if (start >= 0 && app.url) {
-        richText.setLinkUrl(start, start + app.name.length, app.url);
-      }
-      pos = start + app.name.length;
-    });
-    appsCell.setRichTextValue(richText.build());
-  }
 }
 
 /** Handle GET requests — primary submission method (avoids POST redirect 405) */
