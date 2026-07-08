@@ -984,19 +984,21 @@
         if (urls.length) configHtml += buildRow(rType + ' URLs', urls.join(', '));
       }
 
-      // Device Lockdown Mode (Kiosk)
-      const lockdownMode = $('input[name="pkgKioskLockdownMode"]:checked')?.value;
-      if (lockdownMode) {
-        configHtml += buildRow('Device Lockdown Mode', lockdownMode);
-        if (lockdownMode === 'Guided Access') {
-          configHtml += buildRow('Guided Access Passcode', $(`#pkgKioskGuidedAccessPasscode`)?.value || '(not set)');
+      // Device Lockdown Mode (Kiosk only)
+      if (p === 'Kiosk') {
+        const lockdownMode = $('input[name="pkgKioskLockdownMode"]:checked')?.value;
+        if (lockdownMode) {
+          configHtml += buildRow('Device Lockdown Mode', lockdownMode);
+          if (lockdownMode === 'Guided Access') {
+            configHtml += buildRow('Guided Access Passcode', $(`#pkgKioskGuidedAccessPasscode`)?.value || '(not set)');
+          }
         }
-      }
 
-      // Web Clips (Kiosk)
-      if (getToggleValue('pkgKioskWebClipToggle') === 'yes') {
-        const clips = $$('input[name="pkgKioskWebClipName[]"]').map(i => i.value).filter(Boolean);
-        if (clips.length) configHtml += buildRow('Web Clips', clips.join(', '));
+        // Web Clips (Kiosk only)
+        if (getToggleValue('pkgKioskWebClipToggle') === 'yes') {
+          const clips = $$('input[name="pkgKioskWebClipName[]"]').map(i => i.value).filter(Boolean);
+          if (clips.length) configHtml += buildRow('Web Clips', clips.join(', '));
+        }
       }
 
       // App Login
