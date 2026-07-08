@@ -1898,10 +1898,14 @@
       const radios = document.querySelectorAll(`input[name="${name}"]`);
       const customArea = document.querySelector(`[data-layout-custom="${name}"]`);
       if (!radios.length || !customArea) return;
+
+      const updateVisibility = () => {
+        const selected = document.querySelector(`input[name="${name}"]:checked`);
+        customArea.style.display = selected && selected.value === 'Custom' ? 'block' : 'none';
+      };
+
       radios.forEach(radio => {
-        radio.addEventListener('change', () => {
-          customArea.style.display = radio.value === 'Custom' && radio.checked ? 'block' : 'none';
-        });
+        radio.addEventListener('change', updateVisibility);
       });
     });
   };
