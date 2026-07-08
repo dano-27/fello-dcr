@@ -1571,7 +1571,7 @@
           results.innerHTML = apps.map(app => `
             <div class="cmi-app-result" data-track-id="${app.trackId}" data-name="${escapeAttr(app.name)}"
                  data-developer="${escapeAttr(app.developer || '')}" data-icon="${escapeAttr(app.icon || '')}"
-                 data-price="${escapeAttr(app.price || 'Free')}" data-bundle-id="${escapeAttr(app.bundleId || '')}">
+                 data-price="${escapeAttr(app.price || 'Free')}" data-bundle-id="${escapeAttr(app.bundleId || '')}" data-url="${escapeAttr(app.url || '')}">
               <img class="cmi-app-result-icon" src="${escapeAttr(app.icon || '')}" alt="" loading="lazy">
               <div class="cmi-app-result-info">
                 <span class="cmi-app-result-name">${escapeHtml(app.name)}</span>
@@ -1594,7 +1594,8 @@
           developer: item.dataset.developer,
           icon: item.dataset.icon,
           price: item.dataset.price,
-          bundleId: item.dataset.bundleId
+          bundleId: item.dataset.bundleId,
+          url: item.dataset.url || ''
         });
 
         input.value = '';
