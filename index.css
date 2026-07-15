@@ -1566,7 +1566,7 @@ body::before {
   border: 1px solid var(--cmi-border);
   border-radius: var(--radius-lg);
   margin-bottom: var(--sp-3);
-  overflow: hidden;
+  position: relative;
   transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
 .cmi-quick-tile.active {
