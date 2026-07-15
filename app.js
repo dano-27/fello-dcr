@@ -1130,6 +1130,7 @@
       data.wifiSsid = $(`#pkg${p}WifiSsid`)?.value || '';
       data.wifiPassword = $(`#pkg${p}WifiPassword`)?.value || '';
       data.wifiSecurity = $(`#pkg${p}WifiSecurity`)?.value || '';
+      data.wifiHidden = $(`input[name="pkg${p}WifiHidden"]:checked`)?.value || 'No';
       data.customWallpaper = getToggleValue(`pkg${p}WallpaperToggle`) === 'yes' ? 'Yes' : 'No';
       data.restrictionsEnabled = getToggleValue(`pkg${p}RestrictionsToggle`) === 'yes' ? 'Yes' : 'No';
       data.appLoginEnabled = getToggleValue(`pkg${p}AppLoginToggle`) === 'yes' ? 'Yes' : 'No';
