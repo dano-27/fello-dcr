@@ -65,6 +65,7 @@
   let navChain = CUSTOM_CHAIN;
   let navLabels = CUSTOM_LABELS;
   let navIndex = 0; // index into navChain
+  let quickSubmitMode = false; // true when submitting via Quick Setup
 
   const getActivePackage = () => $('input[name="configPackage"]:checked')?.value || '';
 
@@ -108,6 +109,16 @@
     // Validate current step when moving forward
     if (targetIndex > navIndex && !skipValidation) {
       if (!validateStep(navChain[navIndex])) return;
+
+      // If moving forward from step-1 in advanced mode, ensure config mode selected
+      if (navChain[navIndex] === 'step-1' && !quickSubmitMode) {
+        const advancedVisible = $('#advancedModeSelector')?.style.display !== 'none';
+        if (advancedVisible && !getActivePackage()) {
+          showToast('Please select a Configuration Mode.', 'error');
+          $('#advancedModeSelector')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          return;
+        }
+      }
     }
 
     // Clamp target
@@ -847,8 +858,34 @@
     orderHtml += buildRow('Email', $('#contactEmail')?.value);
     orderHtml += buildRow('Phone', $('#contactPhone')?.value);
     const pkg = getActivePackage();
-    orderHtml += buildRow('Configuration Mode', pkg);
+    orderHtml += buildRow('Configuration Mode', quickSubmitMode ? 'Quick Setup' : pkg);
     html += buildSection('Order & Event Info', orderHtml, 'fa-address-card');
+
+    // Quick Submit: simplified review
+    if (quickSubmitMode) {
+      // Apps
+      if (selectedApps.length > 0) {
+        let appsHtml = buildRow('Apps to Install', selectedApps.map(a => a.name).join(', '));
+        appsHtml += buildRow('Total Apps', selectedApps.length);
+        html += buildSection('App Installation', appsHtml, 'fa-brands fa-app-store-ios');
+      }
+
+      // Wi-Fi
+      if ($('#quickWifiToggle')?.checked) {
+        let wifiHtml = buildRow('Network (SSID)', $('#quickWifiSsid')?.value);
+        wifiHtml += buildRow('Security', $('#quickWifiSecurity')?.value);
+        html += buildSection('Pre-configured Wi-Fi', wifiHtml, 'fa-wifi');
+      }
+
+      // Wallpaper
+      if ($('#quickWallpaperToggle')?.checked) {
+        html += buildSection('Custom Wallpaper', buildRow('Wallpaper', 'Uploaded'), 'fa-image');
+      }
+
+      dom.reviewSummary.innerHTML = html;
+      initReviewAccordions();
+      return;
+    }
 
     const isCustom = !PACKAGE_CHAINS[pkg];
 
@@ -1023,8 +1060,12 @@
   // ═══════════════════════════════════════════════════════════════════════════
   // GOOGLE SHEETS INTEGRATION
   // ═══════════════════════════════════════════════════════════════════════════
-  // PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL BELOW:
-  const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwidaqayX2Zk3DwamqyT7t4IjIosWs1o5HeIKG8KlPRlQWyoHn4X24GG0PzPwMwK9beug/exec';
+  // COMMAND CENTER SUBMIT ENDPOINT:
+  // DCR form submits directly to the Fello Command Center for auto-provisioning.
+  // Update this URL to your deployed Command Center address.
+  const COMMAND_CENTER_URL = 'https://YOUR_COMMAND_CENTER_URL';
+  // Legacy Google Apps Script URL (kept for reference):
+  // const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwidaqayX2Zk3DwamqyT7t4IjIosWs1o5HeIKG8KlPRlQWyoHn4X24GG0PzPwMwK9beug/exec';
 
   /** Collect all form data into a flat object for submission */
   const collectSubmissionData = () => {
@@ -1047,10 +1088,20 @@
       company: $('#companyName')?.value || '',
       email: $('#contactEmail')?.value || '',
       phone: $('#contactPhone')?.value || '',
-      configMode: pkg,
+      configMode: quickSubmitMode ? 'Quick Setup' : pkg,
       apps: selectedApps.map(a => a.name),
       appLinks: selectedApps.map(a => ({ name: a.name, url: a.url || '' })),
     };
+
+    // Quick Submit mode — only capture Quick Setup fields
+    if (quickSubmitMode) {
+      data.wifiEnabled = $('#quickWifiToggle')?.checked ? 'Yes' : 'No';
+      data.wifiSsid = $('#quickWifiSsid')?.value || '';
+      data.wifiPassword = $('#quickWifiPassword')?.value || '';
+      data.wifiSecurity = $('#quickWifiSecurity')?.value || '';
+      data.customWallpaper = $('#quickWallpaperToggle')?.checked ? 'Yes' : 'No';
+      return data;
+    }
 
     if (isCustom) {
       // Custom flow fields
@@ -1088,6 +1139,11 @@
         data.guidedAccessPasscode = $(`#pkgKioskGuidedAccessPasscode`)?.value || '';
         const clips = $$('input[name="pkgKioskWebClipName[]"]').map(i => i.value).filter(Boolean);
         data.webClips = clips;
+        const clipUrls = $$('input[name="pkgKioskWebClipUrl[]"]').map(i => i.value).filter(Boolean);
+        data.webClipUrls = clipUrls;
+        // Restriction type (Whitelist/Blacklist) and URLs
+        data.restrictionType = $('input[name="pkgKioskRestrictionType"]:checked')?.value || '';
+        data.restrictionUrls = $$('input[name="pkgKioskRestrictionUrl[]"]').map(i => i.value).filter(Boolean);
       }
 
       const loginApps = $$('.pkg-app-login-checkboxes input[name="pkgAppLogin"]:checked').map(cb => cb.value);
@@ -1100,8 +1156,8 @@
   const submitForm = async () => {
     if (!validateStep('step-6')) return;
 
-    if (!GOOGLE_SCRIPT_URL) {
-      showToast('Submission endpoint not configured. See google-apps-script.js for setup instructions.', 'warning');
+    if (!COMMAND_CENTER_URL || COMMAND_CENTER_URL.includes('YOUR_COMMAND_CENTER')) {
+      showToast('Command Center URL not configured. Update COMMAND_CENTER_URL in app.js.', 'warning');
       return;
     }
 
@@ -1110,18 +1166,25 @@
 
     try {
       const data = collectSubmissionData();
-      const payload = encodeURIComponent(JSON.stringify(data));
-      const url = `${GOOGLE_SCRIPT_URL}?payload=${payload}`;
 
-      // Use fetch GET — Google Apps Script doGet handles it
-      await fetch(url, { mode: 'no-cors' });
+      const res = await fetch(`${COMMAND_CENTER_URL}/api/dcr/submit`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
 
-      showToast('Configuration submitted successfully!', 'success');
-      localStorage.removeItem(STORAGE_KEY);
+      const result = await res.json();
 
-      setTimeout(() => {
-        window.location.reload();
-      }, 2500);
+      if (result.status === 'success' || result.status === 'partial') {
+        showToast('Configuration submitted successfully! Provisioning has been triggered.', 'success');
+        localStorage.removeItem(STORAGE_KEY);
+
+        setTimeout(() => {
+          window.location.reload();
+        }, 2500);
+      } else {
+        throw new Error(result.message || 'Submission failed');
+      }
 
     } catch (e) {
       console.error('Submission error:', e);
@@ -1992,6 +2055,148 @@
   };
 
   // ═══════════════════════════════════════════════════════════════════════════
+  // QUICK SETUP
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  const initQuickSetup = () => {
+    const quickSetup = $('#quickSetup');
+    const advancedSelector = $('#advancedModeSelector');
+    if (!quickSetup) return;
+
+    // --- Toggle tile expand/collapse ---
+    const tiles = [
+      { toggle: '#quickAppsToggle', body: '#quickAppsBody', tile: '#quickTileApps' },
+      { toggle: '#quickWifiToggle', body: '#quickWifiBody', tile: '#quickTileWifi' },
+      { toggle: '#quickWallpaperToggle', body: '#quickWallpaperBody', tile: '#quickTileWallpaper' },
+    ];
+
+    tiles.forEach(({ toggle, body, tile }) => {
+      const toggleEl = $(toggle);
+      const bodyEl = $(body);
+      const tileEl = $(tile);
+      const headerEl = tileEl?.querySelector('.cmi-quick-tile-header');
+      if (!toggleEl || !bodyEl || !tileEl) return;
+
+      const update = () => {
+        const checked = toggleEl.checked;
+        bodyEl.style.display = checked ? '' : 'none';
+        tileEl.classList.toggle('active', checked);
+      };
+
+      toggleEl.addEventListener('change', update);
+      // Clicking the header also toggles (unless clicking the switch itself)
+      headerEl?.addEventListener('click', (e) => {
+        if (e.target.closest('.cmi-switch')) return;
+        toggleEl.checked = !toggleEl.checked;
+        toggleEl.dispatchEvent(new Event('change'));
+      });
+    });
+
+    // --- Quick App Search (mirrors main app search but for quick setup) ---
+    const quickInput = $('#quickAppSearchInput');
+    const quickResults = $('#quickAppSearchResults');
+    const quickSpinner = $('#quickAppSearchSpinner');
+    const quickSelectedContainer = $('#quickSelectedAppsContainer');
+
+    if (quickInput && quickResults) {
+      let quickTimer = null;
+
+      quickInput.addEventListener('input', () => {
+        clearTimeout(quickTimer);
+        const query = quickInput.value.trim();
+        if (query.length < 2) {
+          quickResults.hidden = true;
+          quickResults.innerHTML = '';
+          if (quickSpinner) quickSpinner.hidden = true;
+          return;
+        }
+        if (quickSpinner) quickSpinner.hidden = false;
+
+        quickTimer = setTimeout(async () => {
+          const apps = await searchAppStore(query);
+          if (quickSpinner) quickSpinner.hidden = true;
+          if (!apps.length) {
+            quickResults.innerHTML = '<div class="cmi-app-result-empty">No apps found.</div>';
+            quickResults.hidden = false;
+            return;
+          }
+          const filtered = apps.filter(r => !selectedApps.some(s => s.trackId === r.trackId));
+          quickResults.innerHTML = filtered.map(app => `
+            <div class="cmi-app-result" data-track-id="${app.trackId}" data-name="${escapeAttr(app.name)}"
+                 data-developer="${escapeAttr(app.developer || '')}" data-icon="${escapeAttr(app.icon || '')}"
+                 data-price="${escapeAttr(app.price || 'Free')}" data-bundle-id="${escapeAttr(app.bundleId || '')}" data-url="${escapeAttr(app.url || '')}">
+              <img class="cmi-app-result-icon" src="${escapeAttr(app.icon || '')}" alt="" loading="lazy">
+              <div class="cmi-app-result-info">
+                <span class="cmi-app-result-name">${escapeHtml(app.name)}</span>
+                <span class="cmi-app-result-dev">${escapeHtml(app.developer || '')}</span>
+              </div>
+              <span class="cmi-app-result-price">${escapeHtml(app.price || 'Free')}</span>
+            </div>
+          `).join('');
+          quickResults.hidden = false;
+        }, APP_SEARCH_DELAY);
+      });
+
+      quickResults.addEventListener('click', (e) => {
+        const item = e.target.closest('.cmi-app-result');
+        if (!item) return;
+        selectApp({
+          trackId: parseInt(item.dataset.trackId),
+          name: item.dataset.name,
+          developer: item.dataset.developer,
+          icon: item.dataset.icon,
+          price: item.dataset.price,
+          bundleId: item.dataset.bundleId,
+          url: item.dataset.url || ''
+        });
+        quickInput.value = '';
+        quickResults.hidden = true;
+        quickResults.innerHTML = '';
+        showToast(`Added "${item.dataset.name}"`, 'success');
+      });
+
+      // Close results when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('#quickTileApps')) {
+          quickResults.hidden = true;
+        }
+      });
+    }
+
+    // --- "Submit Configuration" button (Quick Submit) ---
+    $('#btnQuickSubmit')?.addEventListener('click', () => {
+      // Validate step 1 fields (Order, Event, Contact)
+      if (!validateStep('step-1')) return;
+
+      // Validate quick Wi-Fi fields if enabled
+      const wifiOn = $('#quickWifiToggle')?.checked;
+      if (wifiOn) {
+        const ssid = $('#quickWifiSsid')?.value?.trim();
+        const pass = $('#quickWifiPassword')?.value?.trim();
+        if (!ssid || !pass) {
+          showToast('Please fill in the Wi-Fi network name and password.', 'error');
+          return;
+        }
+      }
+
+      // Set quick submit mode and go to review
+      quickSubmitMode = true;
+      navChain = ['step-1', 'step-6'];
+      navLabels = ['Order Info', 'Review'];
+      navIndex = 1;
+      goToStep(1, true);
+    });
+
+    // --- "More Customizations" button ---
+    $('#btnMoreCustomizations')?.addEventListener('click', () => {
+      quickSubmitMode = false;
+      quickSetup.style.display = 'none';
+      advancedSelector.style.display = '';
+      advancedSelector.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+  };
+
+  // ═══════════════════════════════════════════════════════════════════════════
   // INITIALISATION
   // ═══════════════════════════════════════════════════════════════════════════
 
@@ -2023,6 +2228,7 @@
     initOverallCost();
     initAutoSaveListeners();
     initKioskLockdownMode();
+    initQuickSetup();
 
     // Recalculate app cost when device quantities change
     document.addEventListener('input', (e) => {

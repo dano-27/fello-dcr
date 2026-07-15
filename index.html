@@ -138,13 +138,131 @@
           </div>
         </div>
 
-        <!-- Select Configuration Mode -->
-        <div class="cmi-section" style="margin-top: var(--sp-8);">
+        <!-- ═══════════ Quick Setup ═══════════ -->
+        <div class="cmi-section" id="quickSetup" style="margin-top: var(--sp-8);">
+          <div class="cmi-divider"></div>
+          <h3 class="cmi-section-title" style="margin-top: var(--sp-5);"><i class="fa-solid fa-bolt"></i> Quick Setup</h3>
+          <p class="cmi-help-text">Select any services you'd like configured on your devices.</p>
+
+          <!-- App Installation Tile -->
+          <div class="cmi-quick-tile" id="quickTileApps">
+            <div class="cmi-quick-tile-header" data-quick-toggle="quickApps">
+              <div class="cmi-quick-tile-icon"><i class="fa-brands fa-app-store-ios"></i></div>
+              <div class="cmi-quick-tile-info">
+                <span class="cmi-quick-tile-title">App Installation</span>
+                <span class="cmi-quick-tile-desc">Search and select apps to install on your devices.</span>
+              </div>
+              <div class="cmi-quick-tile-toggle">
+                <label class="cmi-switch">
+                  <input type="checkbox" id="quickAppsToggle">
+                  <span class="cmi-switch-slider"></span>
+                </label>
+              </div>
+            </div>
+            <div class="cmi-quick-tile-body" id="quickAppsBody" style="display:none;">
+              <div class="cmi-field">
+                <label class="cmi-label">Search the App Store</label>
+                <div class="cmi-app-search-wrapper">
+                  <div class="cmi-input-icon-wrapper">
+                    <i class="fa-solid fa-magnifying-glass cmi-input-icon"></i>
+                    <input type="text" id="quickAppSearchInput" class="cmi-input cmi-input-with-icon" placeholder="Search for an app (e.g. Square, Eventbrite)..." autocomplete="off">
+                    <div class="cmi-spinner" id="quickAppSearchSpinner" hidden><i class="fa-solid fa-spinner fa-spin"></i></div>
+                  </div>
+                  <div class="cmi-app-search-results" id="quickAppSearchResults" hidden></div>
+                </div>
+                <div id="quickSelectedAppsContainer"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pre-configured Wi-Fi Tile -->
+          <div class="cmi-quick-tile" id="quickTileWifi">
+            <div class="cmi-quick-tile-header" data-quick-toggle="quickWifi">
+              <div class="cmi-quick-tile-icon"><i class="fa-solid fa-wifi"></i></div>
+              <div class="cmi-quick-tile-info">
+                <span class="cmi-quick-tile-title">Pre-configured Wi-Fi</span>
+                <span class="cmi-quick-tile-desc">Devices will automatically connect to your network on-site.</span>
+              </div>
+              <div class="cmi-quick-tile-toggle">
+                <label class="cmi-switch">
+                  <input type="checkbox" id="quickWifiToggle">
+                  <span class="cmi-switch-slider"></span>
+                </label>
+              </div>
+            </div>
+            <div class="cmi-quick-tile-body" id="quickWifiBody" style="display:none;">
+              <div class="cmi-form-grid">
+                <div class="cmi-field cmi-col-full">
+                  <label class="cmi-label">Network Name (SSID) <span class="cmi-required">*</span></label>
+                  <input type="text" id="quickWifiSsid" class="cmi-input" placeholder="e.g. VenueWiFi-5G">
+                </div>
+                <div class="cmi-field cmi-col-half">
+                  <label class="cmi-label">Password <span class="cmi-required">*</span></label>
+                  <input type="password" id="quickWifiPassword" class="cmi-input" placeholder="Wi-Fi password">
+                </div>
+                <div class="cmi-field cmi-col-half">
+                  <label class="cmi-label">Security Type</label>
+                  <select id="quickWifiSecurity" class="cmi-select">
+                    <option value="WPA2 Personal" selected>WPA2 Personal</option>
+                    <option value="WPA2 Enterprise">WPA2 Enterprise</option>
+                    <option value="WPA3 Personal">WPA3 Personal</option>
+                    <option value="WPA3 Enterprise">WPA3 Enterprise</option>
+                    <option value="WPA/WPA2 Personal">WPA/WPA2 Personal</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Upload Wallpaper Tile -->
+          <div class="cmi-quick-tile" id="quickTileWallpaper">
+            <div class="cmi-quick-tile-header" data-quick-toggle="quickWallpaper">
+              <div class="cmi-quick-tile-icon"><i class="fa-solid fa-image"></i></div>
+              <div class="cmi-quick-tile-info">
+                <span class="cmi-quick-tile-title">Custom Wallpaper</span>
+                <span class="cmi-quick-tile-desc">Upload a custom lock screen and/or home screen wallpaper.</span>
+              </div>
+              <div class="cmi-quick-tile-toggle">
+                <label class="cmi-switch">
+                  <input type="checkbox" id="quickWallpaperToggle">
+                  <span class="cmi-switch-slider"></span>
+                </label>
+              </div>
+            </div>
+            <div class="cmi-quick-tile-body" id="quickWallpaperBody" style="display:none;">
+              <div class="cmi-field">
+                <label class="cmi-label">Wallpaper Image</label>
+                <div class="cmi-file-drop" data-file-id="quickWallpaper">
+                  <input type="file" class="cmi-file-input" accept=".jpg,.jpeg,.png" hidden>
+                  <div class="cmi-file-drop-content">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <p>Drag & drop or <span class="cmi-file-browse">browse</span></p>
+                    <p class="cmi-help-text">JPG or PNG, recommended 2048×2048</p>
+                  </div>
+                  <div class="cmi-file-preview" hidden></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Setup Actions -->
+          <div class="cmi-quick-actions" style="margin-top: var(--sp-6); display: flex; flex-direction: column; gap: var(--sp-3); align-items: center;">
+            <button type="button" class="cmi-btn cmi-btn-primary" id="btnQuickSubmit" style="width: 100%; max-width: 400px; padding: 14px 24px; font-size: 1rem;">
+              <i class="fa-solid fa-paper-plane"></i> Submit Configuration
+            </button>
+            <button type="button" class="cmi-btn cmi-btn-secondary" id="btnMoreCustomizations" style="width: 100%; max-width: 400px; padding: 12px 24px; font-size: 0.9rem;">
+              <i class="fa-solid fa-sliders"></i> I Need More Customizations
+            </button>
+          </div>
+        </div>
+
+        <!-- ═══════════ Advanced: Select Configuration Mode (initially hidden) ═══════════ -->
+        <div class="cmi-section" id="advancedModeSelector" style="display: none; margin-top: var(--sp-8);">
           <div class="cmi-divider"></div>
           <h3 class="cmi-section-title" style="margin-top: var(--sp-5);">Select Configuration Mode</h3>
         <div class="cmi-radio-card-grid">
           <label class="cmi-radio-card">
-            <input type="radio" name="configPackage" value="POS Mode" required>
+            <input type="radio" name="configPackage" value="POS Mode">
             <div class="cmi-radio-card-content">
               <i class="fa-solid fa-cash-register"></i>
               <span>POS Mode</span>
@@ -1710,6 +1828,6 @@
 
 </div>
 
-<script src="app.js?v=20260708" defer></script>
+<script src="app.js?v=20260715" defer></script>
 </body>
 </html>

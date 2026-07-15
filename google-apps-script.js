@@ -106,6 +106,26 @@ function writeToSheet(data) {
   ];
   
   sheet.appendRow(row);
+  
+  // ── Trigger SimpleMDM provisioning via Command Center ──
+  // Replace COMMAND_CENTER_URL with your deployed server URL
+  var COMMAND_CENTER_URL = 'https://YOUR_COMMAND_CENTER_URL';
+  var SIMPLEMDM_API_KEY = 'YOUR_SIMPLEMDM_API_KEY';
+  
+  try {
+    UrlFetchApp.fetch(COMMAND_CENTER_URL + '/api/automation/provision', {
+      method: 'post',
+      contentType: 'application/json',
+      headers: {
+        'x-simplemdm-key': SIMPLEMDM_API_KEY
+      },
+      payload: JSON.stringify(data),
+      muteHttpExceptions: true
+    });
+    Logger.log('Provisioning triggered for: ' + (data.eventName || 'Unknown'));
+  } catch (e) {
+    Logger.log('Provisioning trigger failed: ' + e.toString());
+  }
 }
 
 /** Handle GET requests — primary submission method (avoids POST redirect 405) */

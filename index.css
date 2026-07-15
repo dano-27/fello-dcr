@@ -1558,6 +1558,104 @@ body::before {
    24. REFACTOR ADDITIONS
    -------------------------------------------------------------------------- */
 
+/* --------------------------------------------------------------------------
+   Quick Setup Tiles
+   -------------------------------------------------------------------------- */
+.cmi-quick-tile {
+  background: var(--cmi-surface);
+  border: 1px solid var(--cmi-border);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--sp-3);
+  overflow: hidden;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.cmi-quick-tile.active {
+  border-color: var(--cmi-accent);
+  box-shadow: 0 0 0 2px var(--cmi-accent-glow);
+}
+.cmi-quick-tile-header {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: var(--sp-4) var(--sp-5);
+  cursor: pointer;
+  user-select: none;
+}
+.cmi-quick-tile-icon {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--cmi-accent-subtle);
+  border-radius: var(--radius-md);
+  color: var(--cmi-accent);
+  font-size: 1.25rem;
+}
+.cmi-quick-tile.active .cmi-quick-tile-icon {
+  background: var(--cmi-accent);
+  color: #1a1a2e;
+}
+.cmi-quick-tile-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.cmi-quick-tile-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--cmi-text);
+}
+.cmi-quick-tile-desc {
+  font-size: 0.8rem;
+  color: var(--cmi-text-muted);
+}
+.cmi-quick-tile-toggle {
+  flex-shrink: 0;
+}
+.cmi-quick-tile-body {
+  padding: 0 var(--sp-5) var(--sp-5);
+  border-top: 1px solid var(--cmi-border);
+  animation: slideDown 0.25s ease;
+}
+
+/* Toggle Switch */
+.cmi-switch {
+  position: relative;
+  display: inline-block;
+  width: 48px;
+  height: 26px;
+}
+.cmi-switch input { opacity: 0; width: 0; height: 0; }
+.cmi-switch-slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background: var(--cmi-border-strong, #ccc);
+  border-radius: 26px;
+  transition: background 0.25s ease;
+}
+.cmi-switch-slider::before {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  left: 3px;
+  bottom: 3px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.25s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+.cmi-switch input:checked + .cmi-switch-slider {
+  background: var(--cmi-accent);
+}
+.cmi-switch input:checked + .cmi-switch-slider::before {
+  transform: translateX(22px);
+}
+
 /* Radio Cards */
 .cmi-radio-card-grid {
   display: grid;
