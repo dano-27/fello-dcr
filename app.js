@@ -1063,7 +1063,7 @@
   // COMMAND CENTER SUBMIT ENDPOINT:
   // DCR form submits directly to the Fello Command Center for auto-provisioning.
   // Update this URL to your deployed Command Center address.
-  const COMMAND_CENTER_URL = 'https://YOUR_COMMAND_CENTER_URL';
+  const COMMAND_CENTER_URL = 'https://fellostarlinkcommandcenter-production.up.railway.app';
   // Legacy Google Apps Script URL (kept for reference):
   // const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwidaqayX2Zk3DwamqyT7t4IjIosWs1o5HeIKG8KlPRlQWyoHn4X24GG0PzPwMwK9beug/exec';
 
