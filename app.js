@@ -1113,11 +1113,23 @@
       data.wifiSsid = $('#wifiSsid')?.value || '';
       data.wifiPassword = $('#wifiPassword')?.value || '';
       data.wifiSecurity = $('#wifiSecurity')?.value || '';
+      data.wifiHidden = $('input[name="wifiHidden"]:checked')?.value || 'No';
       data.customWallpaper = getToggleValue('wallpaperToggle') === 'yes' ? 'Yes' : 'No';
       data.namingConvention = $('input[name="namingConvention"]:checked')?.value || '';
       data.customNamingFormat = $('#customNamingFormat')?.value || '';
       data.restrictionsEnabled = getToggleValue('restrictionsToggle') === 'yes' ? 'Yes' : 'No';
+      data.restrictionType = $('input[name="restrictionType"]:checked')?.value || '';
+      data.restrictionUrls = $$('input[name="restrictionUrl[]"]').map(i => i.value).filter(Boolean);
+      data.guidedAccessPasscode = getToggleValue('guidedAccessToggle') === 'yes' ? ($('#guidedAccessPasscode')?.value || '') : '';
+      data.lockdownMode = getToggleValue('guidedAccessToggle') === 'yes' ? 'Guided Access' : '';
       data.appLoginEnabled = getToggleValue('appLoginToggle') === 'yes' ? 'Yes' : 'No';
+      const loginApps = $$('.app-login-checkboxes input[name="appLogin"]:checked').map(cb => cb.value);
+      data.appLoginApps = loginApps;
+      // Web clips
+      const webClipNames = $$('input[name="webClipName[]"]').map(i => i.value).filter(Boolean);
+      const webClipUrls = $$('input[name="webClipUrl[]"]').map(i => i.value).filter(Boolean);
+      if (webClipNames.length) data.webClips = webClipNames;
+      if (webClipUrls.length) data.webClipUrls = webClipUrls;
       data.mediaInstructions = $('#mediaInstructions')?.value || '';
       data.additionalComments = $('#anythingElse')?.value || '';
     } else {
@@ -1197,18 +1209,19 @@
         if (submissionId) {
           const formData = new FormData();
           let hasFiles = false;
+          const categories = [];
           fileFields.forEach(({ id, category }) => {
             const input = document.getElementById(id);
-            if (input && input.files) {
+            if (input && input.files && input.files.length) {
               for (const file of input.files) {
                 formData.append('files', file);
                 hasFiles = true;
               }
+              categories.push(category);
             }
           });
-          // Also check drop zone files if any
           if (hasFiles) {
-            formData.append('category', 'mixed');
+            formData.append('category', categories.length === 1 ? categories[0] : 'mixed');
             try {
               await fetch(`${COMMAND_CENTER_URL}/api/dcr/${submissionId}/upload`, {
                 method: 'POST',
