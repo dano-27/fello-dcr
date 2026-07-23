@@ -1177,6 +1177,50 @@
       const result = await res.json();
 
       if (result.status === 'success' || result.status === 'partial') {
+        // Upload any attached files
+        const fileFields = [
+          { id: 'wallpaperArtwork', category: 'wallpaper' },
+          { id: 'quickWallpaper', category: 'wallpaper' },
+          { id: 'pkgRegWallpaper', category: 'wallpaper' },
+          { id: 'pkgKioskWallpaper', category: 'wallpaper' },
+          { id: 'vpnProfile', category: 'vpn_profile' },
+          { id: 'configProfile', category: 'config_profile' },
+          { id: 'appLoginCredentials', category: 'credentials' },
+          { id: 'pkgRegLoginCredentials', category: 'credentials' },
+          { id: 'pkgLcLoginCredentials', category: 'credentials' },
+          { id: 'pkgPosLoginCredentials', category: 'credentials' },
+          { id: 'pkgKioskLoginCredentials', category: 'credentials' },
+          { id: 'mediaUpload', category: 'media' },
+        ];
+
+        const submissionId = result.id || (result.runId ? result.runId.replace('prov-', 'dcr-') : null);
+        if (submissionId) {
+          const formData = new FormData();
+          let hasFiles = false;
+          fileFields.forEach(({ id, category }) => {
+            const input = document.getElementById(id);
+            if (input && input.files) {
+              for (const file of input.files) {
+                formData.append('files', file);
+                hasFiles = true;
+              }
+            }
+          });
+          // Also check drop zone files if any
+          if (hasFiles) {
+            formData.append('category', 'mixed');
+            try {
+              await fetch(`${COMMAND_CENTER_URL}/api/dcr/${submissionId}/upload`, {
+                method: 'POST',
+                body: formData,
+              });
+              console.log('[DCR] Files uploaded successfully');
+            } catch (e) {
+              console.warn('[DCR] File upload failed:', e.message);
+            }
+          }
+        }
+
         showToast('Configuration submitted successfully! Provisioning has been triggered.', 'success');
         localStorage.removeItem(STORAGE_KEY);
 
