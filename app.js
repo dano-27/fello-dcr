@@ -1189,48 +1189,47 @@
       const result = await res.json();
 
       if (result.status === 'success' || result.status === 'partial') {
-        // Upload any attached files
-        const fileFields = [
-          { id: 'wallpaperArtwork', category: 'wallpaper' },
-          { id: 'quickWallpaper', category: 'wallpaper' },
-          { id: 'pkgRegWallpaper', category: 'wallpaper' },
-          { id: 'pkgKioskWallpaper', category: 'wallpaper' },
-          { id: 'vpnProfile', category: 'vpn_profile' },
-          { id: 'configProfile', category: 'config_profile' },
-          { id: 'appLoginCredentials', category: 'credentials' },
-          { id: 'pkgRegLoginCredentials', category: 'credentials' },
-          { id: 'pkgLcLoginCredentials', category: 'credentials' },
-          { id: 'pkgPosLoginCredentials', category: 'credentials' },
-          { id: 'pkgKioskLoginCredentials', category: 'credentials' },
-          { id: 'mediaUpload', category: 'media' },
+        // Upload any attached files from the dropzone Map
+        const fileFieldIds = [
+          'wallpaperArtwork', 'quickWallpaper',
+          'pkgRegWallpaper', 'pkgKioskWallpaper',
+          'vpnProfile', 'configProfile',
+          'appLoginCredentials',
+          'pkgRegLoginCredentials', 'pkgLcLoginCredentials',
+          'pkgPosLoginCredentials', 'pkgKioskLoginCredentials',
+          'mediaUpload',
         ];
 
-        const submissionId = result.id || (result.runId ? result.runId.replace('prov-', 'dcr-') : null);
+        const submissionId = result.id;
         if (submissionId) {
           const formData = new FormData();
           let hasFiles = false;
-          const categories = [];
-          fileFields.forEach(({ id, category }) => {
-            const input = document.getElementById(id);
-            if (input && input.files && input.files.length) {
-              for (const file of input.files) {
+          fileFieldIds.forEach(fileId => {
+            const stored = uploadedFiles.get(fileId);
+            if (!stored) return;
+            // stored can be a single File or an array of Files
+            const files = Array.isArray(stored) ? stored : [stored];
+            files.forEach(file => {
+              if (file instanceof File) {
                 formData.append('files', file);
                 hasFiles = true;
               }
-              categories.push(category);
-            }
+            });
           });
           if (hasFiles) {
-            formData.append('category', categories.length === 1 ? categories[0] : 'mixed');
+            formData.append('category', 'mixed');
             try {
-              await fetch(`${COMMAND_CENTER_URL}/api/dcr/${submissionId}/upload`, {
+              const uploadRes = await fetch(`${COMMAND_CENTER_URL}/api/dcr/${submissionId}/upload`, {
                 method: 'POST',
                 body: formData,
               });
-              console.log('[DCR] Files uploaded successfully');
+              const uploadResult = await uploadRes.json();
+              console.log('[DCR] Files uploaded successfully:', uploadResult);
             } catch (e) {
               console.warn('[DCR] File upload failed:', e.message);
             }
+          } else {
+            console.log('[DCR] No files to upload');
           }
         }
 
