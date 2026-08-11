@@ -1584,6 +1584,57 @@ body::before {
 .cmi-source-badge[data-source="toast"] { background: #ff6900; }
 
 /* --------------------------------------------------------------------------
+   App Login CSV Upload Flow
+   -------------------------------------------------------------------------- */
+.cmi-login-upload-flow { padding: 4px 0; }
+.cmi-login-step-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.cmi-login-step-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--cmi-accent);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.cmi-login-step-content { flex: 1; }
+.cmi-csv-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+.cmi-csv-table thead {
+  background: var(--cmi-surface-elevated);
+}
+.cmi-csv-table th {
+  padding: 8px 12px;
+  font-weight: 700;
+  text-align: left;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: var(--cmi-text-secondary);
+  white-space: nowrap;
+}
+.cmi-csv-table td {
+  padding: 8px 12px;
+  border-top: 1px solid var(--cmi-border);
+  color: var(--cmi-text);
+}
+.cmi-csv-table tbody tr:hover {
+  background: rgba(255,255,255,0.02);
+}
+
+/* --------------------------------------------------------------------------
    Group Selector Cards
    -------------------------------------------------------------------------- */
 .cmi-group-cards {

@@ -1918,26 +1918,46 @@
               </div>
             </div>
             <div class="cmi-quick-tile-body" id="posLoginBody" style="display:none;">
-              <div class="cmi-form-grid">
-                <div class="cmi-field cmi-col-half">
-                  <label class="cmi-label">Username <span class="cmi-required">*</span></label>
-                  <input type="text" id="posLoginUsername" class="cmi-input" placeholder="POS username or email">
+              <!-- Step 1: Download Template -->
+              <div class="cmi-login-upload-flow">
+                <div class="cmi-login-step-row">
+                  <div class="cmi-login-step-num">1</div>
+                  <div class="cmi-login-step-content">
+                    <strong>Download the template</strong>
+                    <p class="cmi-help-text" style="margin: 4px 0 8px;">Fill in your app login credentials using the provided CSV template.</p>
+                    <a href="App_Login_Template.csv" download="App Login Template.csv" class="cmi-btn cmi-btn-secondary" style="padding: 8px 16px; font-size: 0.85rem;">
+                      <i class="fa-solid fa-download"></i> Download Template
+                    </a>
+                  </div>
                 </div>
-                <div class="cmi-field cmi-col-half">
-                  <label class="cmi-label">Password <span class="cmi-required">*</span></label>
-                  <input type="password" id="posLoginPassword" class="cmi-input" placeholder="POS password">
+                <div class="cmi-login-step-row" style="margin-top: 20px;">
+                  <div class="cmi-login-step-num">2</div>
+                  <div class="cmi-login-step-content">
+                    <strong>Upload completed file</strong>
+                    <p class="cmi-help-text" style="margin: 4px 0 8px;">Upload your filled-in CSV with login credentials.</p>
+                    <div class="cmi-file-drop" data-file-id="posLoginCsv" style="min-height: 90px;">
+                      <input type="file" class="cmi-file-input" id="posLoginCsvInput" accept=".csv" hidden>
+                      <div class="cmi-file-drop-content">
+                        <i class="fa-solid fa-file-csv" style="font-size: 1.5rem; color: var(--cmi-accent);"></i>
+                        <p>Drag & drop or <span class="cmi-file-browse">browse</span></p>
+                        <p class="cmi-help-text">CSV files only</p>
+                      </div>
+                      <div class="cmi-file-preview" hidden></div>
+                    </div>
+                  </div>
                 </div>
-                <div class="cmi-field cmi-col-half" id="posDeviceCodeField">
-                  <label class="cmi-label">Device Code <span class="cmi-help-text" style="display:inline;">(Square only)</span></label>
-                  <input type="text" id="posDeviceCode" class="cmi-input" placeholder="Square device code">
-                </div>
-                <div class="cmi-field cmi-col-half">
-                  <label class="cmi-label">Additional Credential 1</label>
-                  <input type="text" id="posCredential1" class="cmi-input" placeholder="Optional">
-                </div>
-                <div class="cmi-field cmi-col-full">
-                  <label class="cmi-label">Additional Credential 2</label>
-                  <input type="text" id="posCredential2" class="cmi-input" placeholder="Optional">
+                <!-- CSV Preview Table -->
+                <div id="posLoginPreview" style="display: none; margin-top: 16px;">
+                  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                    <strong style="font-size: 0.9rem;"><i class="fa-solid fa-table" style="margin-right: 6px;"></i> Login Credentials Preview</strong>
+                    <span id="posLoginRowCount" class="cmi-help-text"></span>
+                  </div>
+                  <div style="overflow-x: auto; border-radius: var(--radius-md); border: 1px solid var(--cmi-border);">
+                    <table class="cmi-csv-table" id="posLoginTable">
+                      <thead><tr></tr></thead>
+                      <tbody></tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>
@@ -2102,6 +2122,6 @@
 
 </div>
 
-<script src="app.js?v=20260811n" defer></script>
+<script src="app.js?v=20260811p" defer></script>
 </body>
 </html>

@@ -568,6 +568,94 @@
           }
         });
 
+        // CSV Upload for POS App Login
+        const csvInput = $('#posLoginCsvInput');
+        if (csvInput) {
+          const parseCsv = (text) => {
+            const lines = text.trim().split(/\r?\n/);
+            if (lines.length < 2) return null;
+            const headers = lines[0].split(',').map(h => h.trim());
+            const rows = lines.slice(1).filter(l => l.trim()).map(line => {
+              const vals = line.split(',').map(v => v.trim());
+              const row = {};
+              headers.forEach((h, i) => { row[h] = vals[i] || ''; });
+              return row;
+            });
+            return { headers, rows };
+          };
+
+          const renderCsvPreview = (data) => {
+            const preview = $('#posLoginPreview');
+            const table = $('#posLoginTable');
+            const countEl = $('#posLoginRowCount');
+            if (!preview || !table || !data) return;
+
+            const thead = table.querySelector('thead tr');
+            thead.innerHTML = data.headers.map(h => `<th>${escapeHtml(h)}</th>`).join('');
+
+            const tbody = table.querySelector('tbody');
+            tbody.innerHTML = data.rows.map(row =>
+              `<tr>${data.headers.map(h => {
+                const val = row[h] || '';
+                // Mask password column
+                const masked = h.toLowerCase().includes('password') && val ? '••••••••' : escapeHtml(val);
+                return `<td>${masked || '<span style="color:var(--cmi-text-muted);">—</span>'}</td>`;
+              }).join('')}</tr>`
+            ).join('');
+
+            countEl.textContent = `${data.rows.length} credential${data.rows.length !== 1 ? 's' : ''}`;
+            preview.style.display = '';
+
+            // Store for submission
+            window._dcrLoginCsvData = data;
+          };
+
+          csvInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            if (!file.name.endsWith('.csv')) {
+              showToast('Please upload a CSV file.', 'error');
+              return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+              const data = parseCsv(ev.target.result);
+              if (!data || data.rows.length === 0) {
+                showToast('CSV is empty or invalid. Please check the template format.', 'error');
+                return;
+              }
+              renderCsvPreview(data);
+              showToast(`${data.rows.length} login credential${data.rows.length !== 1 ? 's' : ''} loaded.`, 'success');
+            };
+            reader.readAsText(file);
+          });
+
+          // Wire up the file drop zone for CSV
+          const dropZone = csvInput.closest('.cmi-file-drop');
+          if (dropZone) {
+            const browseLink = dropZone.querySelector('.cmi-file-browse');
+            browseLink?.addEventListener('click', () => csvInput.click());
+            dropZone.addEventListener('click', (e) => {
+              if (!e.target.closest('.cmi-file-browse') && !e.target.closest('.cmi-file-preview')) {
+                csvInput.click();
+              }
+            });
+            dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+            dropZone.addEventListener('dragleave', () => { dropZone.classList.remove('dragover'); });
+            dropZone.addEventListener('drop', (e) => {
+              e.preventDefault();
+              dropZone.classList.remove('dragover');
+              const file = e.dataTransfer.files[0];
+              if (file) {
+                csvInput.files = e.dataTransfer.files;
+                csvInput.dispatchEvent(new Event('change'));
+              }
+            });
+          }
+        }
+
         // Wi-Fi sharing: "Use same as iOS"
         const wireWifiShare = (checkboxId, fieldsId, ssidId, pwdId, secId) => {
           const cb = $(checkboxId);
