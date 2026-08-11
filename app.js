@@ -690,6 +690,12 @@
           if (hub && cards) {
             hub.style.display = '';
 
+            // Hide Quick Setup & Advanced selector when hub is active
+            const quickSetup = $('#quickSetup');
+            const advancedSelector = $('#advancedModeSelector');
+            if (quickSetup) quickSetup.style.display = 'none';
+            if (advancedSelector) advancedSelector.style.display = 'none';
+
             const GROUP_CARD_CONFIG = [
               { key: 'ios', has: hasIos, icon: 'fa-solid fa-tablet-screen-button', label: 'iPads & iPhones', stepId: null, devices: grouped.ios },
               { key: 'pos', has: hasPOS, icon: 'fa-solid fa-cash-register', label: 'POS Devices', stepId: 'group-pos', devices: grouped.pos },
@@ -711,7 +717,7 @@
                   <div class="cmi-group-card-title">${g.label}</div>
                   <div class="cmi-group-card-count">${count} device${count !== 1 ? 's' : ''} — ${deviceList}</div>
                   <div class="cmi-group-card-btn">
-                    ${isIos ? '<i class="fa-solid fa-arrow-down"></i> Configure Below' : '<i class="fa-solid fa-arrow-right"></i> Configure'}
+                    <i class="fa-solid fa-arrow-right"></i> Configure
                   </div>
                 </div>
               `;
@@ -724,14 +730,12 @@
                 const stepId = card.dataset.step;
 
                 if (group === 'ios') {
-                  // Scroll to Quick Setup / Advanced section below
-                  const quickSetup = $('#quickSetup');
-                  const advModeSelector = $('#advancedModeSelector');
-                  const target = quickSetup?.style.display !== 'none' ? quickSetup : advModeSelector;
-                  target?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                  // Mark iOS as configured when they interact
-                  window._dcrGroupConfigured.ios = true;
-                  card.classList.add('configured');
+                  // Show Quick Setup section for iOS config
+                  const qs = $('#quickSetup');
+                  if (qs) {
+                    qs.style.display = '';
+                    qs.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  }
                   return;
                 }
 
@@ -2783,6 +2787,23 @@
 
       // Set quick submit mode and go through group steps
       quickSubmitMode = true;
+
+      // If group hub is active, mark iOS as configured and return to hub
+      const hubActive = $('#groupSelectorHub')?.style.display !== 'none';
+      if (hubActive) {
+        window._dcrGroupConfigured = window._dcrGroupConfigured || {};
+        window._dcrGroupConfigured.ios = true;
+        const iosCard = document.querySelector('.cmi-group-card[data-group="ios"]');
+        if (iosCard) iosCard.classList.add('configured');
+
+        // Hide Quick Setup, scroll back to hub
+        const qs = $('#quickSetup');
+        if (qs) qs.style.display = 'none';
+        $('#groupSelectorHub')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        showToast('iOS device configuration saved.', 'success');
+        return;
+      }
+
       const built = buildGroupNavChain(['step-1', 'step-6'], ['Order Info', 'Review']);
       navChain = built.chain;
       navLabels = built.labels;
