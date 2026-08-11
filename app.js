@@ -237,54 +237,102 @@
 
   const initLookupOrder = () => {
     const btn = $('#btnLookup');
-    const orderNumber = $('#orderNumber');
+    const orderInput = $('#orderNumber');
     
-    if (!btn || !orderNumber) return;
+    if (!btn || !orderInput) return;
     
-    btn.addEventListener('click', () => {
-      if (!orderNumber.value.trim()) {
+    btn.addEventListener('click', async () => {
+      const orderNumber = orderInput.value.trim();
+      if (!orderNumber) {
         showToast('Please enter an order number first.', 'error');
         return;
       }
       
       const originalText = btn.innerHTML;
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Looking up...';
       btn.disabled = true;
       
-      // Simulate API call
-      setTimeout(() => {
-        // Auto-fill mock data
-        $('#eventName').value = 'Tech Conference 2026';
-        $('#eventDates').value = 'Nov 1 - Nov 5, 2026';
-        $('#venueName').value = 'Moscone Center';
-        $('#companyName').value = 'Acme Corp';
-        $('#primaryContactName').value = 'Jane Doe';
-        $('#contactEmail').value = 'jane@acme.com';
-        $('#contactPhone').value = '(555) 123-4567';
-        
+      try {
+        const url = `${GOOGLE_SCRIPT_URL}?action=lookupOrder&orderNumber=${encodeURIComponent(orderNumber)}`;
+        const resp = await fetch(url);
+        const result = await resp.json();
+
+        if (result.status === 'not_found') {
+          showToast(`Order "${orderNumber}" not found in IMS NextGen.`, 'error');
+          btn.innerHTML = originalText;
+          btn.disabled = false;
+          return;
+        }
+
+        if (result.status !== 'success' || !result.order) {
+          showToast(result.message || 'Failed to look up order.', 'error');
+          btn.innerHTML = originalText;
+          btn.disabled = false;
+          return;
+        }
+
+        const order = result.order;
+
+        // Auto-fill form fields with IMS data
+        if (order.eventName)      setFieldValue('#eventName', order.eventName);
+        if (order.eventVenue)     setFieldValue('#venueName', order.eventVenue);
+        if (order.customerName)   setFieldValue('#companyName', order.customerName);
+        if (order.shipName)       setFieldValue('#primaryContactName', order.shipName);
+        if (order.shipEmail || order.mainContactEmail)
+          setFieldValue('#contactEmail', order.shipEmail || order.mainContactEmail);
+        if (order.shipPhone || order.customerPhone)
+          setFieldValue('#contactPhone', order.shipPhone || order.customerPhone);
+
+        // Build date range from start/end
+        if (order.startDate || order.endDate) {
+          const start = order.startDate ? new Date(order.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+          const end = order.endDate ? new Date(order.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+          setFieldValue('#eventDates', start && end ? `${start} - ${end}` : start || end);
+        }
+
         // Populate Device Info
         const deviceDisplay = $('#deviceListDisplay');
-        if (deviceDisplay) {
-          deviceDisplay.dataset.totalDevices = '20';
+        if (deviceDisplay && order.devices && order.devices.length > 0) {
+          const totalDevices = order.devices.reduce((sum, d) => sum + d.quantity, 0);
+          deviceDisplay.dataset.totalDevices = totalDevices.toString();
+
+          const deviceHtml = order.devices.map(d => `
+            <li style="margin-bottom: 8px;">
+              <i class="fa-solid fa-check" style="color: var(--cmi-success); margin-right: 8px;"></i>
+              ${d.quantity}x ${escapeHtml(d.name)}
+            </li>
+          `).join('');
+
           deviceDisplay.innerHTML = `
             <ul style="list-style: none; padding: 0; margin: 0; font-weight: 500;">
-              <li style="margin-bottom: 8px;"><i class="fa-solid fa-check" style="color: var(--cmi-success); margin-right: 8px;"></i> 15x iPad Pro 12.9"</li>
-              <li><i class="fa-solid fa-check" style="color: var(--cmi-success); margin-right: 8px;"></i> 5x iPhone 14</li>
+              ${deviceHtml}
             </ul>
           `;
         }
-        
+
         // Recalculate app costs with new device count
         updateAppCostIndicator();
-        
-        // Reset button
+
         btn.innerHTML = '<i class="fa-solid fa-check"></i> Found';
         btn.disabled = false;
-        
-        showToast('Order details found and populated.', 'success');
+
+        const deviceCount = order.devices ? order.devices.length : 0;
+        showToast(`Order ${order.id} loaded — ${order.customerName} (${deviceCount} line items)`, 'success');
         triggerAutoSave();
-      }, 1000);
+
+      } catch (err) {
+        console.error('Order lookup error:', err);
+        showToast('Failed to look up order. Please try again.', 'error');
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }
     });
+  };
+
+  /** Helper: set field value only if element exists */
+  const setFieldValue = (selector, value) => {
+    const el = $(selector);
+    if (el) el.value = value;
   };
 
   // ═══════════════════════════════════════════════════════════════════════════

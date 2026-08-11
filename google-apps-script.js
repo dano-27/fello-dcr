@@ -130,6 +130,12 @@ function writeToSheet(data) {
 
 /** Handle GET requests — primary submission method (avoids POST redirect 405) */
 function doGet(e) {
+
+  // ── Order Lookup Proxy (IMS NextGen) ──
+  if (e.parameter && e.parameter.action === 'lookupOrder') {
+    return lookupOrder(e.parameter.orderNumber || '');
+  }
+
   if (e.parameter && e.parameter.payload) {
     try {
       var data = JSON.parse(e.parameter.payload);
@@ -145,6 +151,83 @@ function doGet(e) {
   }
   return ContentService
     .createTextOutput(JSON.stringify({ status: "ok", message: "Fello DCR endpoint is live" }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+/** Proxy: Look up an order from IMS NextGen and return relevant fields */
+function lookupOrder(orderNumber) {
+  var IMS_BASE = 'https://ims-v4-migration-prod-876702752852.us-east4.run.app/api/nextgen/v1';
+  var IMS_TOKEN = 'Bearer 2423|rydhEvIv6ZsEABia67jH5ffhMUJLthtu3YrfySpx93f5cc0e';
+
+  if (!orderNumber) {
+    return jsonResponse({ status: 'error', message: 'Missing order number' });
+  }
+
+  try {
+    var response = UrlFetchApp.fetch(IMS_BASE + '/orders/' + orderNumber, {
+      method: 'get',
+      headers: { 'Authorization': IMS_TOKEN },
+      muteHttpExceptions: true
+    });
+
+    var code = response.getResponseCode();
+    if (code === 404) {
+      return jsonResponse({ status: 'not_found', message: 'Order not found: ' + orderNumber });
+    }
+    if (code !== 200) {
+      return jsonResponse({ status: 'error', message: 'IMS API returned ' + code });
+    }
+
+    var raw = JSON.parse(response.getContentText());
+
+    // Extract devices from rentals
+    var devices = (raw.rentals || []).map(function(r) {
+      var model = r.model || {};
+      return {
+        name: model.model_name || 'Unknown',
+        quantity: r.amount || 0,
+        category: model.model_category || 0,
+        isIpad: r.is_ipad || 0,
+        os: model.operating_system || ''
+      };
+    });
+
+    // Build clean response
+    var result = {
+      status: 'success',
+      order: {
+        id: raw.fly_order_id,
+        internalId: raw.id,
+        customerName: raw.customer_name || '',
+        customerPhone: raw.customer_phone || '',
+        eventName: raw.event_name || '',
+        eventType: raw.event_type || '',
+        eventVenue: raw.event_venue || '',
+        startDate: raw.start_date || '',
+        endDate: raw.end_date || '',
+        shipName: raw.ship_name || '',
+        shipEmail: raw.ship_email || '',
+        shipPhone: raw.ship_phone || '',
+        mainContactEmail: raw.main_contact_email || '',
+        notes: raw.notes || '',
+        status: raw.status || '',
+        shipCmi: raw.ship_cmi || '',
+        mediaInstallation: raw.media_installation || '',
+        devices: devices
+      }
+    };
+
+    return jsonResponse(result);
+
+  } catch (err) {
+    return jsonResponse({ status: 'error', message: err.toString() });
+  }
+}
+
+/** Helper: return JSON response */
+function jsonResponse(obj) {
+  return ContentService
+    .createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
 }
 
