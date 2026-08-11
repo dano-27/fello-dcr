@@ -294,14 +294,18 @@
           setFieldValue('#eventDates', start && end ? `${start} - ${end}` : start || end);
         }
 
-        // Populate Device Info from rentals (filter out accessories)
-        const HIDDEN_KEYWORDS = ['cable', 'charger', 'adapter', 'dock', 'hub', 'case', 'paper', 'power cable', 'ac adapter'];
-        const HIDDEN_NAMES = ['givesmart swiper', 'shopify tap'];
+        // Populate Device Info from rentals (whitelist of DCR-relevant devices)
+        const ALLOWED_DEVICES = [
+          'ipad 6th gen', 'ipad 8th gen', 'ipad mini 5th gen', 'ipad pro 12.9" 2nd gen',
+          'iphone se 2nd gen', 'iphone x', 'test ipad 5th gen',
+          'mcc router', 'mobile hotspot', 'mobile hotspot; 5g',
+          'starlink receiver gen 3',
+          'square register; us', 'square terminal; us', 'square handheld (us)',
+          'clover go'
+        ];
         const devices = (raw.rentals || []).filter(r => {
           const name = (r.model?.model_name || '').toLowerCase();
-          if (HIDDEN_KEYWORDS.some(kw => name.includes(kw))) return false;
-          if (HIDDEN_NAMES.some(hn => name.includes(hn))) return false;
-          return true;
+          return ALLOWED_DEVICES.includes(name);
         });
         const deviceDisplay = $('#deviceListDisplay');
         if (deviceDisplay && devices.length > 0) {
