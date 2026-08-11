@@ -66,6 +66,7 @@
   let navLabels = CUSTOM_LABELS;
   let navIndex = 0; // index into navChain
   let quickSubmitMode = false; // true when submitting via Quick Setup
+  let isPartnerOrder = false;  // true for partner site sources (SQ, SH, etc.)
 
   const getActivePackage = () => $('input[name="configPackage"]:checked')?.value || '';
 
@@ -269,6 +270,8 @@
     const quickSetup = $('#quickSetup');
     const partnerAppsList = $('#partnerAppsList');
     if (!partnerSetup) return;
+
+    isPartnerOrder = true;
 
     // Auto-add partner apps to selectedApps
     const apps = PARTNER_APPS[siteSource] || [];
@@ -2194,11 +2197,24 @@
       ($('input[name="pkgKioskLockdownMode"]:checked')?.value === 'Guided Access') ||
       getToggleValue('pkgKioskWebClipToggle') === 'yes';
 
-    const hasAddon = customAddon || pkgAddon;
+    // Check partner panel addons (Wi-Fi)
+    const partnerAddon = isPartnerOrder && (
+      $('#partnerWifiToggle')?.checked || false
+    );
 
-    const baseRate = hasAddon ? 10 : 5;
+    const hasAddon = customAddon || pkgAddon || partnerAddon;
+
+    // Partner orders: $0 base, $5/device only for addons
+    // Fello/OR orders: $5/device base, $10/device with addons
+    let baseRate, baseCost;
+    if (isPartnerOrder) {
+      baseRate = hasAddon ? 5 : 0;
+      baseCost = 0;
+    } else {
+      baseRate = hasAddon ? 10 : 5;
+      baseCost = 5 * totalDevices;
+    }
     const addonUpcharge = hasAddon ? 5 * totalDevices : 0;
-    const baseCost = 5 * totalDevices;
 
     // Get app licensing cost from the existing indicator
     const appCostText = $('#appCostValue')?.textContent || '$0.00';
@@ -2208,7 +2224,7 @@
 
     // Update UI
     const el = (id) => document.getElementById(id);
-    if (el('cmiBaseRate')) el('cmiBaseRate').textContent = `$${hasAddon ? '10.00' : '5.00'}`;
+    if (el('cmiBaseRate')) el('cmiBaseRate').textContent = `$${baseRate.toFixed(2)}`;
     if (el('cmiDeviceCount')) el('cmiDeviceCount').textContent = totalDevices;
     if (el('cmiBaseCost')) el('cmiBaseCost').textContent = `$${baseCost.toFixed(2)}`;
 
