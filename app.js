@@ -305,6 +305,7 @@
             'TA': { label: 'Tassel', key: 'tassel' },
             'TO': { label: 'Toast', key: 'toast' },
             'or': { label: 'Fello', key: 'fello' },
+            'OR': { label: 'Fello', key: 'fello' },
           };
           const src = SOURCE_MAP[raw.site_source] || { label: raw.site_source, key: 'other' };
           siteSourceBadge.textContent = src.label;
@@ -325,20 +326,23 @@
           const name = (r.model?.model_name || '').toLowerCase();
           return ALLOWED_DEVICES.includes(name);
         });
+        // Consolidate devices by model name
+        const deviceMap = {};
+        devices.forEach(r => {
+          const name = r.model?.model_name || 'Unknown';
+          deviceMap[name] = (deviceMap[name] || 0) + (r.amount || 0);
+        });
         const deviceDisplay = $('#deviceListDisplay');
-        if (deviceDisplay && devices.length > 0) {
-          const totalDevices = devices.reduce((sum, r) => sum + (r.amount || 0), 0);
+        if (deviceDisplay && Object.keys(deviceMap).length > 0) {
+          const totalDevices = Object.values(deviceMap).reduce((a, b) => a + b, 0);
           deviceDisplay.dataset.totalDevices = totalDevices.toString();
 
-          const deviceHtml = devices.map(r => {
-            const name = r.model?.model_name || 'Unknown';
-            return `
+          const deviceHtml = Object.entries(deviceMap).map(([name, qty]) => `
               <li style="margin-bottom: 8px;">
                 <i class="fa-solid fa-check" style="color: var(--cmi-success); margin-right: 8px;"></i>
-                ${r.amount}x ${escapeHtml(name)}
+                ${qty}x ${escapeHtml(name)}
               </li>
-            `;
-          }).join('');
+          `).join('');
 
           deviceDisplay.innerHTML = `
             <ul style="list-style: none; padding: 0; margin: 0; font-weight: 500;">
