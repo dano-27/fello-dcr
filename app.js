@@ -235,6 +235,9 @@
   // ORDER LOOKUP
   // ═══════════════════════════════════════════════════════════════════════════
 
+  const IMS_API_BASE = 'https://ims-v4-migration-prod-876702752852.us-east4.run.app/api/nextgen/v1';
+  const IMS_API_TOKEN = 'Bearer 2423|rydhEvIv6ZsEABia67jH5ffhMUJLthtu3YrfySpx93f5cc0e';
+
   const initLookupOrder = () => {
     const btn = $('#btnLookup');
     const orderInput = $('#orderNumber');
@@ -253,55 +256,60 @@
       btn.disabled = true;
       
       try {
-        const url = `${GOOGLE_SCRIPT_URL}?action=lookupOrder&orderNumber=${encodeURIComponent(orderNumber)}`;
-        const resp = await fetch(url);
-        const result = await resp.json();
+        const resp = await fetch(`${IMS_API_BASE}/orders/${encodeURIComponent(orderNumber)}`, {
+          headers: { 'Authorization': IMS_API_TOKEN }
+        });
 
-        if (result.status === 'not_found') {
+        if (resp.status === 404) {
           showToast(`Order "${orderNumber}" not found in IMS NextGen.`, 'error');
           btn.innerHTML = originalText;
           btn.disabled = false;
           return;
         }
 
-        if (result.status !== 'success' || !result.order) {
-          showToast(result.message || 'Failed to look up order.', 'error');
+        if (!resp.ok) {
+          showToast(`IMS API error (${resp.status}). Please try again.`, 'error');
           btn.innerHTML = originalText;
           btn.disabled = false;
           return;
         }
 
-        const order = result.order;
+        const raw = await resp.json();
 
-        // Auto-fill form fields with IMS data
-        if (order.eventName)      setFieldValue('#eventName', order.eventName);
-        if (order.eventVenue)     setFieldValue('#venueName', order.eventVenue);
-        if (order.customerName)   setFieldValue('#companyName', order.customerName);
-        if (order.shipName)       setFieldValue('#primaryContactName', order.shipName);
-        if (order.shipEmail || order.mainContactEmail)
-          setFieldValue('#contactEmail', order.shipEmail || order.mainContactEmail);
-        if (order.shipPhone || order.customerPhone)
-          setFieldValue('#contactPhone', order.shipPhone || order.customerPhone);
+        // Auto-fill form fields
+        if (raw.event_name)      setFieldValue('#eventName', raw.event_name);
+        if (raw.event_venue)     setFieldValue('#venueName', raw.event_venue);
+        if (raw.customer_name)   setFieldValue('#companyName', raw.customer_name);
+        if (raw.ship_name)       setFieldValue('#primaryContactName', raw.ship_name);
+        if (raw.ship_email || raw.main_contact_email)
+          setFieldValue('#contactEmail', raw.ship_email || raw.main_contact_email);
+        if (raw.ship_phone || raw.customer_phone)
+          setFieldValue('#contactPhone', raw.ship_phone || raw.customer_phone);
 
-        // Build date range from start/end
-        if (order.startDate || order.endDate) {
-          const start = order.startDate ? new Date(order.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
-          const end = order.endDate ? new Date(order.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+        // Build date range
+        if (raw.start_date || raw.end_date) {
+          const fmt = (d) => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+          const start = raw.start_date ? fmt(raw.start_date) : '';
+          const end = raw.end_date ? fmt(raw.end_date) : '';
           setFieldValue('#eventDates', start && end ? `${start} - ${end}` : start || end);
         }
 
-        // Populate Device Info
+        // Populate Device Info from rentals
+        const rentals = raw.rentals || [];
         const deviceDisplay = $('#deviceListDisplay');
-        if (deviceDisplay && order.devices && order.devices.length > 0) {
-          const totalDevices = order.devices.reduce((sum, d) => sum + d.quantity, 0);
+        if (deviceDisplay && rentals.length > 0) {
+          const totalDevices = rentals.reduce((sum, r) => sum + (r.amount || 0), 0);
           deviceDisplay.dataset.totalDevices = totalDevices.toString();
 
-          const deviceHtml = order.devices.map(d => `
-            <li style="margin-bottom: 8px;">
-              <i class="fa-solid fa-check" style="color: var(--cmi-success); margin-right: 8px;"></i>
-              ${d.quantity}x ${escapeHtml(d.name)}
-            </li>
-          `).join('');
+          const deviceHtml = rentals.map(r => {
+            const name = r.model?.model_name || 'Unknown';
+            return `
+              <li style="margin-bottom: 8px;">
+                <i class="fa-solid fa-check" style="color: var(--cmi-success); margin-right: 8px;"></i>
+                ${r.amount}x ${escapeHtml(name)}
+              </li>
+            `;
+          }).join('');
 
           deviceDisplay.innerHTML = `
             <ul style="list-style: none; padding: 0; margin: 0; font-weight: 500;">
@@ -316,8 +324,7 @@
         btn.innerHTML = '<i class="fa-solid fa-check"></i> Found';
         btn.disabled = false;
 
-        const deviceCount = order.devices ? order.devices.length : 0;
-        showToast(`Order ${order.id} loaded — ${order.customerName} (${deviceCount} line items)`, 'success');
+        showToast(`Order ${raw.fly_order_id} loaded — ${raw.customer_name} (${rentals.length} line items)`, 'success');
         triggerAutoSave();
 
       } catch (err) {

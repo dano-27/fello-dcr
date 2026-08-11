@@ -1,5 +1,5 @@
 // ============================================================================
-// Fello DCR — Google Apps Script (Web App)
+// Fello DCR - Google Apps Script (Web App)
 // 
 // SETUP INSTRUCTIONS:
 // 1. Go to https://sheets.google.com and create a new spreadsheet
