@@ -1559,6 +1559,29 @@ body::before {
    -------------------------------------------------------------------------- */
 
 /* --------------------------------------------------------------------------
+   Site Source Badge
+   -------------------------------------------------------------------------- */
+.cmi-source-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  z-index: 2;
+  color: #fff;
+  background: #64748b;
+}
+.cmi-source-badge[data-source="square"] { background: #1a1a1a; }
+.cmi-source-badge[data-source="shopify"] { background: #96bf48; color: #1a1a1a; }
+.cmi-source-badge[data-source="givesmart"] { background: #2563eb; }
+.cmi-source-badge[data-source="fello"] { background: var(--cmi-accent); color: #1a1a1a; }
+.cmi-source-badge[data-source="clover"] { background: #4caf50; }
+
+/* --------------------------------------------------------------------------
    Quick Setup Tiles
    -------------------------------------------------------------------------- */
 .cmi-quick-tile {

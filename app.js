@@ -293,6 +293,23 @@
           const end = raw.end_date ? fmt(raw.end_date) : '';
           setFieldValue('#eventDates', start && end ? `${start} - ${end}` : start || end);
         }
+        // Site Source badge
+        const siteSourceBadge = $('#siteSourceBadge');
+        if (siteSourceBadge && raw.site_source) {
+          const SOURCE_MAP = {
+            'SQ': { label: 'Square', key: 'square' },
+            'sq': { label: 'Square', key: 'square' },
+            'or': { label: 'Fello', key: 'fello' },
+            'OR': { label: 'Fello', key: 'fello' },
+            'shopify': { label: 'Shopify', key: 'shopify' },
+            'givesmart': { label: 'GiveSmart', key: 'givesmart' },
+            'clover': { label: 'Clover', key: 'clover' },
+          };
+          const src = SOURCE_MAP[raw.site_source] || { label: raw.site_source, key: 'other' };
+          siteSourceBadge.textContent = src.label;
+          siteSourceBadge.dataset.source = src.key;
+          siteSourceBadge.hidden = false;
+        }
 
         // Populate Device Info from rentals (whitelist of DCR-relevant devices)
         const ALLOWED_DEVICES = [
