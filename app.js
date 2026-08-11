@@ -297,15 +297,14 @@
         const siteSourceBadge = $('#siteSourceBadge');
         if (siteSourceBadge && raw.site_source) {
           const SOURCE_MAP = {
-            'SQ': { label: 'Square', key: 'square' },
-            'sq': { label: 'Square', key: 'square' },
+            'CB': { label: 'GiveSmart', key: 'givesmart' },
+            'EB': { label: 'Eventbrite', key: 'eventbrite' },
+            'FE': { label: 'Fello', key: 'fello' },
             'SH': { label: 'Shopify', key: 'shopify' },
-            'sh': { label: 'Shopify', key: 'shopify' },
+            'SQ': { label: 'Square', key: 'square' },
+            'TA': { label: 'Tassel', key: 'tassel' },
+            'TO': { label: 'Toast', key: 'toast' },
             'or': { label: 'Fello', key: 'fello' },
-            'OR': { label: 'Fello', key: 'fello' },
-            'shopify': { label: 'Shopify', key: 'shopify' },
-            'givesmart': { label: 'GiveSmart', key: 'givesmart' },
-            'clover': { label: 'Clover', key: 'clover' },
           };
           const src = SOURCE_MAP[raw.site_source] || { label: raw.site_source, key: 'other' };
           siteSourceBadge.textContent = src.label;

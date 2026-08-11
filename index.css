@@ -1579,7 +1579,9 @@ body::before {
 .cmi-source-badge[data-source="shopify"] { background: #96bf48; color: #1a1a1a; }
 .cmi-source-badge[data-source="givesmart"] { background: #2563eb; }
 .cmi-source-badge[data-source="fello"] { background: var(--cmi-accent); color: #1a1a1a; }
-.cmi-source-badge[data-source="clover"] { background: #4caf50; }
+.cmi-source-badge[data-source="eventbrite"] { background: #f05537; }
+.cmi-source-badge[data-source="tassel"] { background: #7c3aed; }
+.cmi-source-badge[data-source="toast"] { background: #ff6900; }
 
 /* --------------------------------------------------------------------------
    Quick Setup Tiles
