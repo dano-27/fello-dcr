@@ -238,6 +238,117 @@
   const IMS_API_BASE = 'https://ims-v4-migration-prod-876702752852.us-east4.run.app/api/nextgen/v1';
   const IMS_API_TOKEN = 'Bearer 2423|rydhEvIv6ZsEABia67jH5ffhMUJLthtu3YrfySpx93f5cc0e';
 
+  // Partner app presets (real iTunes data)
+  const PARTNER_APPS = {
+    'SQ': [
+      { trackId: 335393788, name: 'Square Point of Sale (POS)', developer: 'Block, Inc.', icon: 'https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/ce/36/02/ce360217-c50d-779c-3f6b-280340952e14/AppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg', price: 'Free', url: 'https://apps.apple.com/us/app/square-point-of-sale-pos/id335393788', locked: true },
+      { trackId: 1200091899, name: 'Square: Retail Point of Sale', developer: 'Block, Inc.', icon: 'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/ff/3d/b5/ff3db5b5-2719-2d0a-488a-92718637f1fe/RetailAppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg', price: 'Free', url: 'https://apps.apple.com/us/app/square-retail-point-of-sale/id1200091899', locked: true },
+    ],
+    'SH': [
+      { trackId: 686830644, name: 'Shopify Point of Sale (POS)', developer: 'Shopify Inc.', icon: 'https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/cd/6f/96/cd6f9685-43db-8d01-6417-874663d514a2/PosAppIcon-0-0-1x_U007epad-0-1-sRGB-85-220.png/100x100bb.jpg', price: 'Free', url: 'https://apps.apple.com/us/app/shopify-point-of-sale-pos/id686830644', locked: true },
+    ],
+    'TO': [
+      { trackId: 6444586410, name: 'Toast Now', developer: 'Toast, Inc.', icon: 'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/ed/d1/83/edd1833f-8e45-550c-2253-cec3f962fbfe/AppIcon-0-0-1x_U007ephone-0-1-0-sRGB-85-220.png/100x100bb.jpg', price: 'Free', url: 'https://apps.apple.com/us/app/toast-now/id6444586410', locked: true },
+    ],
+    'CB': [
+      { trackId: 966012143, name: 'GiveSmart Fundraise', developer: 'MobileCause Inc', icon: 'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/9c/59/76/9c5976b0-251c-57e0-ca7b-8379ac2560c0/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/100x100bb.jpg', price: 'Free', url: 'https://apps.apple.com/us/app/givesmart-fundraise/id966012143', locked: true },
+    ],
+    'EB': [
+      { trackId: 487922291, name: 'Eventbrite', developer: 'Eventbrite', icon: 'https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/fc/66/1e/fc661e89-1364-9ba1-1aed-e2a37617344b/AppIcon-0-0-1x_U007ephone-0-1-0-85-220.png/100x100bb.jpg', price: 'Free', url: 'https://apps.apple.com/us/app/eventbrite/id487922291', locked: true },
+      { trackId: 368260521, name: 'Eventbrite Organizer', developer: 'Eventbrite', icon: 'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/0b/79/80/0b7980a8-8c95-e095-e2f6-cb629ba59e79/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/100x100bb.jpg', price: 'Free', url: 'https://apps.apple.com/us/app/eventbrite-organizer/id368260521', locked: true },
+    ],
+    'TA': [
+      { trackId: 991294851, name: 'Tassel Tickets', developer: 'Navona Investments', icon: 'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/d8/6d/1a/d86d1a84-c7b4-2cf0-a354-41888adccdae/AppIcon-1x_U007emarketing-0-8-0-0-85-220-0.png/100x100bb.jpg', price: 'Free', url: 'https://apps.apple.com/us/app/tassel-tickets/id991294851', locked: true },
+    ],
+  };
+  const PARTNER_SOURCES = new Set(['SQ', 'SH', 'TO', 'CB', 'EB', 'TA']);
+
+  /** Activate partner mode: auto-add apps, show partner panel, hide quick setup */
+  const activatePartnerMode = (siteSource, partnerLabel) => {
+    const partnerSetup = $('#partnerSetup');
+    const quickSetup = $('#quickSetup');
+    const partnerAppsList = $('#partnerAppsList');
+    if (!partnerSetup) return;
+
+    // Auto-add partner apps to selectedApps
+    const apps = PARTNER_APPS[siteSource] || [];
+    apps.forEach(app => {
+      if (!selectedApps.some(a => a.trackId === app.trackId)) {
+        selectedApps.push(app);
+      }
+    });
+
+    // Render locked apps in the partner panel
+    if (partnerAppsList) {
+      partnerAppsList.innerHTML = apps.map(app => `
+        <div class="cmi-selected-app locked" data-track-id="${app.trackId}">
+          <img class="cmi-selected-app-icon" src="${app.icon}" alt="${escapeAttr(app.name)}" loading="lazy">
+          <div class="cmi-selected-app-info">
+            <div class="cmi-selected-app-name">${escapeHtml(app.name)} <span class="cmi-app-free-tag">Free</span></div>
+            <div class="cmi-selected-app-developer">${escapeHtml(app.developer)}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Update banner text
+    const bannerTitle = $('#partnerBannerTitle');
+    const bannerDesc = $('#partnerBannerDesc');
+    if (bannerTitle) bannerTitle.textContent = `${partnerLabel} order detected`;
+    if (bannerDesc) bannerDesc.textContent = `Standard ${partnerLabel} configuration will be applied with ${apps.length} partner app${apps.length !== 1 ? 's' : ''} pre-installed.`;
+
+    // Show partner panel, hide quick setup
+    partnerSetup.style.display = '';
+    if (quickSetup) quickSetup.style.display = 'none';
+
+    // Wire up partner tile toggles
+    [
+      { toggle: '#partnerWifiToggle', body: '#partnerWifiBody', tile: '#partnerTileWifi' },
+      { toggle: '#partnerWallpaperToggle', body: '#partnerWallpaperBody', tile: '#partnerTileWallpaper' },
+    ].forEach(({ toggle, body, tile }) => {
+      const toggleEl = $(toggle);
+      const bodyEl = $(body);
+      const tileEl = $(tile);
+      const headerEl = tileEl?.querySelector('.cmi-quick-tile-header');
+      if (!toggleEl || !bodyEl || !tileEl) return;
+
+      const update = () => {
+        bodyEl.style.display = toggleEl.checked ? '' : 'none';
+        tileEl.classList.toggle('active', toggleEl.checked);
+      };
+      toggleEl.addEventListener('change', update);
+      headerEl?.addEventListener('click', (e) => {
+        if (e.target.closest('.cmi-switch')) return;
+        toggleEl.checked = !toggleEl.checked;
+        toggleEl.dispatchEvent(new Event('change'));
+      });
+    });
+
+    // Partner submit → jump to review
+    $('#btnPartnerSubmit')?.addEventListener('click', () => {
+      quickSubmitMode = true;
+      navChain = ['step-1', 'step-6'];
+      navLabels = ['Order Info', 'Review'];
+      navIndex = 1;
+      goToStep(1, true);
+    });
+
+    // Escape hatch → show full flow
+    $('#btnPartnerFullCustom')?.addEventListener('click', () => {
+      quickSubmitMode = false;
+      partnerSetup.style.display = 'none';
+      if (quickSetup) quickSetup.style.display = '';
+      const advancedSelector = $('#advancedModeSelector');
+      if (advancedSelector) {
+        advancedSelector.style.display = '';
+        advancedSelector.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+
+    // Also render in main selectedApps list for review
+    renderSelectedApps();
+  };
+
   const initLookupOrder = () => {
     const btn = $('#btnLookup');
     const orderInput = $('#orderNumber');
@@ -311,6 +422,11 @@
           siteSourceBadge.textContent = src.label;
           siteSourceBadge.dataset.source = src.key;
           siteSourceBadge.hidden = false;
+
+          // Activate partner mode if applicable
+          if (PARTNER_SOURCES.has(raw.site_source)) {
+            activatePartnerMode(raw.site_source, src.label);
+          }
         }
 
         // Populate Device Info from rentals (whitelist of DCR-relevant devices)

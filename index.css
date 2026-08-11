@@ -1584,6 +1584,57 @@ body::before {
 .cmi-source-badge[data-source="toast"] { background: #ff6900; }
 
 /* --------------------------------------------------------------------------
+   Partner Setup Panel
+   -------------------------------------------------------------------------- */
+.cmi-partner-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 20px;
+  border-radius: var(--radius-lg);
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  margin-bottom: var(--sp-5);
+  margin-top: var(--sp-5);
+}
+.cmi-partner-banner > i {
+  color: var(--cmi-success);
+  font-size: 1.3rem;
+  margin-top: 2px;
+}
+.cmi-partner-banner strong {
+  font-size: 0.95rem;
+  color: var(--cmi-text);
+}
+.cmi-partner-banner p {
+  font-size: 0.85rem;
+  color: var(--cmi-text-secondary);
+  margin: 4px 0 0;
+}
+.cmi-partner-apps-section {
+  margin-top: var(--sp-4);
+}
+.cmi-selected-app.locked .cmi-selected-app-remove {
+  display: none;
+}
+.cmi-selected-app.locked::after {
+  content: '\f023';
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--cmi-text-muted);
+  font-size: 0.75rem;
+  opacity: 0.5;
+}
+.cmi-selected-app.locked {
+  position: relative;
+  padding-right: 36px;
+}
+
+/* --------------------------------------------------------------------------
    Quick Setup Tiles
    -------------------------------------------------------------------------- */
 .cmi-quick-tile {

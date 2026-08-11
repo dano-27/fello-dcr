@@ -139,6 +139,104 @@
           </div>
         </div>
 
+        <!-- ═══════════ Partner Setup (auto-shown for partner orders) ═══════════ -->
+        <div class="cmi-section" id="partnerSetup" style="display: none; margin-top: var(--sp-8);">
+          <div class="cmi-divider"></div>
+          <div class="cmi-partner-banner" id="partnerBanner">
+            <i class="fa-solid fa-circle-check"></i>
+            <div>
+              <strong id="partnerBannerTitle">Partner order detected</strong>
+              <p id="partnerBannerDesc">Standard configuration will be applied with partner apps pre-installed.</p>
+            </div>
+          </div>
+
+          <!-- Partner Apps (locked, no remove) -->
+          <div class="cmi-partner-apps-section">
+            <h4 class="cmi-section-title" style="font-size: 0.95rem;"><i class="fa-brands fa-app-store-ios"></i> Pre-installed Apps</h4>
+            <div class="cmi-selected-apps" id="partnerAppsList"></div>
+          </div>
+
+          <!-- Wi-Fi Tile -->
+          <div class="cmi-quick-tile" id="partnerTileWifi" style="margin-top: var(--sp-4);">
+            <div class="cmi-quick-tile-header" data-quick-toggle="partnerWifi">
+              <div class="cmi-quick-tile-icon"><i class="fa-solid fa-wifi"></i></div>
+              <div class="cmi-quick-tile-info">
+                <span class="cmi-quick-tile-title">Pre-configured Wi-Fi</span>
+                <span class="cmi-quick-tile-desc">Devices will automatically connect to your network on-site.</span>
+              </div>
+              <div class="cmi-quick-tile-toggle">
+                <label class="cmi-switch">
+                  <input type="checkbox" id="partnerWifiToggle">
+                  <span class="cmi-switch-slider"></span>
+                </label>
+              </div>
+            </div>
+            <div class="cmi-quick-tile-body" id="partnerWifiBody" style="display:none;">
+              <div class="cmi-form-grid">
+                <div class="cmi-field cmi-col-full">
+                  <label class="cmi-label">Network Name (SSID) <span class="cmi-required">*</span></label>
+                  <input type="text" id="partnerWifiSsid" class="cmi-input" placeholder="e.g. VenueWiFi-5G">
+                </div>
+                <div class="cmi-field cmi-col-half">
+                  <label class="cmi-label">Password <span class="cmi-required">*</span></label>
+                  <input type="password" id="partnerWifiPassword" class="cmi-input" placeholder="Wi-Fi password">
+                </div>
+                <div class="cmi-field cmi-col-half">
+                  <label class="cmi-label">Security Type</label>
+                  <select id="partnerWifiSecurity" class="cmi-select">
+                    <option value="WPA2 Personal" selected>WPA2 Personal</option>
+                    <option value="WPA2 Enterprise">WPA2 Enterprise</option>
+                    <option value="WPA3 Personal">WPA3 Personal</option>
+                    <option value="WPA3 Enterprise">WPA3 Enterprise</option>
+                    <option value="WPA/WPA2 Personal">WPA/WPA2 Personal</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Wallpaper Tile -->
+          <div class="cmi-quick-tile" id="partnerTileWallpaper" style="margin-top: var(--sp-4);">
+            <div class="cmi-quick-tile-header" data-quick-toggle="partnerWallpaper">
+              <div class="cmi-quick-tile-icon"><i class="fa-solid fa-image"></i></div>
+              <div class="cmi-quick-tile-info">
+                <span class="cmi-quick-tile-title">Custom Wallpaper</span>
+                <span class="cmi-quick-tile-desc">Upload a custom lock screen and/or home screen wallpaper.</span>
+              </div>
+              <div class="cmi-quick-tile-toggle">
+                <label class="cmi-switch">
+                  <input type="checkbox" id="partnerWallpaperToggle">
+                  <span class="cmi-switch-slider"></span>
+                </label>
+              </div>
+            </div>
+            <div class="cmi-quick-tile-body" id="partnerWallpaperBody" style="display:none;">
+              <div class="cmi-field">
+                <label class="cmi-label">Wallpaper Image</label>
+                <div class="cmi-file-drop" data-file-id="partnerWallpaper">
+                  <input type="file" class="cmi-file-input" accept=".jpg,.jpeg,.png" hidden>
+                  <div class="cmi-file-drop-content">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <p>Drag & drop or <span class="cmi-file-browse">browse</span></p>
+                    <p class="cmi-help-text">JPG or PNG, recommended 2048×2048</p>
+                  </div>
+                  <div class="cmi-file-preview" hidden></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Partner Actions -->
+          <div class="cmi-quick-actions" style="margin-top: var(--sp-6); display: flex; flex-direction: column; gap: var(--sp-3); align-items: center;">
+            <button type="button" class="cmi-btn cmi-btn-primary" id="btnPartnerSubmit" style="width: 100%; max-width: 400px; padding: 14px 24px; font-size: 1rem;">
+              <i class="fa-solid fa-paper-plane"></i> Submit Configuration
+            </button>
+            <button type="button" class="cmi-btn cmi-btn-link" id="btnPartnerFullCustom" style="font-size: 0.85rem; color: var(--cmi-text-muted);">
+              Need additional customizations? <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+
         <!-- ═══════════ Quick Setup ═══════════ -->
         <div class="cmi-section" id="quickSetup" style="margin-top: var(--sp-8);">
           <div class="cmi-divider"></div>
@@ -1832,6 +1930,6 @@
 
 </div>
 
-<script src="app.js?v=20260811i" defer></script>
+<script src="app.js?v=20260811j" defer></script>
 </body>
 </html>
