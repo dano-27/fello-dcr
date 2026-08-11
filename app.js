@@ -294,13 +294,14 @@
           setFieldValue('#eventDates', start && end ? `${start} - ${end}` : start || end);
         }
 
-        // Populate Device Info from rentals (filter to devices only)
-        const DEVICE_CATEGORIES = [1, 8, 14]; // Tablets/Phones, Networking, POS Devices
-        const HIDDEN_PARTS = ['N008', 'N026']; // GiveSmart Swiper, Shopify Tap & Chip
+        // Populate Device Info from rentals (filter out accessories)
+        const HIDDEN_KEYWORDS = ['cable', 'charger', 'adapter', 'dock', 'hub', 'case', 'paper', 'power cable', 'ac adapter'];
+        const HIDDEN_NAMES = ['givesmart swiper', 'shopify tap'];
         const devices = (raw.rentals || []).filter(r => {
-          const cat = r.model?.model_category;
-          const part = r.model?.part_number;
-          return DEVICE_CATEGORIES.includes(cat) && !HIDDEN_PARTS.includes(part);
+          const name = (r.model?.model_name || '').toLowerCase();
+          if (HIDDEN_KEYWORDS.some(kw => name.includes(kw))) return false;
+          if (HIDDEN_NAMES.some(hn => name.includes(hn))) return false;
+          return true;
         });
         const deviceDisplay = $('#deviceListDisplay');
         if (deviceDisplay && devices.length > 0) {
