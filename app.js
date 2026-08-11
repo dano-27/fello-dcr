@@ -337,6 +337,15 @@
     partnerSetup.style.display = '';
     if (quickSetup) quickSetup.style.display = 'none';
 
+    // Partner orders: Wi-Fi is free — remove "Additional Fee" tags from Wi-Fi tiles
+    ['#posWifiToggle', '#netWifiToggle', '#laptopWifiToggle', '#partnerWifiToggle'].forEach(id => {
+      const tile = $(id)?.closest('.cmi-quick-tile');
+      if (tile) {
+        const tag = tile.querySelector('.cmi-addon-tag');
+        if (tag) tag.style.display = 'none';
+      }
+    });
+
     // Wire up partner tile toggles
     [
       { toggle: '#partnerWifiToggle', body: '#partnerWifiBody', tile: '#partnerTileWifi' },
@@ -2583,18 +2592,20 @@
       ($('input[name="pkgKioskLockdownMode"]:checked')?.value === 'Guided Access') ||
       getToggleValue('pkgKioskWebClipToggle') === 'yes';
 
-    // Check partner panel addons (Wi-Fi)
+    // Check partner panel addons — only app login (device sign-in) incurs a fee
+    // Wi-Fi config is FREE for partner orders
     const partnerAddon = isPartnerOrder && (
-      $('#partnerWifiToggle')?.checked || false
+      $('#posLoginToggle')?.checked || false
     );
 
     const hasAddon = customAddon || pkgAddon || partnerAddon;
 
-    // Partner orders: $0 base, $5/device only for addons
+    // Partner orders: $0 base, $5/device ONLY for app login (device sign-in)
+    // Wi-Fi and all other partner configs are free
     // Fello/OR orders: $5/device base, $10/device with addons
     let baseRate, baseCost;
     if (isPartnerOrder) {
-      baseRate = hasAddon ? 5 : 0;
+      baseRate = partnerAddon ? 5 : 0;
       baseCost = 0;
     } else {
       baseRate = hasAddon ? 10 : 5;
