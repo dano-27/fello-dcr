@@ -469,8 +469,13 @@
 
         // Populate Device Info from rentals — categorized by group
         const DEVICE_GROUPS = {
-          ios: new Set(['ipad 6th gen', 'ipad 8th gen', 'ipad mini 4th gen', 'ipad mini 5th gen', 'ipad pro 12.9" 2nd gen',
-                        'iphone se 2nd gen', 'iphone x', 'test ipad 5th gen']),
+          ios: new Set([
+            'ipad 5th gen', 'ipad 6th gen', 'ipad 7th gen', 'ipad 8th gen', 'ipad 9th gen',
+            'ipad mini 4th gen', 'ipad mini 5th gen', 'ipad mini 6th gen',
+            'ipad pro 9.7', 'ipad pro 11', 'ipad pro 12.9', 'ipad pro 12.9" 2nd gen', 'ipad pro 13',
+            'iphone se 2nd gen', 'iphone x',
+            'test ipad 5th gen',
+          ]),
           laptop: new Set(['basic laptop', 'lenovo e15 (gen 1)', 'dell latitude 3410', 'apple macbook pro',
                            'lenovo e16 i7 (13th gen)', 'microsoft surface pro (gen 7)', 'hp probook 840']),
           pos: new Set(['square register; us', 'square terminal; us', 'square handheld (us)', 'clover go']),
