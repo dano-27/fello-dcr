@@ -513,6 +513,16 @@
           }
         });
 
+        // Merge paired Starlink components into single "Starlink Gen 3"
+        const net = grouped.networking;
+        const slReceiver = net['Starlink Receiver Gen 3'] || 0;
+        const slRouter = net['Starlink Router Gen 3'] || 0;
+        if (slReceiver || slRouter) {
+          delete net['Starlink Receiver Gen 3'];
+          delete net['Starlink Router Gen 3'];
+          net['Starlink Gen 3'] = Math.max(slReceiver, slRouter);
+        }
+
         // Store for dynamic nav chain
         window._dcrGroups = grouped;
 
