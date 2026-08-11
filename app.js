@@ -70,6 +70,26 @@
 
   const getActivePackage = () => $('input[name="configPackage"]:checked')?.value || '';
 
+  /** Build nav chain appending POS/Networking steps if those groups exist */
+  const buildGroupNavChain = (baseChain, baseLabels) => {
+    const chain = [...baseChain];
+    const labels = [...baseLabels];
+    // Insert group steps before 'step-6' (Review)
+    const reviewIdx = chain.indexOf('step-6');
+    if (reviewIdx === -1) return { chain, labels };
+    const insertAt = reviewIdx;
+    if (window._dcrHasPOS) {
+      chain.splice(insertAt, 0, 'group-pos');
+      labels.splice(insertAt, 0, 'POS');
+    }
+    if (window._dcrHasNet) {
+      const netIdx = chain.indexOf('step-6');
+      chain.splice(netIdx, 0, 'group-networking');
+      labels.splice(netIdx, 0, 'Network');
+    }
+    return { chain, labels };
+  };
+
   /** Rebuild the progress bar dots/labels for the current chain */
   const rebuildProgressBar = () => {
     const container = $('.cmi-progress-steps');
@@ -92,13 +112,19 @@
     const pkg = getActivePackage();
     const config = PACKAGE_CHAINS[pkg];
 
+    let baseChain, baseLabels;
     if (config) {
-      navChain = config.chain;
-      navLabels = config.labels;
+      baseChain = config.chain;
+      baseLabels = config.labels;
     } else {
-      navChain = CUSTOM_CHAIN;
-      navLabels = CUSTOM_LABELS;
+      baseChain = CUSTOM_CHAIN;
+      baseLabels = CUSTOM_LABELS;
     }
+
+    // Append POS/Networking group steps if those device groups exist
+    const built = buildGroupNavChain(baseChain, baseLabels);
+    navChain = built.chain;
+    navLabels = built.labels;
 
     // If we're still on step 1, just rebuild progress bar
     if (navIndex === 0) {
@@ -327,11 +353,12 @@
       });
     });
 
-    // Partner submit → jump to review
+    // Partner submit → walk through group steps then review
     $('#btnPartnerSubmit')?.addEventListener('click', () => {
       quickSubmitMode = true;
-      navChain = ['step-1', 'step-6'];
-      navLabels = ['Order Info', 'Review'];
+      const built = buildGroupNavChain(['step-1', 'step-6'], ['Order Info', 'Review']);
+      navChain = built.chain;
+      navLabels = built.labels;
       navIndex = 1;
       goToStep(1, true);
     });
@@ -432,51 +459,147 @@
           }
         }
 
-        // Populate Device Info from rentals (whitelist of DCR-relevant devices)
-        const ALLOWED_DEVICES = [
-          'ipad 6th gen', 'ipad 8th gen', 'ipad mini 5th gen', 'ipad pro 12.9" 2nd gen',
-          'iphone se 2nd gen', 'iphone x', 'test ipad 5th gen',
-          'mcc router', 'mobile hotspot', 'mobile hotspot; 5g',
-          'starlink receiver gen 3',
-          'square register; us', 'square terminal; us', 'square handheld (us)',
-          'clover go'
-        ];
-        const devices = (raw.rentals || []).filter(r => {
+        // Populate Device Info from rentals — categorized by group
+        const DEVICE_GROUPS = {
+          ios: new Set(['ipad 6th gen', 'ipad 8th gen', 'ipad mini 5th gen', 'ipad pro 12.9" 2nd gen',
+                        'iphone se 2nd gen', 'iphone x', 'test ipad 5th gen']),
+          pos: new Set(['square register; us', 'square terminal; us', 'square handheld (us)', 'clover go']),
+          networking: new Set(['mcc router', 'mobile hotspot', 'mobile hotspot; 5g', 'starlink receiver gen 3']),
+        };
+        const GROUP_META = {
+          ios: { label: 'iPads & iPhones', icon: 'fa-solid fa-tablet-screen-button', order: 1 },
+          pos: { label: 'POS Devices', icon: 'fa-solid fa-cash-register', order: 2 },
+          networking: { label: 'Networking', icon: 'fa-solid fa-wifi', order: 3 },
+        };
+
+        // Categorize rentals
+        const grouped = { ios: {}, pos: {}, networking: {} };
+        (raw.rentals || []).forEach(r => {
           const name = (r.model?.model_name || '').toLowerCase();
-          return ALLOWED_DEVICES.includes(name);
+          const displayName = r.model?.model_name || 'Unknown';
+          const qty = r.amount || 0;
+          for (const [group, names] of Object.entries(DEVICE_GROUPS)) {
+            if (names.has(name)) {
+              grouped[group][displayName] = (grouped[group][displayName] || 0) + qty;
+              break;
+            }
+          }
         });
-        // Consolidate devices by model name
-        const deviceMap = {};
-        devices.forEach(r => {
-          const name = r.model?.model_name || 'Unknown';
-          deviceMap[name] = (deviceMap[name] || 0) + (r.amount || 0);
-        });
+
+        // Store for dynamic nav chain
+        window._dcrGroups = grouped;
+
         const deviceDisplay = $('#deviceListDisplay');
-        if (deviceDisplay && Object.keys(deviceMap).length > 0) {
-          const totalDevices = Object.values(deviceMap).reduce((a, b) => a + b, 0);
+        const activeGroups = Object.entries(grouped).filter(([, map]) => Object.keys(map).length > 0);
+
+        if (deviceDisplay && activeGroups.length > 0) {
+          const totalDevices = activeGroups.reduce((sum, [, map]) =>
+            sum + Object.values(map).reduce((a, b) => a + b, 0), 0);
           deviceDisplay.dataset.totalDevices = totalDevices.toString();
 
-          const deviceHtml = Object.entries(deviceMap).map(([name, qty]) => `
-              <li style="margin-bottom: 8px;">
-                <i class="fa-solid fa-check" style="color: var(--cmi-success); margin-right: 8px;"></i>
-                ${qty}x ${escapeHtml(name)}
-              </li>
-          `).join('');
+          const groupHtml = activeGroups
+            .sort(([a], [b]) => GROUP_META[a].order - GROUP_META[b].order)
+            .map(([group, map]) => {
+              const meta = GROUP_META[group];
+              const items = Object.entries(map).map(([name, qty]) => `
+                <li style="margin-bottom: 6px; padding-left: 8px;">
+                  <i class="fa-solid fa-check" style="color: var(--cmi-success); margin-right: 8px;"></i>
+                  ${qty}x ${escapeHtml(name)}
+                </li>
+              `).join('');
+              return `
+                <div style="margin-bottom: 16px;">
+                  <div style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--cmi-text-secondary); margin-bottom: 8px;">
+                    <i class="${meta.icon}" style="margin-right: 6px;"></i>${meta.label}
+                  </div>
+                  <ul style="list-style: none; padding: 0; margin: 0; font-weight: 500;">
+                    ${items}
+                  </ul>
+                </div>
+              `;
+            }).join('');
 
-          deviceDisplay.innerHTML = `
-            <ul style="list-style: none; padding: 0; margin: 0; font-weight: 500;">
-              ${deviceHtml}
-            </ul>
-          `;
+          deviceDisplay.innerHTML = groupHtml;
         }
 
         // Recalculate app costs with new device count
         updateAppCostIndicator();
 
+        // Build dynamic nav chain based on device groups present
+        const hasIos = Object.keys(grouped.ios).length > 0;
+        const hasPOS = Object.keys(grouped.pos).length > 0;
+        const hasNet = Object.keys(grouped.networking).length > 0;
+
+        // Populate POS device list
+        if (hasPOS) {
+          const posListEl = $('#posDeviceList');
+          if (posListEl) {
+            posListEl.innerHTML = Object.entries(grouped.pos).map(([name, qty]) => `
+              <div style="margin-bottom: 6px; font-weight: 500;">
+                <i class="fa-solid fa-check" style="color: var(--cmi-success); margin-right: 8px;"></i>
+                ${qty}x ${escapeHtml(name)}
+              </div>
+            `).join('');
+          }
+        }
+
+        // Populate Networking device list
+        if (hasNet) {
+          const netListEl = $('#netDeviceList');
+          if (netListEl) {
+            netListEl.innerHTML = Object.entries(grouped.networking).map(([name, qty]) => `
+              <div style="margin-bottom: 6px; font-weight: 500;">
+                <i class="fa-solid fa-check" style="color: var(--cmi-success); margin-right: 8px;"></i>
+                ${qty}x ${escapeHtml(name)}
+              </div>
+            `).join('');
+          }
+        }
+
+        // Wire up POS/Networking tile toggles
+        [
+          { toggle: '#posWifiToggle', body: '#posWifiBody' },
+          { toggle: '#posLoginToggle', body: '#posLoginBody' },
+          { toggle: '#netWifiToggle', body: '#netWifiBody' },
+        ].forEach(({ toggle, body }) => {
+          const t = $(toggle), b = $(body);
+          if (t && b) {
+            t.addEventListener('change', () => { b.style.display = t.checked ? '' : 'none'; });
+          }
+        });
+
+        // Wi-Fi sharing: "Use same as iOS"
+        const wireWifiShare = (checkboxId, fieldsId, ssidId, pwdId, secId) => {
+          const cb = $(checkboxId);
+          const fields = $(fieldsId);
+          if (!cb || !fields) return;
+          cb.addEventListener('change', () => {
+            fields.style.display = cb.checked ? 'none' : '';
+            if (cb.checked) {
+              // Copy from iOS Wi-Fi (Quick Setup or custom flow)
+              const iosSsid = $('#quickWifiSsid')?.value || $('#wifiSsid')?.value || '';
+              const iosPwd = $('#quickWifiPassword')?.value || $('#wifiPassword')?.value || '';
+              const iosSec = $('#quickWifiSecurity')?.value || $('#wifiSecurity')?.value || 'WPA2 Personal';
+              $(ssidId).value = iosSsid;
+              $(pwdId).value = iosPwd;
+              $(secId).value = iosSec;
+            }
+          });
+        };
+        wireWifiShare('#posWifiSameAsIos', '#posWifiFields', '#posWifiSsid', '#posWifiPassword', '#posWifiSecurity');
+        wireWifiShare('#netWifiSameAsIos', '#netWifiFields', '#netWifiSsid', '#netWifiPassword', '#netWifiSecurity');
+
+        // Note: nav chain will be set by Quick Setup submit, Partner submit,
+        // or Advanced mode — those handlers already set navChain.
+        // Store group flags for those handlers to use.
+        window._dcrHasIos = hasIos;
+        window._dcrHasPOS = hasPOS;
+        window._dcrHasNet = hasNet;
+
         btn.innerHTML = '<i class="fa-solid fa-check"></i> Found';
         btn.disabled = false;
 
-        showToast(`Order ${raw.fly_order_id} loaded — ${raw.customer_name} (${devices.length} devices)`, 'success');
+        showToast(`Order ${raw.fly_order_id} loaded — ${raw.customer_name}`, 'success');
         triggerAutoSave();
 
       } catch (err) {
@@ -2460,10 +2583,11 @@
         }
       }
 
-      // Set quick submit mode and go to review
+      // Set quick submit mode and go through group steps
       quickSubmitMode = true;
-      navChain = ['step-1', 'step-6'];
-      navLabels = ['Order Info', 'Review'];
+      const built = buildGroupNavChain(['step-1', 'step-6'], ['Order Info', 'Review']);
+      navChain = built.chain;
+      navLabels = built.labels;
       navIndex = 1;
       goToStep(1, true);
     });

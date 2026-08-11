@@ -1833,6 +1833,165 @@
         </div>
       </section>
 
+      <!-- ═══════════════════════════ GROUP: POS Config ═══════════════════════════ -->
+      <section id="group-pos" class="cmi-step">
+        <div class="cmi-step-header">
+          <h2 class="cmi-step-title"><i class="fa-solid fa-cash-register"></i> POS Device Configuration</h2>
+          <p class="cmi-step-subtitle">Configure your POS devices.</p>
+        </div>
+        <div class="cmi-section">
+          <h3 class="cmi-section-title" style="font-size: 0.95rem;"><i class="fa-solid fa-cash-register"></i> POS Devices in this Order</h3>
+          <div class="cmi-device-list" id="posDeviceList"><p class="cmi-text-muted">No POS devices.</p></div>
+        </div>
+        <!-- POS Wi-Fi -->
+        <div class="cmi-section" style="margin-top: var(--sp-6);">
+          <div class="cmi-divider"></div>
+          <div class="cmi-quick-tile" style="margin-top: var(--sp-4);">
+            <div class="cmi-quick-tile-header">
+              <div class="cmi-quick-tile-icon"><i class="fa-solid fa-wifi"></i></div>
+              <div class="cmi-quick-tile-info">
+                <span class="cmi-quick-tile-title">Pre-configured Wi-Fi <span class="cmi-addon-tag"><i class="fa-solid fa-sack-dollar"></i> Additional Fee</span></span>
+                <span class="cmi-quick-tile-desc">POS devices will automatically connect to your network.</span>
+              </div>
+              <div class="cmi-quick-tile-toggle">
+                <label class="cmi-switch"><input type="checkbox" id="posWifiToggle"><span class="cmi-switch-slider"></span></label>
+              </div>
+            </div>
+            <div class="cmi-quick-tile-body" id="posWifiBody" style="display:none;">
+              <div class="cmi-form-grid">
+                <div class="cmi-field cmi-col-full" style="margin-bottom: 8px;">
+                  <label style="cursor:pointer; display:flex; align-items:center; gap:8px; font-size:0.85rem; color:var(--cmi-text-secondary);">
+                    <input type="checkbox" id="posWifiSameAsIos" style="accent-color: var(--cmi-accent);">
+                    Use same Wi-Fi credentials as iOS devices
+                  </label>
+                </div>
+                <div id="posWifiFields">
+                  <div class="cmi-form-grid">
+                    <div class="cmi-field cmi-col-full">
+                      <label class="cmi-label">Network Name (SSID) <span class="cmi-required">*</span></label>
+                      <input type="text" id="posWifiSsid" class="cmi-input" placeholder="e.g. VenueWiFi-5G">
+                    </div>
+                    <div class="cmi-field cmi-col-half">
+                      <label class="cmi-label">Password <span class="cmi-required">*</span></label>
+                      <input type="password" id="posWifiPassword" class="cmi-input" placeholder="Wi-Fi password">
+                    </div>
+                    <div class="cmi-field cmi-col-half">
+                      <label class="cmi-label">Security Type</label>
+                      <select id="posWifiSecurity" class="cmi-select">
+                        <option value="WPA2 Personal" selected>WPA2 Personal</option>
+                        <option value="WPA2 Enterprise">WPA2 Enterprise</option>
+                        <option value="WPA3 Personal">WPA3 Personal</option>
+                        <option value="WPA3 Enterprise">WPA3 Enterprise</option>
+                        <option value="WPA/WPA2 Personal">WPA/WPA2 Personal</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- POS App Login -->
+        <div class="cmi-section" style="margin-top: var(--sp-4);">
+          <div class="cmi-quick-tile">
+            <div class="cmi-quick-tile-header">
+              <div class="cmi-quick-tile-icon"><i class="fa-solid fa-right-to-bracket"></i></div>
+              <div class="cmi-quick-tile-info">
+                <span class="cmi-quick-tile-title">App Login <span class="cmi-addon-tag"><i class="fa-solid fa-sack-dollar"></i> Additional Fee</span></span>
+                <span class="cmi-quick-tile-desc">Pre-login your POS app so devices are ready to use on-site.</span>
+              </div>
+              <div class="cmi-quick-tile-toggle">
+                <label class="cmi-switch"><input type="checkbox" id="posLoginToggle"><span class="cmi-switch-slider"></span></label>
+              </div>
+            </div>
+            <div class="cmi-quick-tile-body" id="posLoginBody" style="display:none;">
+              <div class="cmi-form-grid">
+                <div class="cmi-field cmi-col-half">
+                  <label class="cmi-label">Username <span class="cmi-required">*</span></label>
+                  <input type="text" id="posLoginUsername" class="cmi-input" placeholder="POS username or email">
+                </div>
+                <div class="cmi-field cmi-col-half">
+                  <label class="cmi-label">Password <span class="cmi-required">*</span></label>
+                  <input type="password" id="posLoginPassword" class="cmi-input" placeholder="POS password">
+                </div>
+                <div class="cmi-field cmi-col-half" id="posDeviceCodeField">
+                  <label class="cmi-label">Device Code <span class="cmi-help-text" style="display:inline;">(Square only)</span></label>
+                  <input type="text" id="posDeviceCode" class="cmi-input" placeholder="Square device code">
+                </div>
+                <div class="cmi-field cmi-col-half">
+                  <label class="cmi-label">Additional Credential 1</label>
+                  <input type="text" id="posCredential1" class="cmi-input" placeholder="Optional">
+                </div>
+                <div class="cmi-field cmi-col-full">
+                  <label class="cmi-label">Additional Credential 2</label>
+                  <input type="text" id="posCredential2" class="cmi-input" placeholder="Optional">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════ GROUP: Networking Config ═══════════════════════════ -->
+      <section id="group-networking" class="cmi-step">
+        <div class="cmi-step-header">
+          <h2 class="cmi-step-title"><i class="fa-solid fa-wifi"></i> Networking Device Configuration</h2>
+          <p class="cmi-step-subtitle">Configure your hotspots, routers, and connectivity devices.</p>
+        </div>
+        <div class="cmi-section">
+          <h3 class="cmi-section-title" style="font-size: 0.95rem;"><i class="fa-solid fa-wifi"></i> Networking Devices in this Order</h3>
+          <div class="cmi-device-list" id="netDeviceList"><p class="cmi-text-muted">No networking devices.</p></div>
+        </div>
+        <!-- Net Wi-Fi -->
+        <div class="cmi-section" style="margin-top: var(--sp-6);">
+          <div class="cmi-divider"></div>
+          <div class="cmi-quick-tile" style="margin-top: var(--sp-4);">
+            <div class="cmi-quick-tile-header">
+              <div class="cmi-quick-tile-icon"><i class="fa-solid fa-wifi"></i></div>
+              <div class="cmi-quick-tile-info">
+                <span class="cmi-quick-tile-title">Pre-configured Wi-Fi <span class="cmi-addon-tag"><i class="fa-solid fa-sack-dollar"></i> Additional Fee</span></span>
+                <span class="cmi-quick-tile-desc">Networking devices will broadcast or connect to your network.</span>
+              </div>
+              <div class="cmi-quick-tile-toggle">
+                <label class="cmi-switch"><input type="checkbox" id="netWifiToggle"><span class="cmi-switch-slider"></span></label>
+              </div>
+            </div>
+            <div class="cmi-quick-tile-body" id="netWifiBody" style="display:none;">
+              <div class="cmi-form-grid">
+                <div class="cmi-field cmi-col-full" style="margin-bottom: 8px;">
+                  <label style="cursor:pointer; display:flex; align-items:center; gap:8px; font-size:0.85rem; color:var(--cmi-text-secondary);">
+                    <input type="checkbox" id="netWifiSameAsIos" style="accent-color: var(--cmi-accent);">
+                    Use same Wi-Fi credentials as iOS devices
+                  </label>
+                </div>
+                <div id="netWifiFields">
+                  <div class="cmi-form-grid">
+                    <div class="cmi-field cmi-col-full">
+                      <label class="cmi-label">Network Name (SSID) <span class="cmi-required">*</span></label>
+                      <input type="text" id="netWifiSsid" class="cmi-input" placeholder="e.g. VenueWiFi-5G">
+                    </div>
+                    <div class="cmi-field cmi-col-half">
+                      <label class="cmi-label">Password <span class="cmi-required">*</span></label>
+                      <input type="password" id="netWifiPassword" class="cmi-input" placeholder="Wi-Fi password">
+                    </div>
+                    <div class="cmi-field cmi-col-half">
+                      <label class="cmi-label">Security Type</label>
+                      <select id="netWifiSecurity" class="cmi-select">
+                        <option value="WPA2 Personal" selected>WPA2 Personal</option>
+                        <option value="WPA2 Enterprise">WPA2 Enterprise</option>
+                        <option value="WPA3 Personal">WPA3 Personal</option>
+                        <option value="WPA3 Enterprise">WPA3 Enterprise</option>
+                        <option value="WPA/WPA2 Personal">WPA/WPA2 Personal</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- ═══════════════════════════ STEP 6: Review & Approval ═══════════════════════════ -->
       <section id="step-6" class="cmi-step">
         <div class="cmi-step-header">
@@ -1930,6 +2089,6 @@
 
 </div>
 
-<script src="app.js?v=20260811k" defer></script>
+<script src="app.js?v=20260811m" defer></script>
 </body>
 </html>
