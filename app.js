@@ -725,8 +725,16 @@
         window._dcrHasPOS = hasPOS;
         window._dcrHasNet = hasNet;
 
-        // Build group selector hub (when multiple groups or any non-iOS group)
+        // Only show "Use same Wi-Fi" checkboxes when iOS is present alongside other groups
         const groupCount = [hasIos, hasLaptop, hasPOS, hasNet].filter(Boolean).length;
+        if (!hasIos || groupCount < 2) {
+          ['#laptopWifiSameAsIos', '#posWifiSameAsIos', '#netWifiSameAsIos'].forEach(id => {
+            const cb = $(id);
+            if (cb) cb.closest('label').style.display = 'none';
+          });
+        }
+
+        // Build group selector hub (when multiple groups or any non-iOS group)
         if (groupCount > 1 || (hasLaptop || hasPOS || hasNet)) {
           const hub = $('#groupSelectorHub');
           const cards = $('#groupCards');
