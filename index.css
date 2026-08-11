@@ -1582,6 +1582,7 @@ body::before {
 .cmi-source-badge[data-source="eventbrite"] { background: #f05537; }
 .cmi-source-badge[data-source="tassel"] { background: #7c3aed; }
 .cmi-source-badge[data-source="toast"] { background: #ff6900; }
+.cmi-source-badge[data-source="levy"] { background: #1a3a5c; }
 
 /* --------------------------------------------------------------------------
    App Login CSV Upload Flow

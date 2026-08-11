@@ -294,8 +294,9 @@
     'MO': [
       { trackId: 991294851, name: 'Tassel Tickets', developer: 'Navona Investments', icon: 'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/d8/6d/1a/d86d1a84-c7b4-2cf0-a354-41888adccdae/AppIcon-1x_U007emarketing-0-8-0-0-85-220-0.png/100x100bb.jpg', price: 'Free', url: 'https://apps.apple.com/us/app/tassel-tickets/id991294851', locked: true },
     ],
+    'LE': [],
   };
-  const PARTNER_SOURCES = new Set(['SQ', 'SH', 'TO', 'CB', 'EB', 'TA', 'MO']);
+  const PARTNER_SOURCES = new Set(['SQ', 'SH', 'TO', 'CB', 'EB', 'TA', 'MO', 'LE']);
 
   /** Activate partner mode: auto-add apps, show partner panel, hide quick setup */
   const activatePartnerMode = (siteSource, partnerLabel) => {
@@ -461,6 +462,7 @@
             'SQ': { label: 'Square', key: 'square' },
             'TA': { label: 'Tassel', key: 'tassel' },
             'MO': { label: 'Tassel', key: 'tassel' },
+            'LE': { label: 'Levy', key: 'levy' },
             'TO': { label: 'Toast', key: 'toast' },
             'or': { label: 'Fello', key: 'fello' },
             'OR': { label: 'Fello', key: 'fello' },
@@ -488,7 +490,7 @@
           laptop: new Set(['basic laptop', 'lenovo e15 (gen 1)', 'dell latitude 3410', 'apple macbook pro',
                            'lenovo e16 i7 (13th gen)', 'microsoft surface pro (gen 7)', 'hp probook 840']),
           pos: new Set(['square register; us', 'square terminal; us', 'square handheld (us)', 'clover go']),
-          networking: new Set(['mcc router', 'mobile hotspot', 'mobile hotspot; 5g', 'starlink receiver gen 3']),
+          networking: new Set(['mcc router', 'mobile hotspot', 'mobile hotspot; 5g', 'starlink receiver gen 3', 'starlink router gen 3']),
         };
         const GROUP_META = {
           ios: { label: 'iPads & iPhones', icon: 'fa-solid fa-tablet-screen-button', order: 1 },
