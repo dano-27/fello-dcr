@@ -299,6 +299,8 @@
           const SOURCE_MAP = {
             'SQ': { label: 'Square', key: 'square' },
             'sq': { label: 'Square', key: 'square' },
+            'SH': { label: 'Shopify', key: 'shopify' },
+            'sh': { label: 'Shopify', key: 'shopify' },
             'or': { label: 'Fello', key: 'fello' },
             'OR': { label: 'Fello', key: 'fello' },
             'shopify': { label: 'Shopify', key: 'shopify' },
