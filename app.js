@@ -294,14 +294,20 @@
           setFieldValue('#eventDates', start && end ? `${start} - ${end}` : start || end);
         }
 
-        // Populate Device Info from rentals
-        const rentals = raw.rentals || [];
+        // Populate Device Info from rentals (filter to devices only)
+        const DEVICE_CATEGORIES = [1, 8, 14]; // Tablets/Phones, Networking, POS Devices
+        const HIDDEN_PARTS = ['N008', 'N026']; // GiveSmart Swiper, Shopify Tap & Chip
+        const devices = (raw.rentals || []).filter(r => {
+          const cat = r.model?.model_category;
+          const part = r.model?.part_number;
+          return DEVICE_CATEGORIES.includes(cat) && !HIDDEN_PARTS.includes(part);
+        });
         const deviceDisplay = $('#deviceListDisplay');
-        if (deviceDisplay && rentals.length > 0) {
-          const totalDevices = rentals.reduce((sum, r) => sum + (r.amount || 0), 0);
+        if (deviceDisplay && devices.length > 0) {
+          const totalDevices = devices.reduce((sum, r) => sum + (r.amount || 0), 0);
           deviceDisplay.dataset.totalDevices = totalDevices.toString();
 
-          const deviceHtml = rentals.map(r => {
+          const deviceHtml = devices.map(r => {
             const name = r.model?.model_name || 'Unknown';
             return `
               <li style="margin-bottom: 8px;">
@@ -324,7 +330,7 @@
         btn.innerHTML = '<i class="fa-solid fa-check"></i> Found';
         btn.disabled = false;
 
-        showToast(`Order ${raw.fly_order_id} loaded — ${raw.customer_name} (${rentals.length} line items)`, 'success');
+        showToast(`Order ${raw.fly_order_id} loaded — ${raw.customer_name} (${devices.length} devices)`, 'success');
         triggerAutoSave();
 
       } catch (err) {
