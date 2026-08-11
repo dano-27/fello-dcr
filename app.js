@@ -589,12 +589,122 @@
         wireWifiShare('#posWifiSameAsIos', '#posWifiFields', '#posWifiSsid', '#posWifiPassword', '#posWifiSecurity');
         wireWifiShare('#netWifiSameAsIos', '#netWifiFields', '#netWifiSsid', '#netWifiPassword', '#netWifiSecurity');
 
-        // Note: nav chain will be set by Quick Setup submit, Partner submit,
-        // or Advanced mode — those handlers already set navChain.
-        // Store group flags for those handlers to use.
+        // Store group flags
         window._dcrHasIos = hasIos;
         window._dcrHasPOS = hasPOS;
         window._dcrHasNet = hasNet;
+
+        // Build group selector hub (when multiple groups or any non-iOS group)
+        const groupCount = [hasIos, hasPOS, hasNet].filter(Boolean).length;
+        if (groupCount > 1 || (hasPOS || hasNet)) {
+          const hub = $('#groupSelectorHub');
+          const cards = $('#groupCards');
+          if (hub && cards) {
+            hub.style.display = '';
+
+            const GROUP_CARD_CONFIG = [
+              { key: 'ios', has: hasIos, icon: 'fa-solid fa-tablet-screen-button', label: 'iPads & iPhones', stepId: null, devices: grouped.ios },
+              { key: 'pos', has: hasPOS, icon: 'fa-solid fa-cash-register', label: 'POS Devices', stepId: 'group-pos', devices: grouped.pos },
+              { key: 'networking', has: hasNet, icon: 'fa-solid fa-wifi', label: 'Networking', stepId: 'group-networking', devices: grouped.networking },
+            ];
+
+            // Track configured state
+            window._dcrGroupConfigured = {};
+
+            cards.innerHTML = GROUP_CARD_CONFIG.filter(g => g.has).map(g => {
+              const count = Object.values(g.devices).reduce((a, b) => a + b, 0);
+              const deviceList = Object.entries(g.devices).map(([n, q]) => `${q}x ${n}`).join(', ');
+              // iOS uses the existing Quick Setup / Advanced flow below
+              const isIos = g.key === 'ios';
+              return `
+                <div class="cmi-group-card" data-group="${g.key}" data-step="${g.stepId || ''}">
+                  <div class="cmi-group-card-badge"><i class="fa-solid fa-circle-check"></i></div>
+                  <div class="cmi-group-card-icon"><i class="${g.icon}"></i></div>
+                  <div class="cmi-group-card-title">${g.label}</div>
+                  <div class="cmi-group-card-count">${count} device${count !== 1 ? 's' : ''} — ${deviceList}</div>
+                  <div class="cmi-group-card-btn">
+                    ${isIos ? '<i class="fa-solid fa-arrow-down"></i> Configure Below' : '<i class="fa-solid fa-arrow-right"></i> Configure'}
+                  </div>
+                </div>
+              `;
+            }).join('');
+
+            // Card click handlers
+            cards.querySelectorAll('.cmi-group-card').forEach(card => {
+              card.addEventListener('click', () => {
+                const group = card.dataset.group;
+                const stepId = card.dataset.step;
+
+                if (group === 'ios') {
+                  // Scroll to Quick Setup / Advanced section below
+                  const quickSetup = $('#quickSetup');
+                  const advModeSelector = $('#advancedModeSelector');
+                  const target = quickSetup?.style.display !== 'none' ? quickSetup : advModeSelector;
+                  target?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  // Mark iOS as configured when they interact
+                  window._dcrGroupConfigured.ios = true;
+                  card.classList.add('configured');
+                  return;
+                }
+
+                if (stepId) {
+                  // Navigate to group config step
+                  $$('.cmi-step').forEach(s => s.classList.remove('active'));
+                  const section = $(`#${stepId}`);
+                  if (section) {
+                    section.classList.add('active');
+                    // Hide progress bar (we're in hub mode, not linear)
+                    dom.btnBack.hidden = true;
+                    dom.btnNext.hidden = true;
+                    $('.cmi-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }
+                }
+              });
+            });
+
+            // Group Submit → Review
+            $('#btnGroupSubmit')?.addEventListener('click', () => {
+              quickSubmitMode = true;
+              const built = buildGroupNavChain(['step-1', 'step-6'], ['Order Info', 'Review']);
+              navChain = built.chain;
+              navLabels = built.labels;
+              // Jump straight to review (last in chain)
+              navIndex = navChain.length - 1;
+              goToStep(navIndex, true);
+            });
+          }
+        }
+
+        // Inject "Done — Back to Groups" button into POS and Networking steps
+        ['group-pos', 'group-networking'].forEach(stepId => {
+          const section = $(`#${stepId}`);
+          if (!section) return;
+          // Remove existing done button if any
+          section.querySelector('.cmi-group-done-btn')?.remove();
+          const doneBtn = document.createElement('button');
+          doneBtn.type = 'button';
+          doneBtn.className = 'cmi-btn cmi-btn-primary cmi-group-done-btn';
+          doneBtn.style.cssText = 'width: 100%; max-width: 400px; padding: 14px 24px; font-size: 1rem; margin: 24px auto 0; display: block;';
+          doneBtn.innerHTML = '<i class="fa-solid fa-check"></i> Done — Back to Groups';
+          doneBtn.addEventListener('click', () => {
+            // Mark group as configured
+            const groupKey = stepId === 'group-pos' ? 'pos' : 'networking';
+            window._dcrGroupConfigured[groupKey] = true;
+            const card = document.querySelector(`.cmi-group-card[data-group="${groupKey}"]`);
+            if (card) card.classList.add('configured');
+
+            // Return to Step 1
+            $$('.cmi-step').forEach(s => s.classList.remove('active'));
+            $('#step-1')?.classList.add('active');
+            navIndex = 0;
+            dom.btnBack.hidden = true;
+            dom.btnNext.hidden = true;
+            $('.cmi-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            showToast(`${groupKey === 'pos' ? 'POS' : 'Networking'} configuration saved.`, 'success');
+          });
+          section.appendChild(doneBtn);
+        });
 
         btn.innerHTML = '<i class="fa-solid fa-check"></i> Found';
         btn.disabled = false;

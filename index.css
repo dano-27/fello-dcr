@@ -1584,6 +1584,75 @@ body::before {
 .cmi-source-badge[data-source="toast"] { background: #ff6900; }
 
 /* --------------------------------------------------------------------------
+   Group Selector Cards
+   -------------------------------------------------------------------------- */
+.cmi-group-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: var(--sp-4);
+}
+.cmi-group-card {
+  background: var(--cmi-surface);
+  border: 2px solid var(--cmi-border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  position: relative;
+  text-align: center;
+}
+.cmi-group-card:hover {
+  border-color: var(--cmi-accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+.cmi-group-card.configured {
+  border-color: var(--cmi-success);
+  background: rgba(16, 185, 129, 0.04);
+}
+.cmi-group-card-icon {
+  font-size: 2rem;
+  color: var(--cmi-accent);
+  margin-bottom: 12px;
+}
+.cmi-group-card.configured .cmi-group-card-icon {
+  color: var(--cmi-success);
+}
+.cmi-group-card-title {
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+.cmi-group-card-count {
+  font-size: 0.8rem;
+  color: var(--cmi-text-secondary);
+  margin-bottom: 12px;
+}
+.cmi-group-card-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--cmi-accent);
+}
+.cmi-group-card.configured .cmi-group-card-btn {
+  color: var(--cmi-success);
+}
+.cmi-group-card-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: var(--cmi-success);
+  font-size: 1.1rem;
+  display: none;
+}
+.cmi-group-card.configured .cmi-group-card-badge {
+  display: block;
+}
+
+/* --------------------------------------------------------------------------
    Partner Setup Panel
    -------------------------------------------------------------------------- */
 .cmi-partner-banner {

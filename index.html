@@ -139,6 +139,19 @@
           </div>
         </div>
 
+        <!-- ═══════════ Group Selector Hub (shown when multiple groups detected) ═══════════ -->
+        <div class="cmi-section" id="groupSelectorHub" style="display: none; margin-top: var(--sp-8);">
+          <div class="cmi-divider"></div>
+          <h3 class="cmi-section-title" style="margin-top: var(--sp-5);"><i class="fa-solid fa-layer-group"></i> Configure Your Devices</h3>
+          <p class="cmi-help-text">Select each device group below to configure it.</p>
+          <div class="cmi-group-cards" id="groupCards"></div>
+          <div class="cmi-quick-actions" style="margin-top: var(--sp-6); display: flex; flex-direction: column; gap: var(--sp-3); align-items: center;">
+            <button type="button" class="cmi-btn cmi-btn-primary" id="btnGroupSubmit" style="width: 100%; max-width: 400px; padding: 14px 24px; font-size: 1rem;">
+              <i class="fa-solid fa-paper-plane"></i> Submit Configuration
+            </button>
+          </div>
+        </div>
+
         <!-- ═══════════ Partner Setup (auto-shown for partner orders) ═══════════ -->
         <div class="cmi-section" id="partnerSetup" style="display: none; margin-top: var(--sp-8);">
           <div class="cmi-divider"></div>
@@ -2089,6 +2102,6 @@
 
 </div>
 
-<script src="app.js?v=20260811m" defer></script>
+<script src="app.js?v=20260811n" defer></script>
 </body>
 </html>
