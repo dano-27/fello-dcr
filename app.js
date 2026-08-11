@@ -78,6 +78,10 @@
     const reviewIdx = chain.indexOf('step-6');
     if (reviewIdx === -1) return { chain, labels };
     const insertAt = reviewIdx;
+    if (window._dcrHasLaptop) {
+      chain.splice(insertAt, 0, 'group-laptop');
+      labels.splice(insertAt, 0, 'Laptops');
+    }
     if (window._dcrHasPOS) {
       chain.splice(insertAt, 0, 'group-pos');
       labels.splice(insertAt, 0, 'POS');
@@ -463,17 +467,20 @@
         const DEVICE_GROUPS = {
           ios: new Set(['ipad 6th gen', 'ipad 8th gen', 'ipad mini 5th gen', 'ipad pro 12.9" 2nd gen',
                         'iphone se 2nd gen', 'iphone x', 'test ipad 5th gen']),
+          laptop: new Set(['basic laptop', 'lenovo e15 (gen 1)', 'dell latitude 3410', 'apple macbook pro',
+                           'lenovo e16 i7 (13th gen)', 'microsoft surface pro (gen 7)', 'hp probook 840']),
           pos: new Set(['square register; us', 'square terminal; us', 'square handheld (us)', 'clover go']),
           networking: new Set(['mcc router', 'mobile hotspot', 'mobile hotspot; 5g', 'starlink receiver gen 3']),
         };
         const GROUP_META = {
           ios: { label: 'iPads & iPhones', icon: 'fa-solid fa-tablet-screen-button', order: 1 },
-          pos: { label: 'POS Devices', icon: 'fa-solid fa-cash-register', order: 2 },
-          networking: { label: 'Networking', icon: 'fa-solid fa-wifi', order: 3 },
+          laptop: { label: 'Laptops', icon: 'fa-solid fa-laptop', order: 2 },
+          pos: { label: 'POS Devices', icon: 'fa-solid fa-cash-register', order: 3 },
+          networking: { label: 'Networking', icon: 'fa-solid fa-wifi', order: 4 },
         };
 
         // Categorize rentals
-        const grouped = { ios: {}, pos: {}, networking: {} };
+        const grouped = { ios: {}, laptop: {}, pos: {}, networking: {} };
         (raw.rentals || []).forEach(r => {
           const name = (r.model?.model_name || '').toLowerCase();
           const displayName = r.model?.model_name || 'Unknown';
@@ -527,8 +534,22 @@
 
         // Build dynamic nav chain based on device groups present
         const hasIos = Object.keys(grouped.ios).length > 0;
+        const hasLaptop = Object.keys(grouped.laptop).length > 0;
         const hasPOS = Object.keys(grouped.pos).length > 0;
         const hasNet = Object.keys(grouped.networking).length > 0;
+
+        // Populate Laptop device list
+        if (hasLaptop) {
+          const laptopListEl = $('#laptopDeviceList');
+          if (laptopListEl) {
+            laptopListEl.innerHTML = Object.entries(grouped.laptop).map(([name, qty]) => `
+              <div style="margin-bottom: 6px; font-weight: 500;">
+                <i class="fa-solid fa-check" style="color: var(--cmi-success); margin-right: 8px;"></i>
+                ${qty}x ${escapeHtml(name)}
+              </div>
+            `).join('');
+          }
+        }
 
         // Populate POS device list
         if (hasPOS) {
@@ -558,6 +579,9 @@
 
         // Wire up POS/Networking tile toggles
         [
+          { toggle: '#laptopWifiToggle', body: '#laptopWifiBody' },
+          { toggle: '#laptopAppsToggle', body: '#laptopAppsBody' },
+          { toggle: '#laptopWallpaperToggle', body: '#laptopWallpaperBody' },
           { toggle: '#posWifiToggle', body: '#posWifiBody' },
           { toggle: '#posLoginToggle', body: '#posLoginBody' },
           { toggle: '#netWifiToggle', body: '#netWifiBody' },
@@ -676,15 +700,34 @@
         };
         wireWifiShare('#posWifiSameAsIos', '#posWifiFields', '#posWifiSsid', '#posWifiPassword', '#posWifiSecurity');
         wireWifiShare('#netWifiSameAsIos', '#netWifiFields', '#netWifiSsid', '#netWifiPassword', '#netWifiSecurity');
+        wireWifiShare('#laptopWifiSameAsIos', '#laptopWifiFields', '#laptopWifiSsid', '#laptopWifiPassword', '#laptopWifiSecurity');
+
+        // Laptop software "Add" button
+        $('#btnAddLaptopApp')?.addEventListener('click', () => {
+          const list = $('#laptopAppList');
+          if (!list) return;
+          const row = document.createElement('div');
+          row.className = 'cmi-laptop-app-row';
+          row.style.cssText = 'display: flex; gap: 8px; margin-bottom: 8px;';
+          row.innerHTML = `
+            <input type="text" class="cmi-input laptop-app-input" placeholder="e.g. Google Chrome, Zoom, Microsoft Office" style="flex: 1;">
+            <button type="button" class="cmi-btn-icon" onclick="this.closest('.cmi-laptop-app-row').remove()" style="color: var(--cmi-error); background: none; border: none; cursor: pointer; padding: 8px;">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          `;
+          list.appendChild(row);
+          row.querySelector('input')?.focus();
+        });
 
         // Store group flags
         window._dcrHasIos = hasIos;
+        window._dcrHasLaptop = hasLaptop;
         window._dcrHasPOS = hasPOS;
         window._dcrHasNet = hasNet;
 
         // Build group selector hub (when multiple groups or any non-iOS group)
-        const groupCount = [hasIos, hasPOS, hasNet].filter(Boolean).length;
-        if (groupCount > 1 || (hasPOS || hasNet)) {
+        const groupCount = [hasIos, hasLaptop, hasPOS, hasNet].filter(Boolean).length;
+        if (groupCount > 1 || (hasLaptop || hasPOS || hasNet)) {
           const hub = $('#groupSelectorHub');
           const cards = $('#groupCards');
           if (hub && cards) {
@@ -698,6 +741,7 @@
 
             const GROUP_CARD_CONFIG = [
               { key: 'ios', has: hasIos, icon: 'fa-solid fa-tablet-screen-button', label: 'iPads & iPhones', stepId: null, devices: grouped.ios },
+              { key: 'laptop', has: hasLaptop, icon: 'fa-solid fa-laptop', label: 'Laptops', stepId: 'group-laptop', devices: grouped.laptop },
               { key: 'pos', has: hasPOS, icon: 'fa-solid fa-cash-register', label: 'POS Devices', stepId: 'group-pos', devices: grouped.pos },
               { key: 'networking', has: hasNet, icon: 'fa-solid fa-wifi', label: 'Networking', stepId: 'group-networking', devices: grouped.networking },
             ];
@@ -768,7 +812,7 @@
         }
 
         // Inject "Done — Back to Groups" button into POS and Networking steps
-        ['group-pos', 'group-networking'].forEach(stepId => {
+        ['group-laptop', 'group-pos', 'group-networking'].forEach(stepId => {
           const section = $(`#${stepId}`);
           if (!section) return;
           // Remove existing done button if any
@@ -780,7 +824,7 @@
           doneBtn.innerHTML = '<i class="fa-solid fa-check"></i> Done — Back to Groups';
           doneBtn.addEventListener('click', () => {
             // Mark group as configured
-            const groupKey = stepId === 'group-pos' ? 'pos' : 'networking';
+            const groupKey = stepId === 'group-pos' ? 'pos' : stepId === 'group-laptop' ? 'laptop' : 'networking';
             window._dcrGroupConfigured[groupKey] = true;
             const card = document.querySelector(`.cmi-group-card[data-group="${groupKey}"]`);
             if (card) card.classList.add('configured');

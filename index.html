@@ -1846,6 +1846,128 @@
         </div>
       </section>
 
+      <!-- ═══════════════════════════ GROUP: Laptop Config ═══════════════════════════ -->
+      <section id="group-laptop" class="cmi-step">
+        <div class="cmi-step-header">
+          <h2 class="cmi-step-title"><i class="fa-solid fa-laptop"></i> Laptop Configuration</h2>
+          <p class="cmi-step-subtitle">Configure your laptops and notebook devices.</p>
+        </div>
+        <div class="cmi-section">
+          <h3 class="cmi-section-title" style="font-size: 0.95rem;"><i class="fa-solid fa-laptop"></i> Laptops in this Order</h3>
+          <div class="cmi-device-list" id="laptopDeviceList"><p class="cmi-text-muted">No laptops.</p></div>
+        </div>
+
+        <!-- Laptop Wi-Fi -->
+        <div class="cmi-section" style="margin-top: var(--sp-6);">
+          <div class="cmi-divider"></div>
+          <div class="cmi-quick-tile" style="margin-top: var(--sp-4);">
+            <div class="cmi-quick-tile-header">
+              <div class="cmi-quick-tile-icon"><i class="fa-solid fa-wifi"></i></div>
+              <div class="cmi-quick-tile-info">
+                <span class="cmi-quick-tile-title">Pre-configured Wi-Fi <span class="cmi-addon-tag"><i class="fa-solid fa-sack-dollar"></i> Additional Fee</span></span>
+                <span class="cmi-quick-tile-desc">Laptops will automatically connect to your network.</span>
+              </div>
+              <div class="cmi-quick-tile-toggle">
+                <label class="cmi-switch"><input type="checkbox" id="laptopWifiToggle"><span class="cmi-switch-slider"></span></label>
+              </div>
+            </div>
+            <div class="cmi-quick-tile-body" id="laptopWifiBody" style="display:none;">
+              <div class="cmi-form-grid">
+                <div class="cmi-field cmi-col-full" style="margin-bottom: 8px;">
+                  <label style="cursor:pointer; display:flex; align-items:center; gap:8px; font-size:0.85rem; color:var(--cmi-text-secondary);">
+                    <input type="checkbox" id="laptopWifiSameAsIos" style="accent-color: var(--cmi-accent);">
+                    Use same Wi-Fi credentials as iOS devices
+                  </label>
+                </div>
+                <div id="laptopWifiFields">
+                  <div class="cmi-form-grid">
+                    <div class="cmi-field cmi-col-full">
+                      <label class="cmi-label">Network Name (SSID) <span class="cmi-required">*</span></label>
+                      <input type="text" id="laptopWifiSsid" class="cmi-input" placeholder="e.g. VenueWiFi-5G">
+                    </div>
+                    <div class="cmi-field cmi-col-half">
+                      <label class="cmi-label">Password <span class="cmi-required">*</span></label>
+                      <input type="password" id="laptopWifiPassword" class="cmi-input" placeholder="Wi-Fi password">
+                    </div>
+                    <div class="cmi-field cmi-col-half">
+                      <label class="cmi-label">Security Type</label>
+                      <select id="laptopWifiSecurity" class="cmi-select">
+                        <option value="WPA2 Personal" selected>WPA2 Personal</option>
+                        <option value="WPA2 Enterprise">WPA2 Enterprise</option>
+                        <option value="WPA3 Personal">WPA3 Personal</option>
+                        <option value="WPA3 Enterprise">WPA3 Enterprise</option>
+                        <option value="WPA/WPA2 Personal">WPA/WPA2 Personal</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Laptop Software / Apps -->
+        <div class="cmi-section" style="margin-top: var(--sp-4);">
+          <div class="cmi-quick-tile">
+            <div class="cmi-quick-tile-header">
+              <div class="cmi-quick-tile-icon"><i class="fa-solid fa-download"></i></div>
+              <div class="cmi-quick-tile-info">
+                <span class="cmi-quick-tile-title">Software Installation <span class="cmi-addon-tag"><i class="fa-solid fa-sack-dollar"></i> Additional Fee</span></span>
+                <span class="cmi-quick-tile-desc">List the software and applications to install on your laptops.</span>
+              </div>
+              <div class="cmi-quick-tile-toggle">
+                <label class="cmi-switch"><input type="checkbox" id="laptopAppsToggle"><span class="cmi-switch-slider"></span></label>
+              </div>
+            </div>
+            <div class="cmi-quick-tile-body" id="laptopAppsBody" style="display:none;">
+              <p class="cmi-help-text" style="margin-bottom: 12px;">Enter each software title you'd like installed. Include version if specific.</p>
+              <div id="laptopAppList">
+                <div class="cmi-laptop-app-row" style="display: flex; gap: 8px; margin-bottom: 8px;">
+                  <input type="text" class="cmi-input laptop-app-input" placeholder="e.g. Google Chrome, Zoom, Microsoft Office" style="flex: 1;">
+                  <button type="button" class="cmi-btn-icon" onclick="this.closest('.cmi-laptop-app-row').remove()" style="color: var(--cmi-error); background: none; border: none; cursor: pointer; padding: 8px;">
+                    <i class="fa-solid fa-xmark"></i>
+                  </button>
+                </div>
+              </div>
+              <button type="button" class="cmi-btn cmi-btn-secondary" id="btnAddLaptopApp" style="padding: 8px 16px; font-size: 0.85rem; margin-top: 4px;">
+                <i class="fa-solid fa-plus"></i> Add Software
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Laptop Wallpaper -->
+        <div class="cmi-section" style="margin-top: var(--sp-4);">
+          <div class="cmi-quick-tile">
+            <div class="cmi-quick-tile-header">
+              <div class="cmi-quick-tile-icon"><i class="fa-solid fa-image"></i></div>
+              <div class="cmi-quick-tile-info">
+                <span class="cmi-quick-tile-title">Custom Wallpaper</span>
+                <span class="cmi-quick-tile-desc">Set a custom desktop wallpaper on your laptops.</span>
+              </div>
+              <div class="cmi-quick-tile-toggle">
+                <label class="cmi-switch"><input type="checkbox" id="laptopWallpaperToggle"><span class="cmi-switch-slider"></span></label>
+              </div>
+            </div>
+            <div class="cmi-quick-tile-body" id="laptopWallpaperBody" style="display:none;">
+              <div class="cmi-form-grid">
+                <div class="cmi-field cmi-col-full">
+                  <label class="cmi-label">Desktop Wallpaper</label>
+                  <div class="cmi-file-drop" style="min-height: 90px;">
+                    <input type="file" class="cmi-file-input" id="laptopWallpaperInput" accept=".jpg,.jpeg,.png" hidden>
+                    <div class="cmi-file-drop-content">
+                      <i class="fa-solid fa-image" style="font-size: 1.5rem; color: var(--cmi-accent);"></i>
+                      <p>Drag & drop or <span class="cmi-file-browse" onclick="document.getElementById('laptopWallpaperInput').click()">browse</span></p>
+                      <p class="cmi-help-text">JPG or PNG</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- ═══════════════════════════ GROUP: POS Config ═══════════════════════════ -->
       <section id="group-pos" class="cmi-step">
         <div class="cmi-step-header">
@@ -2122,6 +2244,6 @@
 
 </div>
 
-<script src="app.js?v=20260811q" defer></script>
+<script src="app.js?v=20260811r" defer></script>
 </body>
 </html>
