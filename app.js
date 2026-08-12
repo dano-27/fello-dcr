@@ -568,6 +568,18 @@
         const hasPOS = Object.keys(grouped.pos).length > 0;
         const hasNet = Object.keys(grouped.networking).length > 0;
 
+        // Partner orders: only show pre-installed apps if iOS devices are present
+        // POS devices (Square/Shopify/Toast) have built-in software
+        if (isPartnerOrder && !hasIos) {
+          const appsSection = document.querySelector('.cmi-partner-apps-section');
+          if (appsSection) appsSection.style.display = 'none';
+          // Also clear the auto-added partner apps since there are no iOS devices
+          selectedApps = selectedApps.filter(a => !a.locked);
+          // Update banner to not mention apps
+          const bannerDesc = $('#partnerBannerDesc');
+          if (bannerDesc) bannerDesc.textContent = 'Standard partner configuration will be applied.';
+        }
+
         // Populate Laptop device list
         if (hasLaptop) {
           const laptopListEl = $('#laptopDeviceList');
