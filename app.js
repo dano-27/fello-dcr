@@ -373,11 +373,11 @@
     // Partner submit → walk through group steps then review
     $('#btnPartnerSubmit')?.addEventListener('click', () => {
       quickSubmitMode = true;
-      const built = buildGroupNavChain(['step-1', 'step-6'], ['Order Info', 'Review']);
-      navChain = built.chain;
-      navLabels = built.labels;
-      navIndex = 1;
-      goToStep(1, true);
+      // Jump directly to Review — no group config steps needed for standard partner orders
+      navChain = ['step-1', 'step-6'];
+      navLabels = ['Order Info', 'Review'];
+      navIndex = navChain.length - 1;
+      goToStep(navIndex, true);
     });
 
     // Escape hatch → show full flow
