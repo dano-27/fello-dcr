@@ -384,6 +384,17 @@
     $('#btnPartnerFullCustom')?.addEventListener('click', () => {
       quickSubmitMode = false;
       partnerSetup.style.display = 'none';
+
+      // If group hub exists (multiple device groups), show it
+      const hub = $('#groupSelectorHub');
+      const groupCount = [window._dcrHasIos, window._dcrHasLaptop, window._dcrHasPOS, window._dcrHasNet].filter(Boolean).length;
+      if (hub && groupCount > 1) {
+        hub.style.display = '';
+        hub.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+
+      // Single group — fall through to quick setup / advanced mode
       if (quickSetup) quickSetup.style.display = '';
       const advancedSelector = $('#advancedModeSelector');
       if (advancedSelector) {
@@ -782,6 +793,11 @@
           const cards = $('#groupCards');
           if (hub && cards) {
             hub.style.display = '';
+
+            // For partner orders, hide the hub initially — revealed via "Need additional customizations?"
+            if (isPartnerOrder) {
+              hub.style.display = 'none';
+            }
 
             // Hide Quick Setup & Advanced selector when hub is active
             const quickSetup = $('#quickSetup');
