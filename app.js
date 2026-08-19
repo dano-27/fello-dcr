@@ -1525,7 +1525,12 @@
       }
 
       dom.reviewSummary.innerHTML = html;
-      initReviewAccordions();
+      // Wire up accordion toggles
+      dom.reviewSummary.querySelectorAll('.cmi-review-section-header').forEach(header => {
+        header.addEventListener('click', () => {
+          header.closest('.cmi-review-section').classList.toggle('open');
+        });
+      });
       return;
     }
 
@@ -1822,15 +1827,45 @@
     try {
       const data = collectSubmissionData();
 
-      const res = await fetch(`${COMMAND_CENTER_URL}/api/dcr/submit`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
+      let result;
+      let submitSuccess = false;
 
-      const result = await res.json();
+      // Try Command Center first
+      try {
+        const res = await fetch(`${COMMAND_CENTER_URL}/api/dcr/submit`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+        result = await res.json();
+        if (result.status === 'success' || result.status === 'partial') {
+          submitSuccess = true;
+        }
+      } catch (ccError) {
+        console.warn('[DCR] Command Center unavailable, falling back to Google Sheets:', ccError.message);
+      }
 
-      if (result.status === 'success' || result.status === 'partial') {
+      // Fallback to Google Sheets
+      if (!submitSuccess) {
+        try {
+          const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwidaqayX2Zk3DwamqyT7t4IjIosWs1o5HeIKG8KlPRlQWyoHn4X24GG0PzPwMwK9beug/exec';
+          const gsRes = await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+          });
+          // no-cors returns opaque response, assume success
+          submitSuccess = true;
+          result = { status: 'success', source: 'google-sheets' };
+          console.log('[DCR] Submitted via Google Sheets fallback');
+        } catch (gsError) {
+          console.error('[DCR] Google Sheets fallback also failed:', gsError.message);
+          throw gsError;
+        }
+      }
+
+      if (submitSuccess) {
         // Upload any attached files from the dropzone Map
         const fileFieldMap = [
           { id: 'wallpaperArtwork', category: 'wallpaper' },
@@ -1847,7 +1882,7 @@
           { id: 'mediaUpload', category: 'media' },
         ];
 
-        const submissionId = result.id;
+        const submissionId = result?.id;
         if (submissionId) {
           const formData = new FormData();
           let hasFiles = false;
@@ -1886,7 +1921,7 @@
           window.location.reload();
         }, 2500);
       } else {
-        throw new Error(result.message || 'Submission failed');
+        throw new Error(result?.message || 'Submission failed');
       }
 
     } catch (e) {
