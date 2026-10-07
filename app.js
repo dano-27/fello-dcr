@@ -1838,7 +1838,7 @@
           body: JSON.stringify(data),
         });
         result = await res.json();
-        if (result.status === 'success' || result.status === 'partial') {
+        if (result.status === 'success' || result.status === 'partial' || result.status === 'pending_review' || result.status === 'submitted') {
           submitSuccess = true;
         }
       } catch (ccError) {
@@ -1914,7 +1914,15 @@
           }
         }
 
-        showToast('Configuration submitted successfully! Provisioning has been triggered.', 'success');
+        if (result.status === 'pending_review') {
+          showToast('Your configuration request has been received and validated! Our team will review and begin provisioning shortly.', 'success');
+        } else if (result.status === 'rejected') {
+          showToast('We couldn\'t validate your order number. Please double-check and try again, or contact support@fello.com.', 'error');
+        } else if (result.status === 'submitted') {
+          showToast('Your request has been received. We\'re verifying your order and will begin setup soon.', 'success');
+        } else {
+          showToast('Configuration submitted successfully!', 'success');
+        }
         localStorage.removeItem(STORAGE_KEY);
 
         setTimeout(() => {
