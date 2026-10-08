@@ -266,8 +266,7 @@
   // ORDER LOOKUP
   // ═══════════════════════════════════════════════════════════════════════════
 
-  const IMS_API_BASE = 'https://ims-v4-migration-prod-876702752852.us-east4.run.app/api/nextgen/v1';
-  const IMS_API_TOKEN = 'Bearer 2423|rydhEvIv6ZsEABia67jH5ffhMUJLthtu3YrfySpx93f5cc0e';
+
 
   // Partner app presets (real iTunes data)
   const PARTNER_APPS = {
@@ -425,19 +424,31 @@
       btn.disabled = true;
       
       try {
-        const resp = await fetch(`${IMS_API_BASE}/orders/${encodeURIComponent(orderNumber)}`, {
-          headers: { 'Authorization': IMS_API_TOKEN }
-        });
+        const resp = await fetch(`${COMMAND_CENTER_URL}/api/public/dcr/order/${encodeURIComponent(orderNumber)}`);
+
+        if (resp.status === 400) {
+          showToast('Invalid order number format. Please check and try again.', 'error');
+          btn.innerHTML = originalText;
+          btn.disabled = false;
+          return;
+        }
 
         if (resp.status === 404) {
-          showToast(`Order "${orderNumber}" not found in IMS NextGen.`, 'error');
+          showToast(`Order "${orderNumber}" not found.`, 'error');
+          btn.innerHTML = originalText;
+          btn.disabled = false;
+          return;
+        }
+
+        if (resp.status === 429) {
+          showToast('Too many lookups. Please wait a moment and try again.', 'warning');
           btn.innerHTML = originalText;
           btn.disabled = false;
           return;
         }
 
         if (!resp.ok) {
-          showToast(`IMS API error (${resp.status}). Please try again.`, 'error');
+          showToast('Service temporarily unavailable. Please try again later.', 'error');
           btn.innerHTML = originalText;
           btn.disabled = false;
           return;
