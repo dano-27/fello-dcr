@@ -12,6 +12,7 @@
   // CONSTANTS & CONFIG
   // ═══════════════════════════════════════════════════════════════════════════
 
+  const COMMAND_CENTER_URL = 'https://fellostarlinkcommandcenter-production.up.railway.app';
   const STORAGE_KEY = 'fello_cmi_draft_v2';
   const TOTAL_STEPS = 6;
   const SUBMIT_ENDPOINT = '/api/cmi/submit';
@@ -45,6 +46,71 @@
     get btnSubmit()    { return $('#btnSubmit'); },
     get toastContainer(){ return $('#toastContainer'); },
     get reviewSummary(){ return $('#reviewSummary'); },
+  };
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // CONFIG — fetched from Command Center API, with hardcoded fallbacks
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  // Fallback values (used if CC API is unreachable)
+  const FALLBACK_PARTNER_APPS = {
+    'SQ': [
+      { trackId: 335393788, name: 'Square Point of Sale (POS)', developer: 'Block, Inc.', icon: 'https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/ce/36/02/ce360217-c50d-779c-3f6b-280340952e14/AppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg', price: 'Free', url: 'https://apps.apple.com/us/app/square-point-of-sale-pos/id335393788', locked: true },
+      { trackId: 1200091899, name: 'Square: Retail Point of Sale', developer: 'Block, Inc.', icon: 'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/ff/3d/b5/ff3db5b5-2719-2d0a-488a-92718637f1fe/RetailAppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg', price: 'Free', url: 'https://apps.apple.com/us/app/square-retail-point-of-sale/id1200091899', locked: true },
+    ],
+    'SH': [
+      { trackId: 686830644, name: 'Shopify Point of Sale (POS)', developer: 'Shopify Inc.', icon: 'https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/cd/6f/96/cd6f9685-43db-8d01-6417-874663d514a2/PosAppIcon-0-0-1x_U007epad-0-1-sRGB-85-220.png/100x100bb.jpg', price: 'Free', url: 'https://apps.apple.com/us/app/shopify-point-of-sale-pos/id686830644', locked: true },
+    ],
+    'TO': [
+      { trackId: 6444586410, name: 'Toast Now', developer: 'Toast, Inc.', icon: 'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/ed/d1/83/edd1833f-8e45-550c-2253-cec3f962fbfe/AppIcon-0-0-1x_U007ephone-0-1-0-sRGB-85-220.png/100x100bb.jpg', price: 'Free', url: 'https://apps.apple.com/us/app/toast-now/id6444586410', locked: true },
+    ],
+    'CB': [
+      { trackId: 966012143, name: 'GiveSmart Fundraise', developer: 'MobileCause Inc', icon: 'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/9c/59/76/9c5976b0-251c-57e0-ca7b-8379ac2560c0/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/100x100bb.jpg', price: 'Free', url: 'https://apps.apple.com/us/app/givesmart-fundraise/id966012143', locked: true },
+    ],
+    'EB': [
+      { trackId: 487922291, name: 'Eventbrite', developer: 'Eventbrite', icon: 'https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/fc/66/1e/fc661e89-1364-9ba1-1aed-e2a37617344b/AppIcon-0-0-1x_U007ephone-0-1-0-85-220.png/100x100bb.jpg', price: 'Free', url: 'https://apps.apple.com/us/app/eventbrite/id487922291', locked: true },
+      { trackId: 368260521, name: 'Eventbrite Organizer', developer: 'Eventbrite', icon: 'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/0b/79/80/0b7980a8-8c95-e095-e2f6-cb629ba59e79/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/100x100bb.jpg', price: 'Free', url: 'https://apps.apple.com/us/app/eventbrite-organizer/id368260521', locked: true },
+    ],
+    'TA': [
+      { trackId: 991294851, name: 'Tassel Tickets', developer: 'Navona Investments', icon: 'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/d8/6d/1a/d86d1a84-c7b4-2cf0-a354-41888adccdae/AppIcon-1x_U007emarketing-0-8-0-0-85-220-0.png/100x100bb.jpg', price: 'Free', url: 'https://apps.apple.com/us/app/tassel-tickets/id991294851', locked: true },
+    ],
+    'MO': [
+      { trackId: 991294851, name: 'Tassel Tickets', developer: 'Navona Investments', icon: 'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/d8/6d/1a/d86d1a84-c7b4-2cf0-a354-41888adccdae/AppIcon-1x_U007emarketing-0-8-0-0-85-220-0.png/100x100bb.jpg', price: 'Free', url: 'https://apps.apple.com/us/app/tassel-tickets/id991294851', locked: true },
+    ],
+    'LE': [],
+  };
+  const FALLBACK_PARTNER_SOURCES = ['SQ', 'SH', 'TO', 'CB', 'EB', 'TA', 'MO', 'LE'];
+  const FALLBACK_SOURCE_MAP = {
+    'CB': { label: 'GiveSmart', key: 'givesmart' },
+    'EB': { label: 'Eventbrite', key: 'eventbrite' },
+    'FE': { label: 'Fello', key: 'fello' },
+    'SH': { label: 'Shopify', key: 'shopify' },
+    'SQ': { label: 'Square', key: 'square' },
+    'TA': { label: 'Tassel', key: 'tassel' },
+    'MO': { label: 'Tassel', key: 'tassel' },
+    'LE': { label: 'Levy', key: 'levy' },
+    'TO': { label: 'Toast', key: 'toast' },
+    'or': { label: 'Fello', key: 'fello' },
+    'OR': { label: 'Fello', key: 'fello' },
+  };
+
+  // Live config (overwritten on successful API fetch)
+  let PARTNER_APPS = { ...FALLBACK_PARTNER_APPS };
+  let PARTNER_SOURCES = new Set(FALLBACK_PARTNER_SOURCES);
+  let SOURCE_MAP = { ...FALLBACK_SOURCE_MAP };
+
+  const fetchDcrConfig = async () => {
+    try {
+      const resp = await fetch(`${COMMAND_CENTER_URL}/api/public/dcr/config`);
+      if (!resp.ok) throw new Error(`Config API returned ${resp.status}`);
+      const cfg = await resp.json();
+      if (cfg.partnerApps) PARTNER_APPS = cfg.partnerApps;
+      if (cfg.partnerSources) PARTNER_SOURCES = new Set(cfg.partnerSources);
+      if (cfg.sourceMap) SOURCE_MAP = cfg.sourceMap;
+      console.log('[DCR] Config loaded from CC API (v' + cfg.version + ')');
+    } catch (err) {
+      console.warn('[DCR] Config API unavailable, using fallback:', err.message);
+    }
   };
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -268,34 +334,7 @@
 
 
 
-  // Partner app presets (real iTunes data)
-  const PARTNER_APPS = {
-    'SQ': [
-      { trackId: 335393788, name: 'Square Point of Sale (POS)', developer: 'Block, Inc.', icon: 'https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/ce/36/02/ce360217-c50d-779c-3f6b-280340952e14/AppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg', price: 'Free', url: 'https://apps.apple.com/us/app/square-point-of-sale-pos/id335393788', locked: true },
-      { trackId: 1200091899, name: 'Square: Retail Point of Sale', developer: 'Block, Inc.', icon: 'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/ff/3d/b5/ff3db5b5-2719-2d0a-488a-92718637f1fe/RetailAppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg', price: 'Free', url: 'https://apps.apple.com/us/app/square-retail-point-of-sale/id1200091899', locked: true },
-    ],
-    'SH': [
-      { trackId: 686830644, name: 'Shopify Point of Sale (POS)', developer: 'Shopify Inc.', icon: 'https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/cd/6f/96/cd6f9685-43db-8d01-6417-874663d514a2/PosAppIcon-0-0-1x_U007epad-0-1-sRGB-85-220.png/100x100bb.jpg', price: 'Free', url: 'https://apps.apple.com/us/app/shopify-point-of-sale-pos/id686830644', locked: true },
-    ],
-    'TO': [
-      { trackId: 6444586410, name: 'Toast Now', developer: 'Toast, Inc.', icon: 'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/ed/d1/83/edd1833f-8e45-550c-2253-cec3f962fbfe/AppIcon-0-0-1x_U007ephone-0-1-0-sRGB-85-220.png/100x100bb.jpg', price: 'Free', url: 'https://apps.apple.com/us/app/toast-now/id6444586410', locked: true },
-    ],
-    'CB': [
-      { trackId: 966012143, name: 'GiveSmart Fundraise', developer: 'MobileCause Inc', icon: 'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/9c/59/76/9c5976b0-251c-57e0-ca7b-8379ac2560c0/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/100x100bb.jpg', price: 'Free', url: 'https://apps.apple.com/us/app/givesmart-fundraise/id966012143', locked: true },
-    ],
-    'EB': [
-      { trackId: 487922291, name: 'Eventbrite', developer: 'Eventbrite', icon: 'https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/fc/66/1e/fc661e89-1364-9ba1-1aed-e2a37617344b/AppIcon-0-0-1x_U007ephone-0-1-0-85-220.png/100x100bb.jpg', price: 'Free', url: 'https://apps.apple.com/us/app/eventbrite/id487922291', locked: true },
-      { trackId: 368260521, name: 'Eventbrite Organizer', developer: 'Eventbrite', icon: 'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/0b/79/80/0b7980a8-8c95-e095-e2f6-cb629ba59e79/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/100x100bb.jpg', price: 'Free', url: 'https://apps.apple.com/us/app/eventbrite-organizer/id368260521', locked: true },
-    ],
-    'TA': [
-      { trackId: 991294851, name: 'Tassel Tickets', developer: 'Navona Investments', icon: 'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/d8/6d/1a/d86d1a84-c7b4-2cf0-a354-41888adccdae/AppIcon-1x_U007emarketing-0-8-0-0-85-220-0.png/100x100bb.jpg', price: 'Free', url: 'https://apps.apple.com/us/app/tassel-tickets/id991294851', locked: true },
-    ],
-    'MO': [
-      { trackId: 991294851, name: 'Tassel Tickets', developer: 'Navona Investments', icon: 'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/d8/6d/1a/d86d1a84-c7b4-2cf0-a354-41888adccdae/AppIcon-1x_U007emarketing-0-8-0-0-85-220-0.png/100x100bb.jpg', price: 'Free', url: 'https://apps.apple.com/us/app/tassel-tickets/id991294851', locked: true },
-    ],
-    'LE': [],
-  };
-  const PARTNER_SOURCES = new Set(['SQ', 'SH', 'TO', 'CB', 'EB', 'TA', 'MO', 'LE']);
+  // Partner app presets and sources are configured above in CONFIG section
 
   /** Activate partner mode: auto-add apps, show partner panel, hide quick setup */
   const activatePartnerMode = (siteSource, partnerLabel) => {
@@ -476,19 +515,6 @@
         // Site Source badge
         const siteSourceBadge = $('#siteSourceBadge');
         if (siteSourceBadge && raw.site_source) {
-          const SOURCE_MAP = {
-            'CB': { label: 'GiveSmart', key: 'givesmart' },
-            'EB': { label: 'Eventbrite', key: 'eventbrite' },
-            'FE': { label: 'Fello', key: 'fello' },
-            'SH': { label: 'Shopify', key: 'shopify' },
-            'SQ': { label: 'Square', key: 'square' },
-            'TA': { label: 'Tassel', key: 'tassel' },
-            'MO': { label: 'Tassel', key: 'tassel' },
-            'LE': { label: 'Levy', key: 'levy' },
-            'TO': { label: 'Toast', key: 'toast' },
-            'or': { label: 'Fello', key: 'fello' },
-            'OR': { label: 'Fello', key: 'fello' },
-          };
           const src = SOURCE_MAP[raw.site_source] || { label: raw.site_source, key: 'other' };
           siteSourceBadge.textContent = src.label;
           siteSourceBadge.dataset.source = src.key;
@@ -1720,8 +1746,7 @@
   // ═══════════════════════════════════════════════════════════════════════════
   // COMMAND CENTER SUBMIT ENDPOINT:
   // DCR form submits directly to the Fello Command Center for auto-provisioning.
-  // Update this URL to your deployed Command Center address.
-  const COMMAND_CENTER_URL = 'https://fellostarlinkcommandcenter-production.up.railway.app';
+  // (COMMAND_CENTER_URL configured above in CONSTANTS & CONFIG)
   // Legacy Google Apps Script URL (kept for reference):
   // const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwidaqayX2Zk3DwamqyT7t4IjIosWs1o5HeIKG8KlPRlQWyoHn4X24GG0PzPwMwK9beug/exec';
 
@@ -2990,7 +3015,7 @@
   // INITIALISATION
   // ═══════════════════════════════════════════════════════════════════════════
 
-  const init = () => {
+  const init = async () => {
     // Bind main nav buttons
     dom.btnBack?.addEventListener('click', () => goToStep(navIndex - 1, true));
     dom.btnNext?.addEventListener('click', () => goToStep(navIndex + 1));
@@ -3008,7 +3033,6 @@
 
     initAllFileDropZones();
     initPasswordToggles();
-    initLookupOrder();
     initAppSearch();
     initPackageAppSearches();
     initCustomLayoutToggles();
@@ -3028,6 +3052,13 @@
     });
 
     goToStep(0, true); // Start at first step (index 0)
+
+    // Load dynamic DCR config from CC API before wiring up order lookup
+    try {
+      await fetchDcrConfig();
+    } catch (_) {}
+
+    initLookupOrder();
   };
 
   // Run on load
