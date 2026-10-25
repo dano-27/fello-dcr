@@ -36,7 +36,17 @@
 - CSS variables: `--cmi-*` for colors, `--sp-*` for spacing (4px scale), `--fs-*` for typography, `--radius-*` for corners
 - Light theme with white backgrounds and subtle borders
 
-## No CI/CD Pipeline
-- No GitHub Actions workflows
+## CI: Secret Scan Only (FCCV-92)
+- One GitHub Actions workflow: `.github/workflows/secret-scan.yml` (push + PR to `main`)
+  - `node --test scripts/secret-scan.test.js` — scanner self-test
+  - `node scripts/secret-scan.js` — fails on any committed key/token/password; prints `path:line RULE`, never the value
+- Zero dependencies — no `npm install`, no `package.json`
+- GitHub secret scanning + push protection are enabled on the repo
 - No linters, formatters, or type checkers
 - Quality is maintained through manual review and Cypress tests in the CC repo
+
+## Secrets — This Repo Is PUBLIC
+- **Never commit a credential.** Not in `app.js`, not in `google-apps-script.js`, not in docs.
+- `google-apps-script.js` reads credentials from **Script Properties** via `getSecret_()` — see the file header for the property list (`IMS_TOKEN`, `SIMPLEMDM_API_KEY`).
+- Browser code (`app.js`) must never hold a credential — anything shipped to Pages is public. Proxy through the Command Center instead.
+- Never paste a credential value into Jira, a PR, a commit message, or chat.

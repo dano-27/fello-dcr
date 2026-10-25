@@ -56,10 +56,32 @@ Then open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ```
 fello-dcr/
-├── index.html        # Main form structure (all steps and modes)
-├── index.css         # Complete design system and component styles
-├── app.js            # Form logic, navigation, validation, and submission
-└── fello-logo.svg    # Fello brand logo
+├── index.html              # Main form structure (all steps and modes)
+├── index.css               # Complete design system and component styles
+├── app.js                  # Form logic, navigation, validation, and submission
+├── fello-logo.svg          # Fello brand logo
+├── google-apps-script.js   # Google Sheets fallback receiver (deployed separately in Apps Script)
+└── scripts/
+    ├── secret-scan.js      # Zero-dependency secret scan (runs in CI)
+    └── secret-scan.test.js # Scanner self-test (node --test)
+```
+
+## Secrets
+
+This repo is **public**. No credential may be committed — CI (`.github/workflows/secret-scan.yml`) fails the build if one is, and GitHub secret scanning + push protection are on.
+
+The Google Apps Script reads its credentials from **Script Properties** (Apps Script editor → Project Settings → Script Properties):
+
+| Property | Used by | Value |
+|----------|---------|-------|
+| `IMS_TOKEN` | `lookupOrder()` — IMS NextGen order lookup | IMS NextGen API token (without the `Bearer ` prefix) |
+| `SIMPLEMDM_API_KEY` | `writeToSheet()` — provisioning trigger | SimpleMDM API key |
+
+If a property is missing, only that feature is skipped. Run the scan locally with:
+
+```bash
+node scripts/secret-scan.js
+node --test scripts/secret-scan.test.js
 ```
 
 ## Brand
