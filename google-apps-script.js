@@ -12,7 +12,28 @@
 // 8. Set "Who has access": Anyone
 // 9. Click "Deploy" and authorize when prompted
 // 10. Copy the Web App URL and paste it into app.js (GOOGLE_SCRIPT_URL)
+// 11. Set the Script Properties below (Project Settings > Script Properties)
+//
+// SCRIPT PROPERTIES (FCCV-92) — credentials are NEVER stored in this file.
+// This repo is public. Set these in the Apps Script editor:
+//   Project Settings (gear icon) > Script Properties > Add script property
+//
+//   | Property            | Used by                         | Value                                   |
+//   |---------------------|---------------------------------|-----------------------------------------|
+//   | IMS_TOKEN           | lookupOrder() (IMS NextGen API) | IMS NextGen API token, WITHOUT "Bearer " |
+//   | SIMPLEMDM_API_KEY   | writeToSheet() provisioning call | SimpleMDM API key                       |
+//
+// If a property is missing, only the feature that needs it is skipped:
+//   - IMS_TOKEN missing         -> lookupOrder returns { status: 'error', message: '... not configured' }
+//   - SIMPLEMDM_API_KEY missing -> the sheet row is still written; provisioning is skipped and logged
+// Rotation runbook: fello_starlink_command_center docs/SECRETS.md (steps 1 and 9).
 // ============================================================================
+
+/** Read a credential from Script Properties. Returns '' when unset. Never logs the value. */
+function getSecret_(name) {
+  var value = PropertiesService.getScriptProperties().getProperty(name);
+  return value ? String(value).trim() : '';
+}
 
 /** Shared function: write a parsed data object to the Submissions sheet */
 function writeToSheet(data) {
@@ -110,7 +131,12 @@ function writeToSheet(data) {
   // ── Trigger SimpleMDM provisioning via Command Center ──
   // Replace COMMAND_CENTER_URL with your deployed server URL
   var COMMAND_CENTER_URL = 'https://YOUR_COMMAND_CENTER_URL';
-  var SIMPLEMDM_API_KEY = 'YOUR_SIMPLEMDM_API_KEY';
+  var SIMPLEMDM_API_KEY = getSecret_('SIMPLEMDM_API_KEY');
+
+  if (!SIMPLEMDM_API_KEY) {
+    Logger.log('Provisioning skipped: SIMPLEMDM_API_KEY script property not set');
+    return;
+  }
   
   try {
     UrlFetchApp.fetch(COMMAND_CENTER_URL + '/api/automation/provision', {
@@ -157,16 +183,19 @@ function doGet(e) {
 /** Proxy: Look up an order from IMS NextGen and return relevant fields */
 function lookupOrder(orderNumber) {
   var IMS_BASE = 'https://ims-v4-migration-prod-876702752852.us-east4.run.app/api/nextgen/v1';
-  var IMS_TOKEN = 'Bearer 2423|rydhEvIv6ZsEABia67jH5ffhMUJLthtu3YrfySpx93f5cc0e';
+  var IMS_TOKEN = getSecret_('IMS_TOKEN').replace(/^Bearer\s+/i, '');
 
   if (!orderNumber) {
     return jsonResponse({ status: 'error', message: 'Missing order number' });
+  }
+  if (!IMS_TOKEN) {
+    return jsonResponse({ status: 'error', message: 'Order lookup not configured (IMS_TOKEN script property not set)' });
   }
 
   try {
     var response = UrlFetchApp.fetch(IMS_BASE + '/orders/' + orderNumber, {
       method: 'get',
-      headers: { 'Authorization': IMS_TOKEN },
+      headers: { 'Authorization': 'Bearer ' + IMS_TOKEN },
       muteHttpExceptions: true
     });
 
